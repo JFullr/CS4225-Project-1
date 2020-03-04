@@ -18,8 +18,9 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		j = new JFrame();
+		j = new JFrame("Ultimate Aussue Road Snake Simulator");
 		j.getContentPane().setPreferredSize(new Dimension(width,height));
+		j.pack();
 		j.setResizable(false);
 		j.pack();
 		j.setVisible(true);
