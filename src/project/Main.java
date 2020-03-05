@@ -30,7 +30,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		j = new JFrame("Ultimate Aussue Road Snake Simulator");
+		j = new JFrame("Ultimate Australian Road Train Simulator");
 		j.getContentPane().setPreferredSize(new Dimension(width, height));
 		j.pack();
 		j.setResizable(false);
