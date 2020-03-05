@@ -20,7 +20,7 @@ public class GameClient {
 	public boolean connectBlocking() {
 		
 		try {
-			this.client.connect(initData);
+			this.client.connect(NetworkData.HEART_BEAT);
 		} catch (IOException e) {
 			return false;
 		}
@@ -30,7 +30,7 @@ public class GameClient {
 	
 	public boolean sendHeartbeat() {
 		try {
-			this.client.sendData(initData);
+			this.client.sendData(NetworkData.HEART_BEAT);
 		} catch (IOException e) {
 			return false;
 		}

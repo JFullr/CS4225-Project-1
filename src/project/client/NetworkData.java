@@ -2,6 +2,8 @@ package project.client;
 
 public class NetworkData {
 	
+	public static final transient NetworkData HEART_BEAT = new NetworkData(NetworkGameState.HEART_BEAT);
+	
 	private NetworkGameState state;
 	private Object[] data;
 	

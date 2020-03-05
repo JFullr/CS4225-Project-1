@@ -57,6 +57,12 @@ public class Server {
 				this.serverThread = null;
 				this.running.set(false);
 				this.defaultRequests.clear();
+				
+				try {
+					this.server.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
 			}
 		}
