@@ -16,12 +16,12 @@ import project.secret.SecretEnding0;
  * @version Spring 2020
  */
 public class Gui {
-	
+
 	private static final String WINDOW_TITLE = "Ultimate Australian Road Train Drag Racing Simulator";
-	
+
 	private int width;
 	private int height;
-	
+
 	private JFrame window;
 	private volatile boolean running;
 	private Image imageBuffer;
@@ -30,15 +30,18 @@ public class Gui {
 	 * Instantiates a new gui.
 	 */
 	public Gui() {
-		
+
 		this.width = 800;
 		this.height = 600;
-		
+
 	}
-	
+
+	/**
+	 * Entrypoint of the GUI
+	 */
 	public void start() {
 		this.window = new JFrame(WINDOW_TITLE);
-		this.window.getContentPane().setPreferredSize(new Dimension(width, height));
+		this.window.getContentPane().setPreferredSize(new Dimension(this.width, this.height));
 		this.window.pack();
 		this.window.setResizable(false);
 		this.window.pack();
@@ -49,31 +52,34 @@ public class Gui {
 			this.graphics();
 		}).start();
 	}
-	
+
+	/**
+	 * Terminates the GUI
+	 */
 	public void end() {
 		this.running = false;
 		this.window.dispose();
 	}
-	
+
 	private void graphics() {
 
-		running = true;
-		imageBuffer = window.createVolatileImage(width, height);
-		if (imageBuffer == null) {
+		this.running = true;
+		this.imageBuffer = this.window.createVolatileImage(this.width, this.height);
+		if (this.imageBuffer == null) {
 			return;
 		}
 
-		while (running) {
+		while (this.running) {
 			try {
 
-				Graphics g = imageBuffer.getGraphics();
-				g.setColor(Color.WHITE);
-				
-				SecretEnding0.render(g, width, height);
-				
-				g = window.getContentPane().getGraphics();
-				g.drawImage(imageBuffer, 0, 0, null);
-				g.dispose();
+				Graphics e = this.imageBuffer.getGraphics();
+				e.setColor(Color.WHITE);
+
+				SecretEnding0.render(e, this.width, this.height);
+
+				e = this.window.getContentPane().getGraphics();
+				e.drawImage(this.imageBuffer, 0, 0, null);
+				e.dispose();
 
 				Thread.sleep(50);
 			} catch (Exception e) {
