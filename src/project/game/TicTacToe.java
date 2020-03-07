@@ -13,6 +13,7 @@ public class TicTacToe {
 	private static final String PLAYER1 = "X";
 	private static final String PLAYER2 = "O";
 	private static final String EMPTYSPACE = "_";
+	private static final int NUMBEROFPLAYERS = 2;
 
 	private static final String R1C1 = "A1";
 	private static final String R1C2 = "A2";
@@ -27,11 +28,16 @@ public class TicTacToe {
 	private static final String R3C3 = "C3";
 
 	private HashMap<String, String> coordinateMap = new HashMap<String, String>();
+	private String[] playerNames;
 
 	/**
 	 * Instantiates an empty TicTacToe board.
 	 */
 	public TicTacToe() {
+
+		this.playerNames = new String[NUMBEROFPLAYERS];
+		this.playerNames[0] = PLAYER1;
+		this.playerNames[1] = PLAYER2;
 
 		this.coordinateMap.put(R1C1, EMPTYSPACE);
 		this.coordinateMap.put(R1C2, EMPTYSPACE);
@@ -53,7 +59,9 @@ public class TicTacToe {
 	 * @param coordinate the coordinate the player has selected.
 	 */
 	public void inputCoordinate(String playerName, String coordinate) {
-
+		if (this.isValidCoordinate(coordinate) && this.isValidPlayerName(playerName)) {
+			this.coordinateMap.put(coordinate, playerName);
+		}
 	}
 
 	private boolean isValidCoordinate(String coordinate) {
@@ -68,8 +76,10 @@ public class TicTacToe {
 	private boolean isValidPlayerName(String playerName) {
 		boolean answer = false;
 
-		if (this.coordinateMap.containsValue(playerName)) {
-			answer = true;
+		for (int i = 0; i < NUMBEROFPLAYERS; i++) {
+			if (this.playerNames[i].equals(playerName)) {
+				answer = true;
+			}
 		}
 		return answer;
 	}
