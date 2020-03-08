@@ -7,7 +7,8 @@ import project.server.AurtdrsGameServer;
 /**
  * The Class Main.
  *
- * @author csuser
+ * @author Joseph Fuller, James Irwin, Timothy Brooks
+ * @version Spring 2020
  */
 public class Main {
 
