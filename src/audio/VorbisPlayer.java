@@ -27,7 +27,9 @@ public class VorbisPlayer {
 	private static final float DEFAULT_VOLUME = 0.3f;
 	private static final Exception UNSUPPORTED_LINE = new Exception("Line Not Supported");
 	private static final Exception CRITICAL_ILLEGAL_DATA = new Exception("Corrupted Player Data State Found");
-
+	private static final Exception HEADER_INIT_FAILURE = new Exception("Failed to init headers");
+	private static final Exception HEADER_READ_FAILURE = new Exception("Failed to init headers");
+	
 	private enum HeaderState {
 		RESTART, FAIL, SUCCESS
 	}
@@ -54,16 +56,19 @@ public class VorbisPlayer {
 	private SourceDataLine outputLine = null;
 
 	private float volume = 0;
-
 	private InputStream bitStream;
-
 	private Object playerData;
-
+	private Thread playerThread;
+	
 	public static void main(String[] args) throws Exception {
 
 		VorbisPlayer player = 
 			new VorbisPlayer(FileUtils.readFile("res/lobby (2).ogg"), .5f);
 		player.play();
+		
+		Thread.sleep(2000);
+		
+		System.out.println(player.end());
 
 	}
 
@@ -98,16 +103,58 @@ public class VorbisPlayer {
 		}
 		vol.setValue(this.volume);
 	}
-
+	
 	public void play() throws Exception {
+		this.play(0);
+	}
+	
+	public void play(int repeatCount) throws Exception {
+		
+		synchronized (this) {
 
-		if (this.playerData instanceof String) {
-			this.bitStream = new FileInputStream((String) this.playerData);
-		} else if (this.playerData instanceof byte[]) {
-			this.bitStream = new ByteArrayInputStream((byte[]) this.playerData);
-		} else {
-			throw CRITICAL_ILLEGAL_DATA;
+			if (this.playerThread != null) {
+				return;
+			}
+			
+			this.playerThread = new Thread(()-> {
+				try {
+					this.playThread(repeatCount);
+					this.bitStream.close();
+				} catch (Exception e) { }
+				synchronized (this) {
+					this.playerThread = null;
+				}
+			});
+			this.playerThread.start();
+			
 		}
+		
+	}
+	
+	public boolean end() {
+		synchronized (this) {
+			try {
+				
+				if (this.playerThread == null) {
+					return true;
+				}
+				
+				this.playerThread.interrupt();
+				this.playerThread.join();
+				this.playerThread = null;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+			
+			return true;
+		}
+	}
+
+	private void playThread(int repeat) throws Exception {
+
+		this.initBitStream();
 
 		boolean chained = false;
 		int index = 0;
@@ -117,82 +164,104 @@ public class VorbisPlayer {
 		while (true) {
 
 			index = this.sync.buffer(BUFSIZE);
-			this.buffer = this.sync.data;
-			try {
-				this.bytes = this.bitStream.read(this.buffer, index, BUFSIZE);
-			} catch (Exception e) {
-				System.err.println(e);
-				return;
+			HeaderState state = null;
+			
+			this.initStream(index, chained);
+			
+			state = this.checkStreamErrors();
+			if (state == HeaderState.RESTART) {
+				break;
 			}
-			this.sync.wrote(this.bytes);
-
-			if (chained) {
-				chained = false;
-			} else {
-				if (this.sync.pageout(this.page) != 1) {
-					if (this.bytes < BUFSIZE) {
-						break;
-					}
-					System.err.println("Input does not appear to be an Ogg bitstream.");
-					return;
-				}
-			}
-			this.stream.init(this.page.serialno());
-			this.stream.reset();
-
-			this.info.init();
-			this.comment.init();
-
-			switch (this.checkStreamErrors()) {
-				case FAIL:
-					throw new Exception("Failed to read headers");
-				case RESTART:
-					break;
-				case SUCCESS:
-					break;
-				default:
-					break;
-			}
-
+			
 			switch (this.readAudioHeaders(index)) {
-				case FAIL:
-					break;
 				case RESTART:
 					continue;
-				case SUCCESS:
-					break;
 				default:
 					break;
 			}
 
-			this.convsize = BUFSIZE / this.info.channels;
-
-			this.dspSate.synthesis_init(this.info);
-			this.block.init(this.dspSate);
-
-			this.initOutputLine(this.info.channels, this.info.rate, 0);
-			this.setVolume(this.volume);
-			this.playData(index);
-
-			this.stream.clear();
-			this.block.clear();
-			this.dspSate.clear();
-			this.info.clear();
+			this.processHeaders(index);
 		}
 
+		this.cleanupPlaying(repeat);
+	}
+
+	private void cleanupPlaying(int repeat) throws Exception {
 		this.sync.clear();
 
 		try {
 			if (this.bitStream != null) {
 				this.bitStream.close();
 			}
-		} catch (Exception e) {
+		} catch (Exception e) { }
+		if (repeat != 0) {
+			if (repeat > 0) {
+				repeat--;
+			}
+			this.play(repeat);
 		}
+	}
+
+	private void processHeaders(int index) throws Exception {
+		this.convsize = BUFSIZE / this.info.channels;
+
+		this.dspSate.synthesis_init(this.info);
+		this.block.init(this.dspSate);
+
+		this.initOutputLine(this.info.channels, this.info.rate, 0);
+		this.setVolume(this.volume);
+		this.playData(index);
+
+		this.stream.clear();
+		this.block.clear();
+		this.dspSate.clear();
+		this.info.clear();
+	}
+
+	private void initBitStream() throws Exception {
+		if (this.playerData instanceof String) {
+			this.bitStream = new FileInputStream((String) this.playerData);
+		} else if (this.playerData instanceof byte[]) {
+			this.bitStream = new ByteArrayInputStream((byte[]) this.playerData);
+		} else {
+			throw CRITICAL_ILLEGAL_DATA;
+		}
+	}
+
+	private HeaderState initStream(int index, boolean chained) throws Exception {
+		this.buffer = this.sync.data;
+		try {
+			this.bytes = this.bitStream.read(this.buffer, index, BUFSIZE);
+		} catch (Exception e) {
+			System.err.println(e);
+			throw HEADER_INIT_FAILURE;
+		}
+		this.sync.wrote(this.bytes);
+
+		if (chained) {
+			chained = false;
+		} else {
+			if (this.sync.pageout(this.page) != 1) {
+				if (this.bytes < BUFSIZE) {
+					return HeaderState.RESTART;
+				}
+				System.err.println("Input does not appear to be an Ogg bitstream.");
+				return HeaderState.SUCCESS;
+			}
+		}
+		this.stream.init(this.page.serialno());
+		this.stream.reset();
+
+		this.info.init();
+		this.comment.init();
+		
+		return HeaderState.SUCCESS;
 	}
 
 	private void init(Object data, float volume) {
 		this.volume = volume;
 		this.playerData = data;
+		this.playerThread = null;
 	}
 
 	private void initAudio(int channels, int rate, int bitsPerSample) throws Exception {
@@ -394,10 +463,10 @@ public class VorbisPlayer {
 		this.sync.init();
 	}
 
-	private HeaderState checkStreamErrors() {
+	private HeaderState checkStreamErrors() throws Exception {
 		if (this.stream.pagein(this.page) < 0) {
 			System.err.println("Error reading first page of Ogg bitstream data.");
-			return HeaderState.FAIL;
+			throw HEADER_READ_FAILURE;
 		}
 
 		if (this.stream.packetout(this.packet) != 1) {
@@ -407,7 +476,7 @@ public class VorbisPlayer {
 
 		if (this.info.synthesis_headerin(this.comment, this.packet) < 0) {
 			System.err.println("This Ogg bitstream does not contain Vorbis audio data.");
-			return HeaderState.FAIL;
+			throw HEADER_READ_FAILURE;
 		}
 
 		return HeaderState.SUCCESS;
