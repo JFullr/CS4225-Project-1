@@ -7,7 +7,8 @@ import java.awt.Image;
 
 import javax.swing.JFrame;
 
-import project.secret.SecretEnding0;
+import project.client.NetworkGameState;
+import project.game.aurtdrs.AurtdrsEngine;
 
 /**
  * The Class Gui.
@@ -25,6 +26,8 @@ public class Gui {
 	private JFrame window;
 	private volatile boolean running;
 	private Image imageBuffer;
+	
+	private AurtdrsEngine game;
 
 	/**
 	 * Instantiates a new gui.
@@ -33,6 +36,8 @@ public class Gui {
 
 		this.width = 800;
 		this.height = 600;
+		
+		this.game = new AurtdrsEngine();
 
 	}
 
@@ -68,18 +73,21 @@ public class Gui {
 		if (this.imageBuffer == null) {
 			return;
 		}
+		
+		this.game.setState(NetworkGameState.LOBBY);
 
 		while (this.running) {
 			try {
 
-				Graphics e = this.imageBuffer.getGraphics();
-				e.setColor(Color.WHITE);
+				Graphics g = this.imageBuffer.getGraphics();
+				g.setColor(Color.WHITE);
 
-				SecretEnding0.render(e, this.width, this.height);
+				this.game.render(g, this.width, this.height);
+				//SecretEnding0.render(e, this.width, this.height);
 
-				e = this.window.getContentPane().getGraphics();
-				e.drawImage(this.imageBuffer, 0, 0, null);
-				e.dispose();
+				g = this.window.getContentPane().getGraphics();
+				g.drawImage(this.imageBuffer, 0, 0, null);
+				g.dispose();
 
 				Thread.sleep(50);
 			} catch (Exception e) {
