@@ -14,10 +14,10 @@ public class TicTacToe {
 	private static final String PLAYER1 = "X";
 	private static final String PLAYER2 = "O";
 	private static final String EMPTYSPACE = "_";
+	private static final String CAT = "CAT";
 	private static final int NUMBEROFPLAYERS = 2;
 
 	private static final int NUMBEROFNONDIAGONALS = 4;
-	private static final int DIAGONALSIZE = 3;
 
 	private static final String R1C1 = "A1";
 	private static final String R1C2 = "A2";
@@ -68,8 +68,10 @@ public class TicTacToe {
 	 * 
 	 * @param playerName the name of the player inputting the coordinate.
 	 * @param coordinate the coordinate the player has selected.
+	 * 
+	 * @return The winning player's name. If no victor is decided, returns null.
 	 */
-	public void inputCoordinate(String playerName, String coordinate) {
+	public String inputCoordinate(String playerName, String coordinate) {
 		String winningPlayer = null;
 
 		if (this.isValidCoordinate(coordinate) && this.isValidPlayerName(playerName)) {
@@ -80,6 +82,9 @@ public class TicTacToe {
 			winningPlayer = this.isDiagonalWin(playerName);
 		}
 
+		// TO-DO Horizontal and Vertical check.
+
+		return winningPlayer;
 	}
 
 	private boolean isValidCoordinate(String coordinate) {
@@ -103,17 +108,43 @@ public class TicTacToe {
 	}
 
 	private String isDiagonalWin(String playerName) {
-		String winningPlayer = playerName;
+		String winningPlayer = null;
 
 		ArrayList<String> leftDiagonal = this.assembleLeftDiagonal();
 		ArrayList<String> rightDiagonal = this.assembleRightDiagonal();
 
-		for (String current : leftDiagonal) {
-			if (!current.equals(playerName)) {
-				winningPlayer = null;
-			}
+		String leftCheck = this.didTheyWin(playerName, leftDiagonal);
+		String rightCheck = this.didTheyWin(playerName, rightDiagonal);
+
+		if (leftCheck != null || rightCheck != null) {
+			winningPlayer = playerName;
 		}
-		for (String current : rightDiagonal) {
+
+		return winningPlayer;
+	}
+
+	@SuppressWarnings("unused")
+	private String isHorizontalWin(String playerName) {
+		String winningPlayer = null;
+
+		ArrayList<String> topHorizontal = this.assembleTopHorizontal();
+		ArrayList<String> middleHorizontal = this.assembleMiddleHorizontal();
+		ArrayList<String> bottomHorizontal = this.assembleBottomHorizontal();
+
+		String topCheck = this.didTheyWin(playerName, topHorizontal);
+		String middleCheck = this.didTheyWin(playerName, middleHorizontal);
+		String bottomCheck = this.didTheyWin(playerName, bottomHorizontal);
+
+		if (topCheck != null || middleCheck != null || bottomCheck != null) {
+			winningPlayer = playerName;
+		}
+
+		return winningPlayer;
+	}
+
+	private String didTheyWin(String playerName, ArrayList<String> data) {
+		String winningPlayer = playerName;
+		for (String current : data) {
 			if (!current.equals(playerName)) {
 				winningPlayer = null;
 			}
@@ -140,6 +171,66 @@ public class TicTacToe {
 		rightDiagonal.add(this.coordinateMap.get(R3C1));
 
 		return rightDiagonal;
+	}
+
+	private ArrayList<String> assembleTopHorizontal() {
+		ArrayList<String> horizontal = new ArrayList<String>();
+
+		horizontal.add(this.coordinateMap.get(R1C1));
+		horizontal.add(this.coordinateMap.get(R1C2));
+		horizontal.add(this.coordinateMap.get(R1C3));
+
+		return horizontal;
+	}
+
+	private ArrayList<String> assembleMiddleHorizontal() {
+		ArrayList<String> horizontal = new ArrayList<String>();
+
+		horizontal.add(this.coordinateMap.get(R2C1));
+		horizontal.add(this.coordinateMap.get(R2C2));
+		horizontal.add(this.coordinateMap.get(R2C3));
+
+		return horizontal;
+	}
+
+	private ArrayList<String> assembleBottomHorizontal() {
+		ArrayList<String> horizontal = new ArrayList<String>();
+
+		horizontal.add(this.coordinateMap.get(R3C1));
+		horizontal.add(this.coordinateMap.get(R3C2));
+		horizontal.add(this.coordinateMap.get(R3C3));
+
+		return horizontal;
+	}
+
+	private ArrayList<String> assembleLeftVertical() {
+		ArrayList<String> vertical = new ArrayList<String>();
+
+		vertical.add(this.coordinateMap.get(R1C1));
+		vertical.add(this.coordinateMap.get(R2C1));
+		vertical.add(this.coordinateMap.get(R3C1));
+
+		return vertical;
+	}
+
+	private ArrayList<String> assembleMiddleVertical() {
+		ArrayList<String> vertical = new ArrayList<String>();
+
+		vertical.add(this.coordinateMap.get(R1C2));
+		vertical.add(this.coordinateMap.get(R2C2));
+		vertical.add(this.coordinateMap.get(R3C2));
+
+		return vertical;
+	}
+
+	private ArrayList<String> assembleRightVertical() {
+		ArrayList<String> vertical = new ArrayList<String>();
+
+		vertical.add(this.coordinateMap.get(R1C3));
+		vertical.add(this.coordinateMap.get(R2C3));
+		vertical.add(this.coordinateMap.get(R3C3));
+
+		return vertical;
 	}
 
 }
