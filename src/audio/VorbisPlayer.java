@@ -96,7 +96,7 @@ public class VorbisPlayer {
 		} else {
 			this.volume = (this.volume - 1.0f);
 		}
-		vol.setValue(volume);
+		vol.setValue(this.volume);
 	}
 
 	public void play() throws Exception {
@@ -171,7 +171,6 @@ public class VorbisPlayer {
 			this.block.init(this.dspSate);
 
 			this.initOutputLine(this.info.channels, this.info.rate, 0);
-			this.setVolume(this.volume);
 			this.setVolume(this.volume);
 			this.playData(index);
 
