@@ -17,8 +17,6 @@ public class TicTacToe {
 	private static final String CAT = "CAT";
 	private static final int NUMBEROFPLAYERS = 2;
 
-	private static final int NUMBEROFNONDIAGONALS = 4;
-
 	private static final String R1C1 = "A1";
 	private static final String R1C2 = "A2";
 	private static final String R1C3 = "A3";
@@ -72,6 +70,15 @@ public class TicTacToe {
 	 * @return The winning player's name. If no victor is decided, returns null.
 	 */
 	public String inputCoordinate(String playerName, String coordinate) {
+
+		if (playerName == null) {
+			throw new IllegalArgumentException("Player name cannot be null.");
+		}
+
+		if (coordinate == null) {
+			throw new IllegalArgumentException("Coordinate input cannot be null.");
+		}
+
 		String winningPlayer = null;
 
 		if (this.isValidCoordinate(coordinate) && this.isValidPlayerName(playerName)) {
@@ -82,7 +89,17 @@ public class TicTacToe {
 			winningPlayer = this.isDiagonalWin(playerName);
 		}
 
-		// TO-DO Horizontal and Vertical check.
+		if (winningPlayer != null && this.isValidPlayerName(playerName)) {
+			winningPlayer = this.isHorizontalWin(playerName);
+		}
+
+		if (winningPlayer != null && this.isValidPlayerName(playerName)) {
+			winningPlayer = this.isVerticalWin(playerName);
+		}
+
+		if (winningPlayer == null && this.checkForCat()) {
+			winningPlayer = CAT;
+		}
 
 		return winningPlayer;
 	}
@@ -123,7 +140,6 @@ public class TicTacToe {
 		return winningPlayer;
 	}
 
-	@SuppressWarnings("unused")
 	private String isHorizontalWin(String playerName) {
 		String winningPlayer = null;
 
@@ -136,6 +152,24 @@ public class TicTacToe {
 		String bottomCheck = this.didTheyWin(playerName, bottomHorizontal);
 
 		if (topCheck != null || middleCheck != null || bottomCheck != null) {
+			winningPlayer = playerName;
+		}
+
+		return winningPlayer;
+	}
+
+	private String isVerticalWin(String playerName) {
+		String winningPlayer = null;
+
+		ArrayList<String> leftVertical = this.assembleLeftVertical();
+		ArrayList<String> middleVertical = this.assembleMiddleVertical();
+		ArrayList<String> rightVertical = this.assembleRightVertical();
+
+		String leftCheck = this.didTheyWin(playerName, leftVertical);
+		String middleCheck = this.didTheyWin(playerName, middleVertical);
+		String rightCheck = this.didTheyWin(playerName, rightVertical);
+
+		if (leftCheck != null || middleCheck != null || rightCheck != null) {
 			winningPlayer = playerName;
 		}
 
@@ -231,6 +265,46 @@ public class TicTacToe {
 		vertical.add(this.coordinateMap.get(R3C3));
 
 		return vertical;
+	}
+
+	private boolean checkForCat() {
+		boolean isCat = false;
+
+		if (!this.coordinateMap.containsValue(EMPTYSPACE)) {
+			isCat = true;
+		}
+
+		return isCat;
+	}
+
+	/**
+	 * Returns a String representation of the TicTacToe class.
+	 * 
+	 * @return a String representation of the TicTacToe class.
+	 */
+	public String toString() {
+		String outputOfTicTacToeBoard = "";
+
+		ArrayList<String> topHorizontal = this.assembleTopHorizontal();
+		ArrayList<String> middleHorizontal = this.assembleMiddleHorizontal();
+		ArrayList<String> bottomHorizontal = this.assembleBottomHorizontal();
+
+		outputOfTicTacToeBoard += this.toStringAssistance(topHorizontal);
+		outputOfTicTacToeBoard += this.toStringAssistance(middleHorizontal);
+		outputOfTicTacToeBoard += this.toStringAssistance(bottomHorizontal);
+
+		return outputOfTicTacToeBoard;
+	}
+
+	private String toStringAssistance(ArrayList<String> row) {
+		String output = "";
+
+		for (String current : row) {
+			output += current;
+		}
+		output += System.lineSeparator();
+
+		return output;
 	}
 
 }
