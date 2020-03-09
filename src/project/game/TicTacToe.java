@@ -62,7 +62,7 @@ public class TicTacToe {
 	}
 
 	/**
-	 * Places Player's picked Coodinate into TicTacToe board if it is a valid move.
+	 * Places Player's picked Coordinate into TicTacToe board if it is a valid move.
 	 * 
 	 * @param playerName the name of the player inputting the coordinate.
 	 * @param coordinate the coordinate the player has selected.
@@ -102,6 +102,24 @@ public class TicTacToe {
 		}
 
 		return winningPlayer;
+	}
+
+	/**
+	 * Returns the String object representing Player 1.
+	 * 
+	 * @return the String object representing Player 1.
+	 */
+	public String getPlayer1() {
+		return PLAYER1;
+	}
+
+	/**
+	 * Returns the String object representing Player 2.
+	 * 
+	 * @return the String object representing Player 2.
+	 */
+	public String getPlayer2() {
+		return PLAYER2;
 	}
 
 	private boolean isValidCoordinate(String coordinate) {

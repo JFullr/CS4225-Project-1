@@ -17,4 +17,8 @@ public class TicTacToeManager {
 		this.aTicTacToe = new TicTacToe();
 	}
 
+	public String inputCoordinateWithPlayer(String playerName, String coordinate) {
+		return this.aTicTacToe.inputCoordinate(playerName, coordinate);
+	}
+
 }
