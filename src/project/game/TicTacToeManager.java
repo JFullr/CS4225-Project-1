@@ -21,4 +21,15 @@ public class TicTacToeManager {
 		return this.aTicTacToe.inputCoordinate(playerName, coordinate);
 	}
 
+	/**
+	 * Deletes the current TicTacToe game and replaces it with a new TicTacToe game.
+	 */
+	public void resetGame() {
+		this.aTicTacToe = new TicTacToe();
+	}
+	
+	public String printBoard() {
+		return this.aTicTacToe.toString();
+	}
+
 }

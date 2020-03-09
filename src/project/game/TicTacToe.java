@@ -68,6 +68,7 @@ public class TicTacToe {
 	 * @param coordinate the coordinate the player has selected.
 	 * 
 	 * @return The winning player's name. If no victor is decided, returns null.
+	 *         Returns error message is the coordinate has already been selected.
 	 */
 	public String inputCoordinate(String playerName, String coordinate) {
 
@@ -80,6 +81,10 @@ public class TicTacToe {
 		}
 
 		String winningPlayer = null;
+
+		if (this.coordinateMap.get(coordinate).equals(playerName)) {
+			return "Coordinate choice invalid, please select a new coordinate.";
+		}
 
 		if (this.isValidCoordinate(coordinate) && this.isValidPlayerName(playerName)) {
 			this.coordinateMap.put(coordinate, playerName);
