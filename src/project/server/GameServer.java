@@ -49,13 +49,18 @@ public class GameServer {
 
 		synchronized (this) {
 
-			this.running = true;
+			if(this.running) {
+				return;
+			}
 
 			this.server.start((client) -> {
 				synchronized (this) {
 					this.clients.add(client);
 				}
 			});
+			
+			this.running = true;
+			
 			new Thread(() -> {
 				while (true) {
 
