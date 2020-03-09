@@ -7,7 +7,8 @@ import project.server.AurtdrsGameServer;
 /**
  * The Class Main.
  *
- * @author csuser
+ * @author Joseph Fuller, James Irwin, Timothy Brooks
+ * @version Spring 2020
  */
 public class Main {
 
@@ -20,21 +21,19 @@ public class Main {
 	 * @throws IOException server error
 	 */
 	public static void main(String[] args) throws IOException {
-		
-		if(args != null && args.length > 0 && args[0].toLowerCase().startsWith("-server")) {
-			
+
+		if (args != null && args.length > 0 && args[0].toLowerCase().startsWith("-server")) {
+
 			AurtdrsGameServer server = new AurtdrsGameServer(GAME_PORT);
 			server.start();
-			
-		}else {
+
+		} else {
 
 			AurtdrsGame game = new AurtdrsGame();
 			game.start();
-		
+
 		}
 
 	}
-
-	
 
 }

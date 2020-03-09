@@ -11,10 +11,6 @@ import java.net.Socket;
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020
  */
-/**
- * @author JAF
- *
- */
 public class Client {
 
 	private String address;
@@ -71,23 +67,26 @@ public class Client {
 		}
 
 	}
-	
-	/** Releases the resources held by this client
+
+	/**
+	 * Releases the resources held by this client
+	 * 
 	 * @return false if there is an error, true if properly released
 	 */
-	public boolean close(){
-		
-		if(this.client.isClosed()) {
+	public boolean close() {
+
+		if (this.client.isClosed()) {
 			return true;
 		}
-		
-		for(int i = 0; i < 10; i++) {
+
+		for (int i = 0; i < 10; i++) {
 			try {
 				this.client.close();
 				return true;
-			} catch (IOException e) {}
+			} catch (IOException e) {
+			}
 		}
-		
+
 		return false;
 	}
 
@@ -147,7 +146,7 @@ public class Client {
 		return this.input.readObject();
 
 	}
-	
+
 	private void initClient(String address, int port, int timeoutInSeconds) {
 		this.input = null;
 		this.output = null;
