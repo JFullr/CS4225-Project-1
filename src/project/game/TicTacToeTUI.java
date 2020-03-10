@@ -19,14 +19,14 @@ public class TicTacToeTUI {
 		Scanner consoleInput = new Scanner(System.in);
 
 		System.out.println("Player 1 found, beginning TicTacToe");
-		System.out.println(this.aTicTacToeManager.printBoard());
+		System.out.println(this.aTicTacToeManager.getBoard());
 
 		System.out.println("Rows correlate to capital A-C. Columns to 1-3");
 		System.out.println("Ex: A3");
 		System.out.println("Please select a row/column");
 		String userInput = consoleInput.nextLine();
 
-		String userResult = this.aTicTacToeManager.inputCoordinateWithPlayer(playerName, userInput);
+		//String userResult = this.aTicTacToeManager.inputCoordinateWithPlayer(playerName, userInput);
 
 	}
 }

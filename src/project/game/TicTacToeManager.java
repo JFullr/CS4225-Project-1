@@ -1,5 +1,7 @@
 package project.game;
 
+import project.client.GameClientManager;
+
 /**
  * Coordinates use of TicTacToe class to User Interface.
  * 
@@ -8,6 +10,7 @@ package project.game;
  */
 public class TicTacToeManager {
 
+	private GameClientManager aGameClientManager;
 	private TicTacToe aTicTacToe;
 
 	/**
@@ -17,6 +20,15 @@ public class TicTacToeManager {
 		this.aTicTacToe = new TicTacToe();
 	}
 
+	/**
+	 * Places Player's picked Coordinate into TicTacToe board if it is a valid move.
+	 * 
+	 * @param playerName the name of the player inputting the coordinate.
+	 * @param coordinate the coordinate the player has selected.
+	 * 
+	 * @return The winning player's name. If no victor is decided, returns null.
+	 *         Returns error message is the coordinate has already been selected.
+	 */
 	public String inputCoordinateWithPlayer(String playerName, String coordinate) {
 		return this.aTicTacToe.inputCoordinate(playerName, coordinate);
 	}
@@ -27,9 +39,32 @@ public class TicTacToeManager {
 	public void resetGame() {
 		this.aTicTacToe = new TicTacToe();
 	}
-	
-	public String printBoard() {
+
+	/**
+	 * Returns a string representation of the board.
+	 * 
+	 * @return a string representation of the board.
+	 */
+	public String getBoard() {
 		return this.aTicTacToe.toString();
+	}
+
+	/**
+	 * Returns the string ID of the first player.
+	 * 
+	 * @return the string ID of the first player.
+	 */
+	public String getPlayer1() {
+		return this.aTicTacToe.getPlayer1();
+	}
+
+	/**
+	 * Returns the string ID of the second player.
+	 * 
+	 * @return the string ID of the second player.
+	 */
+	public String getPlayer2() {
+		return this.aTicTacToe.getPlayer2();
 	}
 
 }
