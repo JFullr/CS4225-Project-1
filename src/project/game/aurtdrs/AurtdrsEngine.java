@@ -29,6 +29,10 @@ public class AurtdrsEngine implements AurtdrsProcess {
 			case HEART_BEAT:
 				
 				break;
+			case DISCONNECTED:
+				
+				break;
+			
 			case LOBBY:
 				this.currentState = this.lobby;
 				break;

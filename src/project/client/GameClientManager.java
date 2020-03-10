@@ -8,23 +8,32 @@ package project.client;
  */
 public class GameClientManager {
 
-	private static final int ATTEMPT_TIMEOUT_MILLIS = 10000;
+	private static final int ATTEMPT_TIMEOUT_MILLIS = 3000;
 
 	private static final int HEARBEAT_TIMEOUT_MILLIS = 5000;
-	private static final String ADDRESS = "127.0.0.1";
-	private static final int PORT = 4225;
+	private static final String DEFAULT_ADDRESS = "127.0.0.1";
+	private static final int DEFAULT_PORT = 4225;
 
 	private GameClient client;
 
 	private volatile boolean running;
 	private boolean attempt;
+	
+	private volatile boolean connected;
 
 	/**
 	 * Instantiates a new GameClientManager with a GameClient.
 	 */
 	public GameClientManager() {
 
-		this.client = new GameClient(ADDRESS, PORT);
+		this.client = new GameClient(DEFAULT_ADDRESS, DEFAULT_PORT);
+		this.attempt = false;
+
+	}
+	
+	public GameClientManager(String address, int port) {
+
+		this.client = new GameClient(address, port);
 		this.attempt = false;
 
 	}
@@ -47,6 +56,7 @@ public class GameClientManager {
 		synchronized (this) {
 
 			this.makeAutoAttemptThread();
+			this.attempt = true;
 
 			if (this.running) {
 				return true;
@@ -55,7 +65,7 @@ public class GameClientManager {
 			if (!this.client.connectBlocking()) {
 				return false;
 			}
-
+			
 			this.running = true;
 
 			this.makeNetworkThreads();
@@ -72,6 +82,10 @@ public class GameClientManager {
 	 * @return true if running, false if not running
 	 */
 	public boolean isRunning() {
+		return this.running;
+	}
+	
+	public boolean isConnected() {
 		return this.running;
 	}
 

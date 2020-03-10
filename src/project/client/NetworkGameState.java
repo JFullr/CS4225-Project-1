@@ -8,7 +8,8 @@ package project.client;
  */
 public enum NetworkGameState {
 
-	HEART_BEAT, 
+	HEART_BEAT,
+	DISCONNECTED,
 	LOBBY, 
 	SYNCHRONIZING, 
 	IN_GAME, 
