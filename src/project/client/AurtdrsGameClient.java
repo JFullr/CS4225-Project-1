@@ -22,5 +22,9 @@ public class AurtdrsGameClient {
 		this.client.start();
 		
 	}
+	
+	public synchronized NetworkData getData() {
+		return this.client.getData();
+	}
 
 }

@@ -1,5 +1,8 @@
 package project.client;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 /**
  * Manages a GameClient's interactions through the network.
  * 
@@ -20,6 +23,8 @@ public class GameClientManager {
 	private boolean attempt;
 	
 	private volatile boolean connected;
+	
+	private Queue<NetworkData> readData;
 
 	/**
 	 * Instantiates a new GameClientManager with a GameClient.
@@ -28,6 +33,7 @@ public class GameClientManager {
 
 		this.client = new GameClient(DEFAULT_ADDRESS, DEFAULT_PORT);
 		this.attempt = false;
+		this.readData = new ArrayDeque<NetworkData>();
 
 	}
 	
@@ -44,6 +50,7 @@ public class GameClientManager {
 	public void end() {
 		this.attempt = false;
 		this.running = false;
+		this.connected = false;
 	}
 
 	/**
@@ -67,6 +74,7 @@ public class GameClientManager {
 			}
 			
 			this.running = true;
+			this.connected = true;
 
 			this.makeNetworkThreads();
 
@@ -86,11 +94,14 @@ public class GameClientManager {
 	}
 	
 	public boolean isConnected() {
-		return this.running;
+		return this.connected;
 	}
-
-	private void networkProcess() {
-
+	
+	public synchronized NetworkData getData() {
+		if(this.readData.size() < 1) {
+			return null;
+		}
+		return this.readData.remove();
 	}
 
 	private void makeAutoAttemptThread() {
@@ -158,6 +169,13 @@ public class GameClientManager {
 			}
 
 		}).start();
+	}
+	
+	private synchronized void networkProcess() {
+		NetworkData data = this.client.readRequest();
+		if(data != null) {
+			this.readData.add(data);
+		}
 	}
 
 }
