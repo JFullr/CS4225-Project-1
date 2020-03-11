@@ -77,32 +77,25 @@ public class TicTacToe {
 		if (coordinate == null) {
 			throw new IllegalArgumentException("Coordinate input cannot be null.");
 		}
-
 		String winningPlayer = null;
 		if (this.coordinateMap.get(coordinate).equals(playerName)) {
 			return "Coordinate choice invalid, please select a new coordinate.";
 		}
-
 		if (this.isValidCoordinate(coordinate) && this.isValidPlayerName(playerName)) {
 			this.coordinateMap.put(coordinate, playerName);
 		}
-
 		if (!this.nonDiagonal.contains(coordinate)) {
 			winningPlayer = this.isDiagonalWin(playerName);
 		}
-
 		if (winningPlayer != null && this.isValidPlayerName(playerName)) {
 			winningPlayer = this.isHorizontalWin(playerName);
 		}
-
 		if (winningPlayer != null && this.isValidPlayerName(playerName)) {
 			winningPlayer = this.isVerticalWin(playerName);
 		}
-
 		if (winningPlayer == null && this.checkForCat()) {
 			winningPlayer = CAT;
 		}
-		
 		return winningPlayer;
 	}
 

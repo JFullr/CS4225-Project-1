@@ -30,11 +30,12 @@ public class TicTacToeTUI {
 		System.out.println("Rows correlate to capital A-C. Columns to 1-3");
 		System.out.println("Ex: A3");
 		System.out.println("Please select a row/column");
-		String userInput = consoleInput.nextLine();
-		
+		// String userInput = consoleInput.nextLine();
+
 		consoleInput.close();
 
-		//String userResult = this.aTicTacToeManager.inputCoordinateWithPlayer(playerName, userInput);
+		// String userResult =
+		// this.aTicTacToeManager.inputCoordinateWithPlayer(playerName, userInput);
 
 	}
 }
