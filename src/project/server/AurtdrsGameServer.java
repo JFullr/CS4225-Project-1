@@ -49,14 +49,23 @@ public class AurtdrsGameServer {
 	private void setGamePools() {
 		
 		for(ArrayList<Client> pool : this.server.getGamePools()) {
-			//
+			
+			if(!this.gameProcesses.keySet().contains(pool)) {
+				this.gameProcesses.put(pool, new AurtdrsServerProcess(pool));
+			}
+			
 		}
 		
 	}
 	
 	public void processGames() {
 		
-		
+		for(ArrayList<Client> pool : this.server.getGamePools()) {
+			
+			this.gameProcesses.get(pool).;
+			
+			
+		}
 		
 	}
 	

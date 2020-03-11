@@ -158,12 +158,14 @@ public class GameClientManager {
 		new Thread(() -> {
 
 			while (this.running) {
+				
+				this.client.sendHeartbeat();
+				
 				try {
 					Thread.sleep(HEARBEAT_TIMEOUT_MILLIS);
 				} catch (InterruptedException e) {
 				}
 
-				this.client.sendHeartbeat();
 			}
 			while (!this.client.close()) {
 				this.client.close();

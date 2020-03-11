@@ -13,6 +13,9 @@ public enum NetworkGameState implements Serializable {
 	HEART_BEAT,
 	DISCONNECTED,
 	
+	PLAYER_DISCONNECTED,
+	PLAYER_CONNECTED,
+	
 	LOBBY, 
 	SYNCHRONIZING, 
 	IN_GAME,

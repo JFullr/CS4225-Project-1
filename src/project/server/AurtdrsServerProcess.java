@@ -10,6 +10,12 @@ public class AurtdrsServerProcess {
 	
 	public AurtdrsServerProcess(Iterable<Client> clients) {
 		
+		
+		
+	}
+	
+	public void processGame() {
+		
 	}
 
 }
