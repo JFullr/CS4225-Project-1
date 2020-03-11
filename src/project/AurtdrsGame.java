@@ -29,9 +29,7 @@ public class AurtdrsGame {
 	 */
 	public void start() {
 		this.gui.start();
-		new Thread(()->{
-			this.network.start();
-		}).start();
+		this.network.start();
 		
 	}
 	
