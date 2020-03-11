@@ -9,7 +9,7 @@ import project.game.hangman.Player;
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020
  */
-public class HangManManagerClient {
+public class HangManClientManager {
 
 	private static final String BLANK_CLIENT_NAME = "the client name cannot be blank.";
 	private static final String NULL_CLIENT_NAME = "the client name cannot be null.";
@@ -29,7 +29,7 @@ public class HangManManagerClient {
 	 *
 	 * @param clientName the client name
 	 */
-	public HangManManagerClient(String clientName) {
+	public HangManClientManager(String clientName) {
 		if (clientName == null) {
 			throw new IllegalArgumentException(NULL_CLIENT_NAME);
 		}

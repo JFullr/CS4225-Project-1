@@ -16,7 +16,7 @@ import utils.FileUtils;
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020.
  */
-public class HangManManagerServer {
+public class HangManServerManager {
 	private static final String NULL_PLAYERS = "the array of players cannot be null.";
 	private static final String NO_PLAYERS = "the array of players cannot be empty.";
 
@@ -32,7 +32,7 @@ public class HangManManagerServer {
 	 *
 	 * @param players the players
 	 */
-	public HangManManagerServer(Player[] players) {
+	public HangManServerManager(Player[] players) {
 		if (players == null) {
 			throw new IllegalArgumentException(NULL_PLAYERS);
 		}

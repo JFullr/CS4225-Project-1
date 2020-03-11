@@ -3,7 +3,8 @@ package project.client;
 /**
  * The Class HangManClient.
  *
- * @author Tim
+ * @author Joseph Fuller, James Irwin, Timothy Brooks
+ * @version Spring 2020
  */
 public class HangManClient {
 
@@ -11,7 +12,7 @@ public class HangManClient {
 
 	private GameClientManager client;
 	private boolean running;
-	private HangManManagerClient hangManMangager;
+	private HangManClientManager hangManMangager;
 
 	/**
 	 * Instantiates a new hang man client.
@@ -19,14 +20,14 @@ public class HangManClient {
 	public HangManClient() {
 		this.client = new GameClientManager();
 		this.running = false;
-		this.hangManMangager = new HangManManagerClient(this.client.toString());
+		this.hangManMangager = new HangManClientManager(this.client.toString());
 	}
 
 	/**
 	 * Instantiates a new hang man client.
 	 *
 	 * @param address the address
-	 * @param port the port
+	 * @param port    the port
 	 */
 	public HangManClient(String address, int port) {
 		this.client = new GameClientManager(address, port);
@@ -39,8 +40,19 @@ public class HangManClient {
 	public synchronized void start() {
 
 		this.client.start();
+		this.hangManMangager.setGameData(this.client.getData().getData());
 
 	}
+
+	/**
+	 * Send data.
+	 */
+	public void sendData() {
+		NetworkData gameData = new NetworkData(NetworkGameState.IN_GAME, this.hangManMangager.getGameData());
+		this.client.sendData(gameData);
+	}
+	
+	
 
 	/**
 	 * Gets the game data for hang man.
