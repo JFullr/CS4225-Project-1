@@ -12,7 +12,7 @@ public class HangMan {
 
 	private static final String NULL_GAME_WORD = "the game word cannot be null.";
 	private static final String BLANK_GAME_WORD = "the game word cannot be blank.";
-	private static final int BODY_PART_LIMIT = 6;
+	private static final int BODY_PART_LIMIT = 4;
 
 	private String dashRep;
 	private String word;
