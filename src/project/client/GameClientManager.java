@@ -34,6 +34,7 @@ public class GameClientManager {
 		this.client = new GameClient(DEFAULT_ADDRESS, DEFAULT_PORT);
 		this.attempt = false;
 		this.readData = new ArrayDeque<NetworkData>();
+		this.readData.add(NetworkData.DISCONNECTED);
 
 	}
 	
@@ -41,6 +42,8 @@ public class GameClientManager {
 
 		this.client = new GameClient(address, port);
 		this.attempt = false;
+		this.readData = new ArrayDeque<NetworkData>();
+		this.readData.add(NetworkData.DISCONNECTED);
 
 	}
 
@@ -60,27 +63,23 @@ public class GameClientManager {
 	 */
 	public boolean start() {
 
-		synchronized (this) {
+		this.makeAutoAttemptThread();
+		this.attempt = true;
 
-			this.makeAutoAttemptThread();
-			this.attempt = true;
-
-			if (this.running) {
-				return true;
-			}
-
-			if (!this.client.connectBlocking()) {
-				return false;
-			}
-			
-			this.running = true;
-			this.connected = true;
-
-			this.makeNetworkThreads();
-
+		if (this.running) {
 			return true;
-
 		}
+
+		if (!this.client.connectBlocking()) {
+			return false;
+		}
+		
+		this.running = true;
+		this.connected = true;
+
+		this.makeNetworkThreads();
+
+		return true;
 
 	}
 

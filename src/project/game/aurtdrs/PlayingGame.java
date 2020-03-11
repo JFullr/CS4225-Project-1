@@ -2,7 +2,14 @@ package project.game.aurtdrs;
 
 import java.awt.Graphics;
 
+import audio.VorbisPlayer;
+import project.client.NetworkData;
+
 public class PlayingGame implements AurtdrsProcess {
+	
+	public PlayingGame() {
+		
+	}
 	
 	public void tick() {
 		
@@ -12,7 +19,12 @@ public class PlayingGame implements AurtdrsProcess {
 		
 	}
 
-	
+	public void processState(NetworkData data) {
+		if (data == null) {
+			return;
+		}
+		
+	}
 
 	
 }

@@ -1,6 +1,7 @@
 package project;
 
 import project.client.GameClientManager;
+import project.game.aurtdrs.AurtdrsEngine;
 
 /**
  * The Class AurtdrsGame represents the game "Ultimate Australian Road Train Drag Racing Simulator".
@@ -10,15 +11,17 @@ import project.client.GameClientManager;
  */
 public class AurtdrsGame {
 	
-	private Gui gui;
+	private AurtdrsGui gui;
 	private GameClientManager network;
+	private AurtdrsEngine game;
 	
 	/**
 	 * Instantiates a new game of "Ultimate Australian Road Train Drag Racing Simulator".
 	 */
 	public AurtdrsGame() {
-		this.gui = new Gui();
+		this.game = new AurtdrsEngine();
 		this.network = new GameClientManager();
+		this.gui = new AurtdrsGui(this.game, this.network);
 	}
 	
 	/**
@@ -26,7 +29,10 @@ public class AurtdrsGame {
 	 */
 	public void start() {
 		this.gui.start();
-		this.network.start();
+		new Thread(()->{
+			this.network.start();
+		}).start();
+		
 	}
 	
 	/**

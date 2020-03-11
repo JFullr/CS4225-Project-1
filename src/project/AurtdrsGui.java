@@ -7,6 +7,7 @@ import java.awt.Image;
 
 import javax.swing.JFrame;
 
+import project.client.GameClientManager;
 import project.client.NetworkGameState;
 import project.game.aurtdrs.AurtdrsEngine;
 
@@ -16,7 +17,7 @@ import project.game.aurtdrs.AurtdrsEngine;
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020
  */
-public class Gui {
+public class AurtdrsGui {
 
 	private static final String WINDOW_TITLE = "Ultimate Australian Road Train Drag Racing Simulator";
 
@@ -28,16 +29,19 @@ public class Gui {
 	private Image imageBuffer;
 	
 	private AurtdrsEngine game;
+	private GameClientManager network;
 
 	/**
 	 * Instantiates a new gui.
+	 * @param network 
 	 */
-	public Gui() {
+	public AurtdrsGui(AurtdrsEngine game, GameClientManager network) {
 
 		this.width = 800;
 		this.height = 600;
 		
-		this.game = new AurtdrsEngine();
+		this.game = game;
+		this.network = network;
 
 	}
 
@@ -74,14 +78,19 @@ public class Gui {
 			return;
 		}
 		
-		this.game.setState(NetworkGameState.LOBBY);
+		this.game.setState(NetworkGameState.DISCONNECTED);
 
 		while (this.running) {
 			try {
 
 				Graphics g = this.imageBuffer.getGraphics();
 				g.setColor(Color.WHITE);
+				g.fillRect(0, 0, this.width, this.height);
 
+				if(this.network != null) {
+					this.game.processState(this.network.getData());
+				}
+				this.game.tick();
 				this.game.render(g, this.width, this.height);
 				//SecretEnding0.render(e, this.width, this.height);
 
@@ -89,7 +98,7 @@ public class Gui {
 				g.drawImage(this.imageBuffer, 0, 0, null);
 				g.dispose();
 
-				Thread.sleep(50);
+				Thread.sleep(20);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

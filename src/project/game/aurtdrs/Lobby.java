@@ -4,14 +4,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import project.client.NetworkData;
+
 public class Lobby implements AurtdrsProcess {
 	
-	private static final Font DISPLAY = new Font("TimesRoman", Font.PLAIN, 32);
+	public static final Font DISPLAY = new Font("TimesRoman", Font.PLAIN, 32);
 	
 	private int lobbyCount;
 	
 	public Lobby() {
+		
 		this.lobbyCount = 0;
+		
 	}
 	
 
@@ -37,6 +41,13 @@ public class Lobby implements AurtdrsProcess {
 
 	public void setLobbyCount(int lobbyCount) {
 		this.lobbyCount = lobbyCount;
+	}
+	
+	public void processState(NetworkData data) {
+		if (data == null) {
+			return;
+		}
+		
 	}
 
 	
