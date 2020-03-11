@@ -1,9 +1,10 @@
 package project.server;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Queue;
 
 import project.client.NetworkData;
 import project.client.NetworkGameState;
@@ -30,6 +31,9 @@ public class GameServer {
 	private Server server;
 	private HashSet<Client> clients;
 	private HashMap<Client,long[]> heartbeatPool;
+	private HashMap<Client,Queue<NetworkData>> clientData;
+	
+	private final Object dataLock = new Object();
 	
 	private volatile boolean running;
 
@@ -45,6 +49,7 @@ public class GameServer {
 		this.clients = new HashSet<Client>();
 		this.running = false;
 		this.heartbeatPool = new HashMap<Client,long[]>();
+		this.clientData = new HashMap<Client,Queue<NetworkData>>();
 
 	}
 
@@ -60,19 +65,40 @@ public class GameServer {
 		}
 
 		this.server.start((client) -> {
-				synchronized (this) {
-					this.clients.add(client);
-					this.heartbeatPool.put(client, new long[2]);
-				}
-				try {
-					client.sendData(new NetworkData(NetworkGameState.HEART_BEAT, this.clients.size()));
-					if(handler != null) {
-						handler.request(client);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 			
+			synchronized (this) {
+				this.clients.add(client);
+				this.heartbeatPool.put(client, new long[2]);
+				this.clientData.put(client, new ArrayDeque<NetworkData>());
+			}
+			try {
+				client.sendData(new NetworkData(NetworkGameState.HEART_BEAT, this.clients.size()));
+				if(handler != null) {
+					handler.request(client);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			while(this.isClientConnected(client)) {
+				
+				try {
+					
+					NetworkData data = (NetworkData) client.readBlocking();
+					if(data.getState() == NetworkGameState.HEART_BEAT) {
+						this.applyHeartbeat(client);
+					}else {
+						synchronized(this.dataLock) {
+							this.clientData.get(client).add(data);
+						}
+					}
+					
+				}catch(Exception e) {
+					e.printStackTrace();
+					return;
+				}
+				
+			}
 		});
 
 		this.running = true;
@@ -108,6 +134,15 @@ public class GameServer {
 		this.heartbeatPool.get(client)[0] = System.currentTimeMillis();
 		this.heartbeatPool.get(client)[0] = 0;
 	}
+	
+	public NetworkData getData(Client client) {
+		synchronized(this.dataLock) {
+			if(this.clientData.get(client).size() < 1) {
+				return null;
+			}
+			return this.clientData.get(client).remove();
+		}
+	}
 
 	/**
 	 * Sends the current heartbeats to each client.
@@ -127,7 +162,9 @@ public class GameServer {
 			long curTime = System.currentTimeMillis();
 			for (Client client : this.clients) {
 				if(this.heartbeatPool.get(client)[0]==0) {
+					
 					this.heartbeatPool.get(client)[0]=curTime;
+					
 				} else {
 					
 					long offset = curTime - this.heartbeatPool.get(client)[0] ;

@@ -1,7 +1,5 @@
 package project.game;
 
-import project.client.GameClientManager;
-
 /**
  * Coordinates use of TicTacToe class to User Interface.
  * 
@@ -10,7 +8,6 @@ import project.client.GameClientManager;
  */
 public class TicTacToeManager {
 
-	private GameClientManager aGameClientManager;
 	private TicTacToe aTicTacToe;
 
 	/**
