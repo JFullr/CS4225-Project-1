@@ -4,16 +4,24 @@ import java.awt.Graphics;
 
 import project.client.NetworkGameState;
 
+/**
+ * The Class AurtdrsEngine.
+ * 
+ * @author Joseph Fuller, James Irwin, Timothy Brooks
+ * @version Spring 2020
+ */
 public class AurtdrsEngine implements AurtdrsProcess {
 	
 	private Lobby lobby;
 	private PlayingGame game;
 	private Synchronize synch;
 	private GameOver gameOver;
-	
 	private AurtdrsProcess currentState;
 	private NetworkGameState state;
 	
+	/**
+	 * Instantiates a new aurtdrs engine.
+	 */
 	public AurtdrsEngine() {
 		this.lobby = new Lobby();
 		this.game = new PlayingGame();
@@ -24,6 +32,11 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		
 	}
 	
+	/**
+	 * Sets the state.
+	 *
+	 * @param state the new state
+	 */
 	public void setState(NetworkGameState state) {
 		switch(state) {
 			case HEART_BEAT:
@@ -45,23 +58,35 @@ public class AurtdrsEngine implements AurtdrsProcess {
 			case MATCH_OVER:
 				this.currentState = this.gameOver;
 				break;
+			default:
+				break;
 		}
 	}
 	
+	/**
+	 * Tick.
+	 */
 	public void tick() {
 		
 		///TODO heartbeat
 		
-		if(this.currentState != null) {
+		if (this.currentState != null) {
 			this.currentState.tick();
 		}
 		
 	}
 	
-	public void render(Graphics g, int frameWidth, int frameHeight) {
+	/**
+	 * Render.
+	 *
+	 * @param graphics the grapics
+	 * @param frameWidth the frame width
+	 * @param frameHeight the frame height
+	 */
+	public void render(Graphics graphics, int frameWidth, int frameHeight) {
 		
-		if(this.currentState != null) {
-			this.currentState.render(g, frameWidth, frameHeight);
+		if (this.currentState != null) {
+			this.currentState.render(graphics, frameWidth, frameHeight);
 		}
 		
 	}

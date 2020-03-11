@@ -79,15 +79,15 @@ public class Gui {
 		while (this.running) {
 			try {
 
-				Graphics g = this.imageBuffer.getGraphics();
-				g.setColor(Color.WHITE);
+				Graphics graphics = this.imageBuffer.getGraphics();
+				graphics.setColor(Color.WHITE);
 
-				this.game.render(g, this.width, this.height);
+				this.game.render(graphics, this.width, this.height);
 				//SecretEnding0.render(e, this.width, this.height);
 
-				g = this.window.getContentPane().getGraphics();
-				g.drawImage(this.imageBuffer, 0, 0, null);
-				g.dispose();
+				graphics = this.window.getContentPane().getGraphics();
+				graphics.drawImage(this.imageBuffer, 0, 0, null);
+				graphics.dispose();
 
 				Thread.sleep(50);
 			} catch (Exception e) {

@@ -1,48 +1,47 @@
 package project.client;
 
 /**
- * The Class AurtdrsGameClient.
- * 
- * @author Joseph Fuller, James Irwin, Timothy Brooks
- * @version Spring 2020
+ * The Class HangManClient.
+ *
+ * @author Tim
  */
-public class AurtdrsGameClient {
-	
+public class HangManClient {
+
 	private static final int HEARTBEAT_TIMOUT_MILLIS = 5000;
-	
+
 	private GameClientManager client;
 	private boolean running;
-	
+
 	/**
-	 * Instantiates a new aurtdrs game client.
+	 * Instantiates a new hang man client.
 	 */
-	public AurtdrsGameClient() {
+	public HangManClient() {
 		this.client = new GameClientManager();
 		this.running = false;
 	}
-	
+
 	/**
-	 * Instantiates a new aurtdrs game client.
+	 * Instantiates a new hang man client.
 	 *
 	 * @param address the address
 	 * @param port the port
 	 */
-	public AurtdrsGameClient(String address, int port) {
+	public HangManClient(String address, int port) {
 		this.client = new GameClientManager(address, port);
 		this.running = false;
 	}
-	
+
 	/**
-	 * Start.
+	 * Start the hang man client.
 	 */
 	public synchronized void start() {
-		
+
 		this.client.start();
-		
+
 	}
-	
+
 	/**
-	 * Gets the data.
+	 * Gets the game data for hang man.
 	 *
 	 * @return the data
 	 */

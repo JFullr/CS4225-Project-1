@@ -49,7 +49,7 @@ public class GameServer {
 
 		synchronized (this) {
 
-			if(this.running) {
+			if (this.running) {
 				return;
 			}
 
@@ -58,9 +58,9 @@ public class GameServer {
 					this.clients.add(client);
 				}
 			});
-			
+
 			this.running = true;
-			
+
 			new Thread(() -> {
 				while (true) {
 

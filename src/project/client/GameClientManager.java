@@ -21,9 +21,9 @@ public class GameClientManager {
 
 	private volatile boolean running;
 	private boolean attempt;
-	
+
 	private volatile boolean connected;
-	
+
 	private Queue<NetworkData> readData;
 
 	/**
@@ -36,7 +36,13 @@ public class GameClientManager {
 		this.readData = new ArrayDeque<NetworkData>();
 
 	}
-	
+
+	/**
+	 * Instantiates a new game client manager.
+	 *
+	 * @param address the address
+	 * @param port the port
+	 */
 	public GameClientManager(String address, int port) {
 
 		this.client = new GameClient(address, port);
@@ -72,7 +78,7 @@ public class GameClientManager {
 			if (!this.client.connectBlocking()) {
 				return false;
 			}
-			
+
 			this.running = true;
 			this.connected = true;
 
@@ -92,13 +98,23 @@ public class GameClientManager {
 	public boolean isRunning() {
 		return this.running;
 	}
-	
+
+	/**
+	 * Checks if is connected.
+	 *
+	 * @return true, if is connected
+	 */
 	public boolean isConnected() {
 		return this.connected;
 	}
-	
+
+	/**
+	 * Gets the data.
+	 *
+	 * @return the data
+	 */
 	public synchronized NetworkData getData() {
-		if(this.readData.size() < 1) {
+		if (this.readData.size() < 1) {
 			return null;
 		}
 		return this.readData.remove();
@@ -170,10 +186,10 @@ public class GameClientManager {
 
 		}).start();
 	}
-	
+
 	private synchronized void networkProcess() {
 		NetworkData data = this.client.readRequest();
-		if(data != null) {
+		if (data != null) {
 			this.readData.add(data);
 		}
 	}
