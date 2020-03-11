@@ -62,7 +62,7 @@ public class AurtdrsGameServer {
 		
 		for(ArrayList<Client> pool : this.server.getGamePools()) {
 			
-			this.gameProcesses.get(pool).;
+			this.gameProcesses.get(pool).processGame();
 			
 			
 		}
