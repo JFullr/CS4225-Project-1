@@ -18,6 +18,7 @@ public class AurtdrsGameServer {
 	
 	public void start() {
 		this.server.start();
+		this.gameProcess();
 	}
 	
 	public void end() {

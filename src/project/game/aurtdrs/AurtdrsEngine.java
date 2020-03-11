@@ -26,6 +26,8 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	private HashMap<AurtdrsProcess, String> musicMap;
 	private HashMap<AurtdrsProcess, Float> musicVolumeMap;
 	private HashMap<NetworkGameState, AurtdrsProcess> processMap;
+	
+	private NetworkData networkData;
 
 	private VorbisPlayer musicPlayer;
 	/**
@@ -61,6 +63,8 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		this.processMap.put(NetworkGameState.SYNCHRONIZING, this.synch);
 		this.processMap.put(NetworkGameState.MATCH_OVER, this.gameOver);
 		this.processMap.put(NetworkGameState.DISCONNECTED, this.disconnected);
+		
+		this.networkData = null;
 
 	}
 	
@@ -99,6 +103,8 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		if (this.currentProcess != null) {
 			this.currentProcess.tick();
 		}
+		
+		
 
 	}
 
@@ -119,6 +125,10 @@ public class AurtdrsEngine implements AurtdrsProcess {
 			this.setState(data.getState());
 			this.currentProcess.processState(data);
 		}
+	}
+	
+	public NetworkData getData() {
+		return this.networkData;
 	}
 
 }
