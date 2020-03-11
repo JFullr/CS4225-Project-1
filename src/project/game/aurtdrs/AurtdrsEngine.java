@@ -112,6 +112,10 @@ public class AurtdrsEngine implements AurtdrsProcess {
 
 	public void processState(NetworkData data) {
 		if (data != null) {
+			if(data.getState() == NetworkGameState.HEART_BEAT) {
+				
+				return;
+			}
 			this.setState(data.getState());
 			this.currentProcess.processState(data);
 		}

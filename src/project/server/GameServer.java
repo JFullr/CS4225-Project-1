@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import project.client.NetworkData;
+import project.client.NetworkGameState;
 import utils.network.Client;
 import utils.network.Server;
 
@@ -45,35 +46,31 @@ public class GameServer {
 	/**
 	 * Starts the server hosting the game.
 	 */
-	public void start() {
+	public synchronized void start() {
 
-		synchronized (this) {
-
-			if (this.running) {
-				return;
-			}
-
-			this.server.start((client) -> {
-				synchronized (this) {
-					this.clients.add(client);
-				}
-			});
-
-			this.running = true;
-
-			new Thread(() -> {
-				while (true) {
-
-					try {
-						Thread.sleep(HEARTBEAT_TIMOUT_MILLIS);
-					} catch (InterruptedException e) {
-					}
-
-					this.sendHeartbeats();
-				}
-			}).start();
-
+		if (this.running) {
+			return;
 		}
+
+		this.server.start((client) -> {
+			synchronized (this) {
+				this.clients.add(client);
+			}
+		});
+
+		this.running = true;
+
+		new Thread(() -> {
+			while (true) {
+
+				try {
+					Thread.sleep(HEARTBEAT_TIMOUT_MILLIS);
+				} catch (InterruptedException e) {
+				}
+
+				this.sendHeartbeats();
+			}
+		}).start();
 
 	}
 
@@ -83,6 +80,14 @@ public class GameServer {
 	public void end() {
 		this.server.end();
 		this.running = false;
+	}
+	
+	public synchronized ArrayList<Client> getAllCurrentClients(){
+		
+		ArrayList<Client> current = new ArrayList<Client>();
+		current.addAll(this.clients);
+		return current;
+		
 	}
 
 	/**
@@ -96,7 +101,7 @@ public class GameServer {
 
 			for (Client cli : this.clients) {
 				try {
-					cli.sendData(NetworkData.HEART_BEAT);
+					cli.sendData(new NetworkData(NetworkGameState.LOBBY,this.clients.size()));
 				} catch (IOException e) {
 					toDelete.add(cli);
 				}
@@ -105,8 +110,8 @@ public class GameServer {
 			synchronized (this) {
 				for (Client cli : toDelete) {
 
-					while (!cli.close()) {
-						System.out.println("what am I doing with my life?");
+					if (!cli.close()) {
+						System.err.println("Could not close client: "+cli);
 					}
 
 					this.clients.remove(cli);

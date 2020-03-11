@@ -8,6 +8,7 @@ import java.awt.Image;
 import javax.swing.JFrame;
 
 import project.client.GameClientManager;
+import project.client.NetworkData;
 import project.client.NetworkGameState;
 import project.game.aurtdrs.AurtdrsEngine;
 
@@ -88,7 +89,11 @@ public class AurtdrsGui {
 				graphics.fillRect(0, 0, this.width, this.height);
 
 				if(this.network != null) {
-					this.game.processState(this.network.getData());
+					NetworkData data = this.network.getData();
+					while(data != null) {
+						this.game.processState(data);
+						data = this.network.getData();
+					}
 				}
 				this.game.tick();
 				this.game.render(graphics, this.width, this.height);

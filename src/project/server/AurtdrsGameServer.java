@@ -1,6 +1,10 @@
 package project.server;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import utils.network.Client;
 
 /**
  * The Class AurtdrsGameServer represents a server that hosts a game of
@@ -12,7 +16,9 @@ import java.io.IOException;
 public class AurtdrsGameServer {
 
 	private GameServer server;
-
+	
+	private HashMap<Integer,ArrayList<Client>> currentGames;
+	
 	/**
 	 * Instantiates a new aurtdrs game server.
 	 *
