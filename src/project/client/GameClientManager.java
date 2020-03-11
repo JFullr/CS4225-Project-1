@@ -119,6 +119,12 @@ public class GameClientManager {
 		return this.readData.remove();
 	}
 	
+	/**
+	 * Send data.
+	 *
+	 * @param data the data
+	 * @return true, if successful
+	 */
 	public boolean sendData(NetworkData data) {
 		return this.client.sendData(data);
 	}
@@ -156,9 +162,7 @@ public class GameClientManager {
 
 	private void makeNetworkThreads() {
 		new Thread(() -> {
-
 			while (this.running) {
-				
 				this.client.sendHeartbeat();
 				
 				try {
