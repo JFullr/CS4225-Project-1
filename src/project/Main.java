@@ -2,8 +2,6 @@ package project;
 
 import java.io.IOException;
 
-import project.server.AurtdrsGameServer;
-
 /**
  * The Class Main.
  *
@@ -43,8 +41,7 @@ public class Main {
 		
 		/*/
 		
-		AurtdrsGame game = new AurtdrsGame();
-		game.start();
+		
 		
 		//*/
 	}
