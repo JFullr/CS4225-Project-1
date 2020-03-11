@@ -20,28 +20,42 @@ public class HangmanServer {
 			e.printStackTrace();
 		}
 		
-		this.clients = new ArrayList<Client>();
+		this.clients = new ArrayList<Player>();
 		
 	}
 	
 	public void start() {
 		this.server.start((client)->{
 
-			if(this.clients.size() >= limit) {
-				try {
-					client.sendData(new NetworkData(NetworkGameState.DISCONNECTED));
-					client.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+			synchronized(this) {
+				if(this.clients.size() >= limit) {
+					
+					try {
+						client.sendData(new NetworkData(NetworkGameState.DISCONNECTED));
+						client.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+				}else {
+					
+					NetworkData data = this.server.getData(client);
+					
+					while(data == null || data.getState() == NetworkGameState.HEART_BEAT);
+					
+					if(data.getState() == NetworkGameState.LOBBY) {
+						
+						String name = (String) data.getData()[0];
+						this.clients.add(new Player(name,client));
+						
+					}
+					
 				}
+				
 				
 			}
 			
 		});
-	}
-	
-	public sendClientDisconnect(NetworkData data) {
-		this.server.getData(client)
 	}
 	
 	public void sendClientConnect(NetworkData data) {
@@ -53,10 +67,15 @@ public class HangmanServer {
 	}
 	
 	
-	private class Player{
+	private class Player {
 		
-		String name;
-		Client client;
+		private String name;
+		private Client client;
+		
+		public Player(String name, Client client) {
+			this.name = name;
+			this.client = client;
+		}
 		
 	}
 

@@ -13,9 +13,13 @@ public class XClient {
 		
 	}
 	
-	public connect() {
 
-		client.sendData(new NetworkData(NetworkGameState.LOBBY,"connect"));
+
+	public static void main(String[] args) {
+		HangmanServer server = new HangmanServer(4225);
+		
+		server.start();
+		
 		
 	}
 	

@@ -41,7 +41,7 @@ public class HangmanClient {
 	
 	public void sendClientDisconnect() {
 		
-		this.client.sendData(new NetworkData(NetworkGameState.LOBBY, DISCONNECT));
+		this.client.sendData(new NetworkData(NetworkGameState.MATCH_OVER, DISCONNECT));
 		
 	}
 	
