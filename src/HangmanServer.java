@@ -5,14 +5,23 @@ import project.client.NetworkData;
 import project.client.NetworkGameState;
 import utils.network.Client;
 
+/**
+ * The Class HangmanServer.
+ *
+ * @author csuser
+ */
 public class HangmanServer {
-	
+
 	private static int limit = 6;
-	
+
 	private GameServer server;
-	
 	private ArrayList<Player> clients;
-	
+
+	/**
+	 * Instantiates a new hangman server.
+	 *
+	 * @param port the port
+	 */
 	public HangmanServer(int port) {
 		try {
 			this.server = new GameServer(port);
@@ -21,12 +30,13 @@ public class HangmanServer {
 		}
 		
 		this.clients = new ArrayList<Player>();
-		
 	}
-	
-	public void start() {
-		this.server.start((client)->{
 
+	/**
+	 * Start.
+	 */
+	public void start() {
+		this.server.start((client) -> {
 			synchronized(this) {
 				if(this.clients.size() >= limit) {
 					
@@ -52,31 +62,8 @@ public class HangmanServer {
 					
 				}
 				
-				
-			}
-			
+
 		});
-	}
-	
-	public void sendClientConnect(NetworkData data) {
-		
-	}
-	
-	public void sendClientAnswer(NetworkData data) {
-		
-	}
-	
-	
-	private class Player {
-		
-		private String name;
-		private Client client;
-		
-		public Player(String name, Client client) {
-			this.name = name;
-			this.client = client;
-		}
-		
 	}
 
 }
