@@ -2,6 +2,7 @@ package project.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import project.client.NetworkData;
@@ -24,10 +25,12 @@ import utils.network.Server;
 public class GameServer {
 
 	private static final int TIMEOUT_SECONDS = 5;
-	private static final int HEARTBEAT_TIMOUT_MILLIS = 5000;
+	private static final int HEARTBEAT_TIMOUT_MILLIS = 3000;
 
 	private Server server;
 	private HashSet<Client> clients;
+	private HashMap<Client,long[]> heartbeatPool;
+	
 	private volatile boolean running;
 
 	/**
@@ -41,6 +44,7 @@ public class GameServer {
 		this.server = new Server(port);
 		this.clients = new HashSet<Client>();
 		this.running = false;
+		this.heartbeatPool = new HashMap<Client,long[]>();
 
 	}
 
@@ -56,8 +60,10 @@ public class GameServer {
 		}
 
 		this.server.start((client) -> {
-			synchronized (this) {
-				this.clients.add(client);
+				synchronized (this) {
+					this.clients.add(client);
+					this.heartbeatPool.put(client, new long[2]);
+				}
 				try {
 					client.sendData(new NetworkData(NetworkGameState.HEART_BEAT, this.clients.size()));
 					if(handler != null) {
@@ -66,7 +72,7 @@ public class GameServer {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
+			
 		});
 
 		this.running = true;
@@ -93,22 +99,22 @@ public class GameServer {
 		this.running = false;
 	}
 	
-	public synchronized ArrayList<Client> getAllCurrentClients(){
-		
-		ArrayList<Client> current = new ArrayList<Client>();
-		current.addAll(this.clients);
-		return current;
-		
+	
+	public synchronized boolean isClientConnected(Client client) {
+		return this.clients.contains(client);
+	}
+	
+	public synchronized void applyHeartbeat(Client client) {
+		this.heartbeatPool.get(client)[0] = System.currentTimeMillis();
+		this.heartbeatPool.get(client)[0] = 0;
 	}
 
 	/**
 	 * Sends the current heartbeats to each client.
 	 */
-	public void sendHeartbeats() {
-
-		while (this.running) {
-
-			ArrayList<Client> toDelete = new ArrayList<Client>();
+	public synchronized void sendHeartbeats() {
+		
+			HashSet<Client> toDelete = new HashSet<Client>();
 
 			for (Client client : this.clients) {
 				try {
@@ -117,19 +123,40 @@ public class GameServer {
 					toDelete.add(client);
 				}
 			}
-
-			synchronized (this) {
-				for (Client client : toDelete) {
-
-					if (!client.close()) {
-						System.err.println("Could not close client: "+client);
+			
+			long curTime = System.currentTimeMillis();
+			for (Client client : this.clients) {
+				if(this.heartbeatPool.get(client)[0]==0) {
+					this.heartbeatPool.get(client)[0]=curTime;
+				} else {
+					
+					long offset = curTime - this.heartbeatPool.get(client)[0] ;
+					if( offset > HEARTBEAT_TIMOUT_MILLIS && curTime - this.heartbeatPool.get(client)[0] > HEARTBEAT_TIMOUT_MILLIS*2) {
+						
+						toDelete.add(client);
+						
+					} else if(offset > HEARTBEAT_TIMOUT_MILLIS && this.heartbeatPool.get(client)[0] == 0){
+						
+						try {
+							client.sendData(NetworkData.HEART_BEAT);
+							this.heartbeatPool.get(client)[1] = System.currentTimeMillis();
+						} catch (IOException e) {
+							toDelete.add(client);
+						}
+						
 					}
-
-					this.clients.remove(client);
 				}
 			}
 
-		}
+			for (Client client : toDelete) {
+
+				if (!client.close()) {
+					System.err.println("Could not close client: "+client);
+				}
+
+				this.clients.remove(client);
+				this.heartbeatPool.remove(client);
+			}
 
 	}
 
