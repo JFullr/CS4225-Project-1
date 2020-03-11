@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import project.client.NetworkData;
+import project.client.NetworkGameState;
 import utils.network.Client;
 
 /**
@@ -15,9 +17,13 @@ import utils.network.Client;
  */
 public class AurtdrsGameServer {
 
+	private static int POOL_SIZE = 2;
+	
 	private GameServer server;
 	
 	private HashMap<Integer,ArrayList<Client>> currentGames;
+	private HashMap<Client,Integer> clientGame;
+	
 	
 	/**
 	 * Instantiates a new aurtdrs game server.
@@ -27,6 +33,9 @@ public class AurtdrsGameServer {
 	 */
 	public AurtdrsGameServer(int port) throws IOException {
 		this.server = new GameServer(port);
+		
+		this.currentGames = new HashMap<Integer,ArrayList<Client>>();
+		this.clientGame = new HashMap<Client, Integer>();
 	}
 
 	/**
@@ -34,7 +43,9 @@ public class AurtdrsGameServer {
 	 * Racing Simulator".
 	 */
 	public void start() {
-		this.server.start();
+		this.server.start((client)->{
+			this.connectionProcess(client);
+		});
 	}
 
 	/**
@@ -43,6 +54,19 @@ public class AurtdrsGameServer {
 	 */
 	public void end() {
 		this.server.end();
+	}
+	
+	public int getLobbySize(Client client) {
+		return this.currentGames.get(this.clientGame.get(client)).size();
+	}
+	
+	private void connectionProcess(Client client) {
+		try {
+			//this.clientGame
+			client.sendData(new NetworkData(NetworkGameState.LOBBY,this.getLobbySize(client)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

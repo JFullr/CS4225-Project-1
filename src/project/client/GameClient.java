@@ -13,7 +13,6 @@ import utils.network.Client;
 public class GameClient {
 
 	private static final int TIMEOUT_SECONDS = 5;
-//	private static final Object initData = new Object();
 
 	private Client client;
 

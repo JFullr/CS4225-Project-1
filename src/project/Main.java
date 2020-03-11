@@ -22,6 +22,7 @@ public class Main {
 	 */
 	public static void main(String[] args) throws IOException {
 
+		/*
 		if (args != null && args.length > 0 && args[0].toLowerCase().startsWith("-server")) {
 
 			AurtdrsGameServer server = new AurtdrsGameServer(GAME_PORT);
@@ -33,7 +34,19 @@ public class Main {
 			game.start();
 
 		}
-
+		//*/
+		
+		/*
+		
+		AurtdrsGameServer server = new AurtdrsGameServer(GAME_PORT);
+		server.start();
+		
+		/*/
+		
+		AurtdrsGame game = new AurtdrsGame();
+		game.start();
+		
+		//*/
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import project.client.NetworkData;
 import project.client.NetworkGameState;
 import utils.network.Client;
+import utils.network.NetworkHandler;
 import utils.network.Server;
 
 /**
@@ -43,10 +44,12 @@ public class GameServer {
 
 	}
 
+	
+	
 	/**
 	 * Starts the server hosting the game.
 	 */
-	public synchronized void start() {
+	public synchronized void start(NetworkHandler handler) {
 
 		if (this.running) {
 			return;
@@ -55,6 +58,14 @@ public class GameServer {
 		this.server.start((client) -> {
 			synchronized (this) {
 				this.clients.add(client);
+				try {
+					client.sendData(new NetworkData(NetworkGameState.HEART_BEAT, this.clients.size()));
+					if(handler != null) {
+						handler.request(client);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 
@@ -99,22 +110,22 @@ public class GameServer {
 
 			ArrayList<Client> toDelete = new ArrayList<Client>();
 
-			for (Client cli : this.clients) {
+			for (Client client : this.clients) {
 				try {
-					cli.sendData(new NetworkData(NetworkGameState.LOBBY,this.clients.size()));
+					client.sendData(new NetworkData(NetworkGameState.HEART_BEAT, this.clients.size()));
 				} catch (IOException e) {
-					toDelete.add(cli);
+					toDelete.add(client);
 				}
 			}
 
 			synchronized (this) {
-				for (Client cli : toDelete) {
+				for (Client client : toDelete) {
 
-					if (!cli.close()) {
-						System.err.println("Could not close client: "+cli);
+					if (!client.close()) {
+						System.err.println("Could not close client: "+client);
 					}
 
-					this.clients.remove(cli);
+					this.clients.remove(client);
 				}
 			}
 

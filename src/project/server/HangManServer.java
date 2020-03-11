@@ -26,7 +26,7 @@ public class HangManServer {
 	 * Starts the session on the server for "Hang Man".
 	 */
 	public void start() {
-		this.server.start();
+		this.server.start(null);
 	}
 
 	/**

@@ -1,5 +1,7 @@
 package project.client;
 
+import java.io.Serializable;
+
 /**
  * The Class NetworkData encapsulates the data to be sent amongst the server and
  * the clients for "Ultimate Australian Road Train Drag Racing Simulator".
@@ -7,8 +9,13 @@ package project.client;
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020.
  */
-public class NetworkData {
+public class NetworkData implements Serializable  {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6455516774083243889L;
+	
 	public static final transient NetworkData HEART_BEAT = new NetworkData(NetworkGameState.HEART_BEAT);
 	public static final transient NetworkData DISCONNECTED = new NetworkData(NetworkGameState.DISCONNECTED);
 
@@ -25,6 +32,7 @@ public class NetworkData {
 	public NetworkData(NetworkGameState state, Object... data) {
 		this.state = state;
 		this.data = data;
+		
 	}
 
 	/**

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import project.client.NetworkData;
+import project.client.NetworkGameState;
 
 /**
  * The Class Lobby.
@@ -74,6 +75,12 @@ public class Lobby implements AurtdrsProcess {
 		if (data == null) {
 			return;
 		}
+		
+		if(data.getState() != NetworkGameState.LOBBY) {
+			return;
+		}
+		
+		this.lobbyCount = (Integer)data.getData()[0];
 		
 	}
 
