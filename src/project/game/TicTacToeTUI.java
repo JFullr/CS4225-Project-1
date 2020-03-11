@@ -11,10 +11,16 @@ import java.util.Scanner;
 public class TicTacToeTUI {
 	private TicTacToeManager aTicTacToeManager;
 
+	/**
+	 * Instantiates a new tic tac toe TUI.
+	 */
 	public TicTacToeTUI() {
 		this.aTicTacToeManager = new TicTacToeManager();
 	}
 
+	/**
+	 * Run.
+	 */
 	public void run() {
 		Scanner consoleInput = new Scanner(System.in);
 
@@ -25,6 +31,8 @@ public class TicTacToeTUI {
 		System.out.println("Ex: A3");
 		System.out.println("Please select a row/column");
 		String userInput = consoleInput.nextLine();
+		
+		consoleInput.close();
 
 		//String userResult = this.aTicTacToeManager.inputCoordinateWithPlayer(playerName, userInput);
 

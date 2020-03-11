@@ -20,30 +20,39 @@ import com.jcraft.jorbis.Comment;
 import com.jcraft.jorbis.DspState;
 import com.jcraft.jorbis.Info;
 
-import utils.FileUtils;
-
+/**
+ * The Class VorbisPlayer is a simplified, reversed engineered version of the
+ * jorbis-0.0.17.jar.
+ * 
+ * @author Joseph Fuller, James Irwin, Timothy Brooks
+ * @version Spring 2020
+ */
 public class VorbisPlayer {
 	
 	public static final int REPEAT_FOREVER = -1;
 	
 	
 	private static final float DEFAULT_VOLUME = 0.3f;
+
 	private static final Exception UNSUPPORTED_LINE = new Exception("Line Not Supported");
 	private static final Exception CRITICAL_ILLEGAL_DATA = new Exception("Corrupted Player Data State Found");
 	private static final Exception HEADER_INIT_FAILURE = new Exception("Failed to init headers");
 	private static final Exception HEADER_READ_FAILURE = new Exception("Failed to read headers");
-	
-	private enum HeaderState {
-		RESTART, FAIL, SUCCESS
-	}
 
 	private static final int BITS_PER_SAMPLE = 16;
 	private static final int BUFSIZE = 4096 * 2;
+	private enum HeaderState {
+
+		RESTART, FAIL, SUCCESS
+	}
 
 	private int convsize = BUFSIZE * 2;
+	private int channels = 0;
+	private int bytes = 0;
+	private int rate = 0;
 	private byte[] convbuffer = new byte[this.convsize];
 	private byte[] buffer = null;
-	private int bytes = 0;
+	private float volume = 0;
 
 	private SyncState sync;
 	private StreamState stream;
@@ -53,53 +62,58 @@ public class VorbisPlayer {
 	private Comment comment;
 	private DspState dspSate;
 	private Block block;
-
-	private int rate = 0;
-	private int channels = 0;
 	private SourceDataLine outputLine = null;
-
-	private float volume = 0;
 	private InputStream bitStream;
 	private Object playerData;
 	private volatile Thread playerThread;
 	
-	public static void main(String[] args) {
-
-		try{
-		VorbisPlayer player = 
-			new VorbisPlayer(FileUtils.readFile("res/lobby (2).ogg"), .5f);
-			//new VorbisPlayer(FileUtils.readFile("res/SPLOOSH.ogg"), .7f);
-		player.play();
-		
-		Thread.sleep(2000);
-		
-		System.out.println("AAAA");
-		System.out.println(player.end());
-		
-		}catch(Exception e) {
-			e.printStackTrace();
-			
-		}
-		
-
-	}
-
+	/**
+	 * Instantiates a new vorbis player.
+	 *
+	 * @param filePath the file path
+	 * @throws Exception the exception
+	 */
 	public VorbisPlayer(String filePath) {
 		this.init(filePath, DEFAULT_VOLUME);
 	}
 
+	/**
+	 * Instantiates a new vorbis player.
+	 *
+	 * @param filePath the file path
+	 * @param volume   the volume
+	 * @throws Exception the exception
+	 */
 	public VorbisPlayer(String filePath, float volume) {
 		this.init(filePath, volume);
 	}
 
+	/**
+	 * Instantiates a new vorbis player.
+	 *
+	 * @param fileData the file data
+	 * @throws Exception the exception
+	 */
 	public VorbisPlayer(byte[] fileData) {
 		this.init(fileData, DEFAULT_VOLUME);
 	}
 
+	/**
+	 * Instantiates a new vorbis player.
+	 *
+	 * @param fileData the file data
+	 * @param volume   the volume
+	 * @throws Exception the exception
+	 */
 	public VorbisPlayer(byte[] fileData, float volume) {
 		this.init(fileData, volume);
 	}
 
+	/**
+	 * Sets the volume.
+	 *
+	 * @param volume the new volume
+	 */
 	public void setVolume(float volume) {
 
 		this.volume = volume;
@@ -119,27 +133,28 @@ public class VorbisPlayer {
 		}
 		vol.setValue(this.volume);
 	}
-	
+
+	/**
+	 * Play.
+	 *
+	 * @throws Exception the exception
+	 */
 	public void play() throws Exception {
 		this.play(0);
 	}
 	
 	private void play(int repeatCount) throws Exception {
-		
 		synchronized (this) {
 
 			if (this.playerThread != null) {
 				return;
 			}
-			
-			this.playerThread = new Thread(()-> {
+
+			this.playerThread = new Thread(() -> {
 				try {
 					this.playThread(repeatCount);
 					this.bitStream.close();
 				} catch (Exception e) { }//e.printStackTrace(); }
-				synchronized (this) {
-					this.playerThread = null;
-				}
 			});
 			this.playerThread.start();
 			
@@ -151,28 +166,22 @@ public class VorbisPlayer {
 	public boolean end() {
 		synchronized (this) {
 			try {
-				
+
 				if (this.playerThread == null) {
 					return true;
 				}
 				
-				/*
-				Thread wait = this.playerThread;
-				this.playerThread = null;
-				wait.join();
-				/*/
 				this.playerThread.stop();
 				
-				//*/
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;
 			}
-			
+
 			return true;
 		}
 	}
-
+	
 	private void playThread(int repeat) throws Exception {
 
 		this.initBitStream();
@@ -195,7 +204,7 @@ public class VorbisPlayer {
 			if (state == HeaderState.RESTART) {
 				break;
 			}
-			
+
 			switch (this.readAudioHeaders(index)) {
 				case RESTART:
 					continue;
@@ -217,7 +226,8 @@ public class VorbisPlayer {
 			if (this.bitStream != null) {
 				this.bitStream.close();
 			}
-		} catch (Exception e) { }
+		} catch (Exception e) {
+		}
 		if (repeat != 0) {
 			if (repeat > 0) {
 				repeat--;
@@ -284,7 +294,7 @@ public class VorbisPlayer {
 
 		this.info.init();
 		this.comment.init();
-		
+
 		return HeaderState.SUCCESS;
 	}
 
@@ -317,7 +327,7 @@ public class VorbisPlayer {
 		this.rate = rate;
 		this.channels = channels;
 	}
-
+	
 	private void playData(int index) {
 		float[][][] pcmfFloats = new float[1][][];
 		int[] infoChannels = new int[this.info.channels];

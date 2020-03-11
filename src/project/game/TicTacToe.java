@@ -71,17 +71,14 @@ public class TicTacToe {
 	 *         Returns error message is the coordinate has already been selected.
 	 */
 	public String inputCoordinate(String playerName, String coordinate) {
-
 		if (playerName == null) {
 			throw new IllegalArgumentException("Player name cannot be null.");
 		}
-
 		if (coordinate == null) {
 			throw new IllegalArgumentException("Coordinate input cannot be null.");
 		}
 
 		String winningPlayer = null;
-
 		if (this.coordinateMap.get(coordinate).equals(playerName)) {
 			return "Coordinate choice invalid, please select a new coordinate.";
 		}
@@ -105,7 +102,7 @@ public class TicTacToe {
 		if (winningPlayer == null && this.checkForCat()) {
 			winningPlayer = CAT;
 		}
-
+		
 		return winningPlayer;
 	}
 

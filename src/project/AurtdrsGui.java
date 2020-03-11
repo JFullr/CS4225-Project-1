@@ -83,20 +83,19 @@ public class AurtdrsGui {
 		while (this.running) {
 			try {
 
-				Graphics g = this.imageBuffer.getGraphics();
-				g.setColor(Color.WHITE);
-				g.fillRect(0, 0, this.width, this.height);
+				Graphics graphics = this.imageBuffer.getGraphics();
+				graphics.setColor(Color.WHITE);
+				graphics.fillRect(0, 0, this.width, this.height);
 
 				if(this.network != null) {
 					this.game.processState(this.network.getData());
 				}
 				this.game.tick();
-				this.game.render(g, this.width, this.height);
-				//SecretEnding0.render(e, this.width, this.height);
+				this.game.render(graphics, this.width, this.height);
 
-				g = this.window.getContentPane().getGraphics();
-				g.drawImage(this.imageBuffer, 0, 0, null);
-				g.dispose();
+				graphics = this.window.getContentPane().getGraphics();
+				graphics.drawImage(this.imageBuffer, 0, 0, null);
+				graphics.dispose();
 
 				Thread.sleep(20);
 			} catch (Exception e) {

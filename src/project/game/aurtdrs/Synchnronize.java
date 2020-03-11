@@ -5,17 +5,16 @@ import java.awt.Graphics;
 import project.client.NetworkData;
 
 /**
- * The Class Synchronize.
+ * The Class Synchnronize.
  * 
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020
  */
-public class Synchronize implements AurtdrsProcess {
+public class Synchnronize implements AurtdrsProcess {
 	
-	public Synchronize() {
-		
-	}
-	
+	/**
+	 * Tick.
+	 */
 	public void tick() {
 		
 	}
@@ -32,11 +31,10 @@ public class Synchronize implements AurtdrsProcess {
 	}
 
 	public void processState(NetworkData data) {
-		if (data == null) {
-			return;
-		}
 		
 	}
+
+	
 
 	
 }

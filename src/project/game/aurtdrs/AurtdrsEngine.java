@@ -7,6 +7,12 @@ import audio.VorbisPlayer;
 import project.client.NetworkData;
 import project.client.NetworkGameState;
 
+/**
+ * The Class AurtdrsEngine.
+ * 
+ * @author Joseph Fuller, James Irwin, Timothy Brooks
+ * @version Spring 2020
+ */
 public class AurtdrsEngine implements AurtdrsProcess {
 
 	private Lobby lobby;
@@ -22,7 +28,9 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	private HashMap<NetworkGameState, AurtdrsProcess> processMap;
 
 	private VorbisPlayer musicPlayer;
-
+	/**
+	 * Instantiates a new aurtdrs engine.
+	 */
 	public AurtdrsEngine() {
 		this.lobby = new Lobby();
 		this.game = new PlayingGame();
@@ -55,7 +63,12 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		this.processMap.put(NetworkGameState.DISCONNECTED, this.disconnected);
 
 	}
-
+	
+	/**
+	 * Sets the state.
+	 *
+	 * @param state the new state
+	 */
 	public void setState(NetworkGameState state) {
 		if (state == this.currentState) {
 			return;
@@ -74,11 +87,9 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		
 		this.musicPlayer = new VorbisPlayer(this.musicMap.get(this.currentProcess));
 		try {
-			
 			this.musicPlayer.play();
 			this.musicPlayer.setVolume(this.musicVolumeMap.get(this.currentProcess));
 		} catch (Exception e) {
-			//e.printStackTrace();
 		}
 
 	}
