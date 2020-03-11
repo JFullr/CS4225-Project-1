@@ -25,8 +25,7 @@ import utils.network.Server;
  */
 public class GameServer {
 
-	private static final int TIMEOUT_SECONDS = 5;
-	private static final int HEARTBEAT_TIMOUT_MILLIS = 3000;
+	private static final int HEARTBEAT_TIMOUT_MILLIS = 2000;
 
 	private Server server;
 	private HashSet<Client> clients;

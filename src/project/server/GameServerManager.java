@@ -56,8 +56,12 @@ public class GameServerManager {
 		this.server.end();
 	}
 	
-	public int getLobbySize(Client client) {
-		return this.currentGames.get(this.clientGame.get(client)).size();
+	public ArrayList<ArrayList<Client>> getGamePools(){
+		
+		ArrayList<ArrayList<Client>> all = new ArrayList<ArrayList<Client>>();
+		all.addAll(this.currentGames.values());
+		return all;
+		
 	}
 	
 	private void connectionProcess(Client client) {
@@ -67,6 +71,10 @@ public class GameServerManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private int getLobbySize(Client client) {
+		return this.currentGames.get(this.clientGame.get(client)).size();
 	}
 	
 	private synchronized void assignToGame(Client client) {

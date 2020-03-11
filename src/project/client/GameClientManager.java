@@ -13,7 +13,7 @@ public class GameClientManager {
 
 	private static final int ATTEMPT_TIMEOUT_MILLIS = 3000;
 
-	private static final int HEARBEAT_TIMEOUT_MILLIS = 5000;
+	private static final int HEARBEAT_TIMEOUT_MILLIS = 2000;
 	private static final String DEFAULT_ADDRESS = "127.0.0.1";
 	private static final int DEFAULT_PORT = 4225;
 
@@ -117,6 +117,10 @@ public class GameClientManager {
 			return null;
 		}
 		return this.readData.remove();
+	}
+	
+	public boolean sendData(NetworkData data) {
+		return this.client.sendData(data);
 	}
 
 	private void makeAutoAttemptThread() {
