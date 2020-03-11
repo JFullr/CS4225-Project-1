@@ -11,6 +11,7 @@ public class HangManClient {
 
 	private GameClientManager client;
 	private boolean running;
+	private HangManManagerClient hangManMangager;
 
 	/**
 	 * Instantiates a new hang man client.
@@ -18,6 +19,7 @@ public class HangManClient {
 	public HangManClient() {
 		this.client = new GameClientManager();
 		this.running = false;
+		this.hangManMangager = new HangManManagerClient(this.client.toString());
 	}
 
 	/**

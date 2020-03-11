@@ -1,6 +1,10 @@
 package project.server;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import project.game.hangman.Player;
 
 /**
  * The Class HangManServer.
@@ -11,6 +15,8 @@ import java.io.IOException;
 public class HangManServer {
 
 	private GameServer server;
+	private HangManManagerServer hangManGame;
+	private Map<String, String> players = new HashMap<String, String>();
 
 	/**
 	 * Instantiates a new hang man server.
@@ -20,6 +26,11 @@ public class HangManServer {
 	 */
 	public HangManServer(int port) throws IOException {
 		this.server = new GameServer(port);
+		this.hangManGame = new HangManManagerServer(this.getLobby());
+	}
+
+	private Player[] getLobby() {
+		return null;
 	}
 
 	/**

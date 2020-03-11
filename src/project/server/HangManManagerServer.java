@@ -1,4 +1,4 @@
-package project.game.hangman;
+package project.server;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
+import project.game.hangman.HangMan;
+import project.game.hangman.Player;
 import utils.FileUtils;
 
 /**
@@ -14,7 +16,10 @@ import utils.FileUtils;
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020.
  */
-public class HangManManager {
+public class HangManManagerServer {
+	private static final String NULL_PLAYERS = "the array of players cannot be null.";
+	private static final String NO_PLAYERS = "the array of players cannot be empty.";
+
 	private static final int MAX_PLAYER_COUNT = 4;
 
 	private Queue<Player> players;
@@ -27,7 +32,14 @@ public class HangManManager {
 	 *
 	 * @param players the players
 	 */
-	public HangManManager(Player... players) {
+	public HangManManagerServer(Player[] players) {
+		if (players == null) {
+			throw new IllegalArgumentException(NULL_PLAYERS);
+		}
+		if (players.length == 0) {
+			throw new IllegalArgumentException(NO_PLAYERS);
+		}
+
 		this.hangMan = new HangMan(this.getGameWord());
 		try {
 			this.players = new LinkedList<Player>();
@@ -50,17 +62,29 @@ public class HangManManager {
 	 * @param guess the guess
 	 */
 	public void submitGuess(String guess) {
-		if (!this.hangMan.guessIsValid(guess)) {
-			this.currentTurn.decrementGuesses();
-		} else {
-			this.currentTurn.updateScore();
-		}
+		if (!this.hangMan.isGameOver() && this.players.size() > 1) {
+			if (!this.hangMan.guessIsValid(guess)) {
+				this.currentTurn.decrementGuesses();
+			} else {
+				this.currentTurn.updateScore();
+			}
 
-		if (!this.guessesExeeded()) {
-			this.players.add(currentTurn);
-		}
+			if (!this.guessesExeeded()) {
+				this.players.add(this.currentTurn);
+			}
 
-		this.currentTurn = this.players.remove();
+			this.currentTurn = this.players.remove();
+		}
+	}
+
+	/**
+	 * Gets the game data.
+	 *
+	 * @return the game data
+	 */
+	public Object[] getGameData() {
+		Object[] gameData = { this.currentTurn, this.hangMan };
+		return gameData;
 	}
 
 	private boolean guessesExeeded() {

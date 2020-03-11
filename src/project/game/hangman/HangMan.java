@@ -85,4 +85,13 @@ public class HangMan {
 	public String getDashRep() {
 		return this.dashRep;
 	}
+	
+	/**
+	 * Checks if the game is over.
+	 *
+	 * @return true, iff is game over
+	 */
+	public boolean isGameOver() {
+		return this.bodyParts >= BODY_PART_LIMIT || this.dashRep.equalsIgnoreCase(this.word);
+	}
 }
