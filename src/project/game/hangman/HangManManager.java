@@ -43,15 +43,29 @@ public class HangManManager {
 		}
 	}
 
-	private void maxOutPlayers(Player... players) {
-		for (int i = 0; i < MAX_PLAYER_COUNT; i++) {
-			this.players.add(players[i]);
+	/**
+	 * Submits a guess to the hang man game and updates the current player's game
+	 * stats.
+	 *
+	 * @param guess the guess
+	 */
+	public void submitGuess(String guess) {
+		if (!this.hangMan.guessIsValid(guess)) {
+			this.currentTurn.decrementGuesses();
+		} else {
+			this.currentTurn.updateScore();
 		}
+
+		if (!this.guessesExeeded()) {
+			this.players.add(currentTurn);
+		}
+
+		this.currentTurn = this.players.remove();
 	}
-	
-//	public boolean removePlayer() {
-//		this.players.remove();
-//	}
+
+	private boolean guessesExeeded() {
+		return this.currentTurn.getGuesses() > 0;
+	}
 
 	private String getGameWord() {
 		Random rand = new Random();
@@ -59,5 +73,11 @@ public class HangManManager {
 		int wordIndex = rand.nextInt(this.wordLibrary.length);
 
 		return this.wordLibrary[wordIndex];
+	}
+
+	private void maxOutPlayers(Player... players) {
+		for (int i = 0; i < MAX_PLAYER_COUNT; i++) {
+			this.players.add(players[i]);
+		}
 	}
 }
