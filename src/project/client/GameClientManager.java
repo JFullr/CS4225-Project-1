@@ -49,7 +49,7 @@ public class GameClientManager {
 		this.client = new GameClient(address, port);
 		this.attempt = false;
 		this.readData = new ArrayDeque<NetworkData>();
-		this.readData.add(NetworkData.DISCONNECTED);
+		//this.readData.add(NetworkData.DISCONNECTED);
 
 	}
 

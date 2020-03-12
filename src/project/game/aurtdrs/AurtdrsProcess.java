@@ -13,6 +13,11 @@ import project.client.NetworkData;
 public interface AurtdrsProcess {
 	
 	/**
+	 * Resets the current state
+	 */
+	void resetState();
+	
+	/**
 	 * Process state data.
 	 *
 	 * @param data the data

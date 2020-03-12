@@ -79,7 +79,14 @@ public class AurtdrsGui {
 			return;
 		}
 		
+		/*
 		this.game.setState(NetworkState.DISCONNECTED);
+		/*/
+		
+		//TODO game test
+		this.game.setState(NetworkState.IN_GAME);
+		
+		//*/
 
 		while (this.running) {
 			try {
@@ -88,13 +95,13 @@ public class AurtdrsGui {
 				graphics.setColor(Color.WHITE);
 				graphics.fillRect(0, 0, this.width, this.height);
 
-				if(this.network != null) {
+				/*if(this.network != null) {
 					NetworkData data = this.network.getData();
 					while(data != null) {
 						this.game.processState(data);
 						data = this.network.getData();
 					}
-				}
+				}*/
 				this.game.tick();
 				this.game.render(graphics, this.width, this.height);
 

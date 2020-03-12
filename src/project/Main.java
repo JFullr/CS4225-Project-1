@@ -20,7 +20,7 @@ public class Main {
 	 * @param args not used
 	 * @throws IOException server error
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 
 		/*
 		if (args != null && args.length > 0 && args[0].toLowerCase().startsWith("-server")) {
@@ -36,7 +36,7 @@ public class Main {
 		}
 		//*/
 		
-		//*
+		/*
 		
 		AurtdrsGameServer server = new AurtdrsGameServer(GAME_PORT);
 		server.start();

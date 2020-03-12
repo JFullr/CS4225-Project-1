@@ -37,6 +37,9 @@ public class GameOver implements AurtdrsProcess {
 		}
 		
 	}
-
+	
+	public void resetState() {
+		
+	}
 	
 }

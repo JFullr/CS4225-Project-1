@@ -1,11 +1,13 @@
 package project.game.aurtdrs;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 
 import javax.swing.ImageIcon;
 
+import project.Main;
 import project.client.NetworkData;
 
 /**
@@ -16,23 +18,35 @@ import project.client.NetworkData;
  */
 public class PlayingGame implements AurtdrsProcess {
 	
-	private static final Image ENGINE = new ImageIcon("res/engine.png").getImage();
-	private static final Image TRAILER = new ImageIcon("res/trailer.png").getImage();
-	private static final Image TRAILER_LEFT = new ImageIcon("res/trailer_left.png").getImage();
-	private static final Image TRAILER_RIGHT = new ImageIcon("res/trailer_right.png").getImage();
+	private static final String URL_RESOURCE_BASE = "res/";
+	private static final Image ENGINE = new ImageIcon((URL_RESOURCE_BASE+"engine.png")).getImage();
+	private static final Image TRAILER = new ImageIcon(URL_RESOURCE_BASE+"trailer.png").getImage();
+	private static final Image TRAILER_LEFT = new ImageIcon(URL_RESOURCE_BASE+"trailer_left.png").getImage();
+	private static final Image TRAILER_RIGHT = new ImageIcon(URL_RESOURCE_BASE+"trailer_right.png").getImage();
 	
-	private int totalPlayers;
-	private RoadTrain[] otherPlayers;
-	private RoadTrain client;
+	private static final Image BACKGROUND = new ImageIcon(URL_RESOURCE_BASE+"background.png").getImage();
+	private static final Image CACTUS = new ImageIcon(URL_RESOURCE_BASE+"cactus.png").getImage();
+	
+	private AurtdrsRoadTrain[] otherPlayers;
+	private AurtdrsRoadTrain client;
+	
+	private int animation;
 	
 	public PlayingGame() {
 		
 		this.otherPlayers = null;
 		this.client = null;
-		this.totalPlayers = 0;
+		this.animation = 0;
 		
 	}
+	
 	public void tick() {
+		
+		this.animation+=3;
+		
+		if(this.animation < 0) {
+			this.animation = 0;
+		}
 		
 	}
 	
@@ -45,14 +59,12 @@ public class PlayingGame implements AurtdrsProcess {
 	 */
 	public void render(Graphics graphics, int frameWidth, int frameHeight) {
 		
-		for(RoadTrain train : this.otherPlayers) {
-			if(train == null) {
-				//client(s) disconnected
-				this.otherPlayers = null;
-				this.client = null;
-				return;
-			}
-		}
+		
+		
+		this.renderDefault(graphics, frameWidth, frameHeight);
+		this.renderClient(graphics, frameWidth, frameHeight);
+		
+		this.renderOtherRoads(graphics, frameWidth, frameHeight);
 		
 	}
 
@@ -62,28 +74,98 @@ public class PlayingGame implements AurtdrsProcess {
 		}
 		
 		if(this.client == null) {
-			this.otherPlayers = ((RoadTrain[])data.getData()[0]);
-			this.totalPlayers = this.otherPlayers.length;
-			this.client = this.makeClient();
+			this.otherPlayers = ((AurtdrsRoadTrain[])data.getData()[0]);
+			this.client = new AurtdrsRoadTrain();
+		}
+		
+	}
+
+	public void resetState() {
+		this.otherPlayers = new AurtdrsRoadTrain[8];
+		for(int i = 0; i < this.otherPlayers.length; i++) {
+			this.otherPlayers[i] = new AurtdrsRoadTrain();
+		}
+		this.client = new AurtdrsRoadTrain();
+		this.animation = 0;
+	}
+	
+	
+	
+	private void renderDefault(Graphics graphics, int frameWidth, int frameHeight) {
+		
+		graphics.setColor(Color.BLACK);
+		graphics.fillRect(0, 0, frameWidth, frameHeight);
+		graphics.drawImage(BACKGROUND, 0, 0, frameWidth, frameHeight, null);
+		
+		int roadX = frameWidth/2 - TRAILER_LEFT.getWidth(null)/2;
+		int roadWidth = TRAILER_LEFT.getWidth(null);
+		
+		graphics.setColor(Color.LIGHT_GRAY);
+		graphics.fillRect(roadX, 0, roadWidth, frameHeight);
+		
+	}
+	
+	private void renderClient(Graphics graphics, int frameWidth, int frameHeight) {
+		
+		int roadX = frameWidth/2 - TRAILER_LEFT.getWidth(null)/2;
+		int trainX = roadX+TRAILER_LEFT.getWidth(null)/4;
+		int trainYHead = frameHeight/4;
+		this.renderTrain(graphics, frameWidth, frameHeight,this.client, trainX, trainYHead);
+		
+	}
+	
+	private void renderTrain(Graphics graphics, int frameWidth, int frameHeight, AurtdrsRoadTrain train, int trainX, int trainYHead) {
+		
+		int oscillate = this.animation & 0x1;
+		int part = -1;
+		for(Point car : train.getRelativePositions()) {
+			if(part == -1) {
+				graphics.drawImage(ENGINE, trainX, trainYHead + oscillate, null);
+			}else {
+				oscillate = (oscillate+1) & 0x1;
+				int carYpos = trainYHead + ENGINE.getHeight(null) + TRAILER.getHeight(null)*part + oscillate;
+				graphics.drawImage(TRAILER, trainX, carYpos, null);
+			}
+			
+			part++;
+			
 		}
 		
 	}
 	
-	private RoadTrain makeClient() {
+	private void renderOtherRoads(Graphics graphics, int frameWidth, int frameHeight) {
 		
-		RoadTrain train = new RoadTrain();
-		train.acceleration = 0;
-		train.cars = new Point[] {new Point(0,0),new Point(0,1),new Point(0,2),new Point(0,3)};
-		
-		return train;
-		
-	}
-	
-	private static class RoadTrain {
-		
-		public double acceleration;
-		public Point[] cars;
-		
+		int left = 0;
+		int right = 0;
+		int size = TRAILER_LEFT.getWidth(null)*3/2;
+		int side = 1;
+		for(AurtdrsRoadTrain train : this.otherPlayers) {
+			
+			side^=1;
+			left+=side^1;
+			right+=side;
+			
+			if(train == null) {
+				
+				graphics.setColor(Color.BLACK);
+				
+			} else {
+				graphics.setColor(Color.LIGHT_GRAY);
+			}
+			
+			int roadX = frameWidth/2 - TRAILER_LEFT.getWidth(null)/2;
+			roadX += side == 1 ? right*size : -left*size;
+			int roadWidth = TRAILER_LEFT.getWidth(null);
+			
+			
+			graphics.fillRect(roadX, 0, roadWidth, frameHeight);
+			
+			int trainX = roadX+TRAILER_LEFT.getWidth(null)/4;
+			int trainYHead = frameHeight/4;
+			
+			this.renderTrain(graphics, frameWidth, frameHeight,train, trainX, trainYHead);
+			
+		}
 	}
 	
 }

@@ -38,5 +38,8 @@ public class Synchronize implements AurtdrsProcess {
 		
 	}
 
+	public void resetState() {
+		
+	}
 	
 }

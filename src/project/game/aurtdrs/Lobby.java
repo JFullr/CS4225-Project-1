@@ -83,5 +83,9 @@ public class Lobby implements AurtdrsProcess {
 		this.lobbyCount = (Integer)data.getData()[0];
 		
 	}
+	
+	public void resetState() {
+		
+	}
 
 }

@@ -42,7 +42,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 
 		this.musicMap = new HashMap<AurtdrsProcess, String>();
 		this.musicMap.put(this.lobby, "res/lobby (2).ogg");
-		this.musicMap.put(this.game, "gahmMusik (3).ogg");
+		this.musicMap.put(this.game, "res/gahmMusik (3).ogg");
 		this.musicMap.put(this.synch, null);
 		this.musicMap.put(this.gameOver, null);
 		this.musicMap.put(this.disconnected, "res/DISCONNECT A(tm).ogg");
@@ -50,7 +50,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		
 		this.musicVolumeMap = new HashMap<AurtdrsProcess, Float>();
 		this.musicVolumeMap.put(this.lobby, .5f);
-		this.musicVolumeMap.put(this.game, .7f);
+		this.musicVolumeMap.put(this.game, 0f);//.65f);
 		this.musicVolumeMap.put(this.synch, null);
 		this.musicVolumeMap.put(this.gameOver, null);
 		this.musicVolumeMap.put(this.disconnected, .5f);
@@ -83,6 +83,8 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		} else {
 			this.currentProcess = this.processMap.get(state);
 		}
+		
+		this.currentProcess.resetState();
 
 		if (this.musicPlayer != null) {
 			this.musicPlayer.end();
@@ -129,6 +131,9 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	
 	public NetworkData getData() {
 		return this.networkData;
+	}
+	
+	public void resetState() {
 	}
 
 }

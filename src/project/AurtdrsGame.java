@@ -1,5 +1,6 @@
 package project;
 
+import audio.VorbisPlayer;
 import project.client.GameClientManager;
 import project.game.aurtdrs.AurtdrsEngine;
 
@@ -19,6 +20,9 @@ public class AurtdrsGame {
 	 * Instantiates a new game of "Ultimate Australian Road Train Drag Racing Simulator".
 	 */
 	public AurtdrsGame() {
+		
+		this.initAudioInternalClassLoader();
+		
 		this.game = new AurtdrsEngine();
 		this.network = new GameClientManager();
 		this.gui = new AurtdrsGui(this.game, this.network);
@@ -40,5 +44,12 @@ public class AurtdrsGame {
 		this.gui.end();
 		this.network.end();
 	}
-
+	
+	private void initAudioInternalClassLoader() {
+		try {
+			VorbisPlayer dummy = new VorbisPlayer("INIT_DUMMY");
+			dummy.play();
+		} catch (Exception e) {}
+	}
+	
 }

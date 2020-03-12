@@ -52,4 +52,8 @@ public class Disconnected implements AurtdrsProcess {
 		
 	}
 	
+	public void resetState() {
+		
+	}
+	
 }
