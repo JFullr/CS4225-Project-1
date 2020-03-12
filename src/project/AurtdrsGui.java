@@ -6,11 +6,14 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.JButton;
 
 import project.client.GameClientManager;
 import project.client.NetworkData;
 import project.client.NetworkState;
 import project.game.aurtdrs.AurtdrsEngine;
+import project.game.aurtdrs.Lobby;
 
 /**
  * The Class Gui.
@@ -59,6 +62,11 @@ public class AurtdrsGui {
 		this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.addKeyListener();
+		
+		if (network.isConnected()) {
+			this.drawButtons();
+			this.drawUserNameTextBox();
+		}
 
 		new Thread(() -> {
 			this.graphics();
@@ -111,6 +119,12 @@ public class AurtdrsGui {
 
 				graphics = this.window.getContentPane().getGraphics();
 				graphics.drawImage(this.imageBuffer, 0, 0, null);
+//				this.drawButtons();
+//				this.drawUserNameTextBox();
+				
+				graphics.setColor(Color.GREEN);
+				graphics.setFont(Lobby.DISPLAY);
+				graphics.drawString("ESC = Quit", 5, 30);
 				graphics.dispose();
 
 				Thread.sleep(20);
@@ -121,6 +135,16 @@ public class AurtdrsGui {
 
 	}
 	
+	private void drawUserNameTextBox() {
+		this.window.add(new JTextField());
+	}
+
+	private void drawButtons() {
+		JButton quitButton = new JButton("Quit");
+		this.window.add(quitButton);
+		
+	}
+
 	private void addKeyListener() {
 		this.window.addKeyListener(new AurtdrsKey());
 	}
