@@ -7,6 +7,7 @@ import audio.VorbisPlayer;
 import project.client.NetworkData;
 import project.client.NetworkState;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AurtdrsEngine.
  * 
@@ -20,16 +21,16 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	private Synchronize synch;
 	private GameOver gameOver;
 	private Disconnected disconnected;
-
 	private AurtdrsProcess currentProcess;
 	private NetworkState currentState;
+	
 	private HashMap<AurtdrsProcess, String> musicMap;
 	private HashMap<AurtdrsProcess, Float> musicVolumeMap;
 	private HashMap<NetworkState, AurtdrsProcess> processMap;
 	
 	private NetworkData networkData;
-
 	private VorbisPlayer musicPlayer;
+
 	/**
 	 * Instantiates a new aurtdrs engine.
 	 */
@@ -46,11 +47,10 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		this.musicMap.put(this.synch, null);
 		this.musicMap.put(this.gameOver, null);
 		this.musicMap.put(this.disconnected, "res/DISCONNECT A(tm).ogg");
-		
-		
+
 		this.musicVolumeMap = new HashMap<AurtdrsProcess, Float>();
 		this.musicVolumeMap.put(this.lobby, .5f);
-		this.musicVolumeMap.put(this.game, 0f);//.65f);
+		this.musicVolumeMap.put(this.game, .65f);
 		this.musicVolumeMap.put(this.synch, null);
 		this.musicVolumeMap.put(this.gameOver, null);
 		this.musicVolumeMap.put(this.disconnected, .5f);
@@ -63,11 +63,11 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		this.processMap.put(NetworkState.SYNCHRONIZING, this.synch);
 		this.processMap.put(NetworkState.MATCH_OVER, this.gameOver);
 		this.processMap.put(NetworkState.DISCONNECTED, this.disconnected);
-		
+
 		this.networkData = null;
 
 	}
-	
+
 	/**
 	 * Sets the state.
 	 *
@@ -77,20 +77,19 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		if (state == this.currentState) {
 			return;
 		}
-		
+
 		if (state == null) {
 			this.currentProcess = this.lobby;
 		} else {
 			this.currentProcess = this.processMap.get(state);
 		}
-		
+
 		this.currentProcess.resetState();
 
 		if (this.musicPlayer != null) {
 			this.musicPlayer.end();
 		}
 
-		
 		this.musicPlayer = new VorbisPlayer(this.musicMap.get(this.currentProcess));
 		try {
 			this.musicPlayer.play();
@@ -100,39 +99,61 @@ public class AurtdrsEngine implements AurtdrsProcess {
 
 	}
 
+	/**
+	 * Tick.
+	 */
 	public void tick() {
 
 		if (this.currentProcess != null) {
 			this.currentProcess.tick();
 		}
-		
-		
 
 	}
 
-	public void render(Graphics g, int frameWidth, int frameHeight) {
+	/**
+	 * Render.
+	 *
+	 * @param graphics the graphics
+	 * @param frameWidth the frame width
+	 * @param frameHeight the frame height
+	 */
+	public void render(Graphics graphics, int frameWidth, int frameHeight) {
 
 		if (this.currentProcess != null) {
-			this.currentProcess.render(g, frameWidth, frameHeight);
+			this.currentProcess.render(graphics, frameWidth, frameHeight);
 		}
 
 	}
 
+	/**
+	 * Processes the current game state.
+	 *
+	 * @param data the data
+	 */
 	public void processState(NetworkData data) {
 		if (data != null) {
-			if(data.getState() == NetworkState.HEART_BEAT) {
-				
+			if (data.getState() == NetworkState.HEART_BEAT) {
+
 				return;
 			}
 			this.setState(data.getState());
 			this.currentProcess.processState(data);
 		}
 	}
-	
+
+	/**
+	 * Gets the data.
+	 *
+	 * @return the data
+	 */
 	public NetworkData getData() {
 		return this.networkData;
 	}
+
 	
+	/**
+	 * Reset state.
+	 */
 	public void resetState() {
 	}
 
