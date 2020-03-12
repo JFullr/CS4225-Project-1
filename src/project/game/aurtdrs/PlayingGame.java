@@ -7,6 +7,7 @@ import java.awt.Point;
 
 import javax.swing.ImageIcon;
 
+import project.AurtdrsKey;
 import project.client.NetworkData;
 
 /**
@@ -18,6 +19,7 @@ import project.client.NetworkData;
 public class PlayingGame implements AurtdrsProcess {
 	
 	private static final int MAX_SHIFT = 250;
+	private static final int PERFECT_SHIFT = 232;
 	
 	private static final String URL_RESOURCE_BASE = "res/";
 	private static final Image ENGINE = new ImageIcon((URL_RESOURCE_BASE+"engine.png")).getImage();
@@ -71,6 +73,21 @@ public class PlayingGame implements AurtdrsProcess {
 			}
 			
 		}
+		
+		/*if(this.shift == PERFECT_SHIFT) {
+			this.shift = 0;
+		}*/
+		
+		if(AurtdrsKey.SPACE) {
+			AurtdrsKey.SPACE = false;
+			
+			this.client.incrementAcceleration( (1.0-(Math.abs(this.shift-PERFECT_SHIFT)/MAX_SHIFT))*10);
+			
+			this.shift = 0;
+			
+		}
+		
+		this.client.incrementValues();
 		
 	}
 	

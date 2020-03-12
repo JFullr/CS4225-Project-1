@@ -57,6 +57,8 @@ public class AurtdrsGui {
 		this.window.pack();
 		this.window.setVisible(true);
 		this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		this.addKeyListener();
 
 		new Thread(() -> {
 			this.graphics();
@@ -115,6 +117,10 @@ public class AurtdrsGui {
 			}
 		}
 
+	}
+	
+	private void addKeyListener() {
+		this.window.addKeyListener(new AurtdrsKey());
 	}
 
 }
