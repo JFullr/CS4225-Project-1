@@ -2,6 +2,7 @@ package project.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import project.client.NetworkData;
 import project.client.NetworkState;
@@ -10,27 +11,129 @@ import utils.network.Client;
 
 public class AurtdrsGameServerProcess {
 	
+	private static final int MAX_CLIENTS = 2;
 	private static final int TIMEOUT_MILLIS = 50;
-	
+
 	private static final double GOAL = 7.7E7;
 	
+	private enum ServerState {
+		
+		WAITING_FOR_CLIENTS,
+		PROCESSING_GAME,
+		RESULTS_SCREEN
+		
+	}
+	
+	private ServerState state;
+
 	private GameServerManager server;
 	private Iterable<Client> clients;
+
+	private HashMap<Client, String> userNames;
+
+	
+	
+	/*
+	 * private boolean readyToPlay; private boolean playing; private boolean
+	 * matchOver;
+	 */
+
 	
 	public AurtdrsGameServerProcess(GameServerManager server, Iterable<Client> clients) {
 		
 		this.clients = clients;
 		this.server = server;
 		
+		this.userNames = new HashMap<Client, String>();
+		
+		/*
+		 * this.readyToPlay = false; this.playing = false; this.matchOver = true;
+		 */
+
+		this.state = ServerState.WAITING_FOR_CLIENTS;
+
 	}
 	
 	public void processGame() {
-		
+
+		switch (this.state) {
+			
+		}
+
+	}
+
+	private void kickPlayers() {
+
+		int count = 0;
+		for (Client client : this.clients) {
+			count++;
+			if (count > MAX_CLIENTS) {
+				this.sendData(new NetworkData(NetworkState.DISCONNECTED,
+						"Game Room Full / Game In Progress -- Please Try Again"));
+				client.close();
+			}
+		}
+	}
+
+//	private void syncAndLobby() {
+//
+//		// send out lobby when available
+//		// when lobby is full, goto game process -- NetworkState.IN_GAME
+//
+//		this.nameDiscrimination();
+//		this.lobbyProcess();
+//
+//	}
+
+	private void nameDiscrimination() {
+		int count = 0;
+
+		for (Client client : this.clients) {
+			count++;
+
+			NetworkData theData = this.server.getData(client);
+			Object[] theObjects = theData.getData();
+			String nameToCheck = String.valueOf(theObjects[1]);
+
+			if (nameToCheck != null && !this.userNames.values().contains(nameToCheck) && count <= MAX_CLIENTS) {
+				this.userNames.put(client,nameToCheck);
+			} else {
+				this.nameRejected();
+			}
+		}
+	}
+	private void nameRejected() {
+		String outputMessage = "Name not unique, please try a different name";
+
+		this.sendData(new NetworkData(NetworkState.SYNCHRONIZING, outputMessage));
+	}
+
+	private void inGame() {
+
 		NetworkData data = this.collectData();
 		this.race(data);
 		
 	}
-	
+
+	private void lobbyProcess() {
+
+		// TODO maybe add lobby count polling to client, code immediately after is the
+		// lobby count.
+
+		int count = 0;
+		for (Client cli : this.clients) {
+			count++;
+			cli.getClass(); // to make checkstyle shut up
+		}
+
+		this.sendData(new NetworkData(NetworkState.LOBBY, count));
+
+		if (count == MAX_CLIENTS) {
+			this.state = ServerState.PROCESSING_GAME;
+		}
+
+	}
+
 	private NetworkData collectData() {
 
 		ArrayList<AurtdrsRoadTrain> trains = new ArrayList<AurtdrsRoadTrain>();

@@ -7,7 +7,6 @@ import audio.VorbisPlayer;
 import project.client.NetworkData;
 import project.client.NetworkState;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AurtdrsEngine.
  * 
@@ -130,15 +129,17 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	 *
 	 * @param data the data
 	 */
-	public void processState(NetworkData data) {
+	public NetworkData processState(NetworkData data) {
 		if (data != null) {
-			if (data.getState() == NetworkState.HEART_BEAT) {
-
-				return;
+			if(data.getState() == NetworkState.HEART_BEAT) {
+				
+				return null;
 			}
 			this.setState(data.getState());
 			this.currentProcess.processState(data);
 		}
+		
+		return null;
 	}
 
 	/**
