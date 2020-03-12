@@ -26,7 +26,7 @@ public class GameClientManager {
 
 	private volatile boolean connected;
 
-	private Queue<NetworkData> readData;
+	private volatile Queue<NetworkData> readData;
 
 	/**
 	 * Instantiates a new GameClientManager with a GameClient.
@@ -202,6 +202,8 @@ public class GameClientManager {
 		NetworkData data = this.client.readRequest();
 		if (data != null) {
 			this.readData.add(data);
+		} else {
+			this.connected = false;
 		}
 	}
 

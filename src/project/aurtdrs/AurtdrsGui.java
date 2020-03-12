@@ -31,7 +31,7 @@ public class AurtdrsGui {
 	private Image imageBuffer;
 
 	private AurtdrsEngine game;
-	private GameClientManager network;
+	private GameClientManager client;
 
 	/**
 	 * Instantiates a new gui.
@@ -45,7 +45,7 @@ public class AurtdrsGui {
 		this.height = 600;
 
 		this.game = game;
-		this.network = network;
+		this.client = network;
 
 	}
 
@@ -83,16 +83,24 @@ public class AurtdrsGui {
 		if (this.imageBuffer == null) {
 			return;
 		}
+		
+		this.processLoop();
+		
+	}
+	
+	private void processLoop() {
+		
 		/*
 		 * this.game.setState(NetworkState.DISCONNECTED); /
 		 */
 		// TODO game test
 		this.game.setState(NetworkState.IN_GAME);
-
+		
 		while (this.running) {
 			try {
 				Graphics graphics = this.imageBuffer.getGraphics();
 				
+				this.handleNetworkData();
 				this.drawToBuffer(graphics);
 				
 				graphics = this.window.getContentPane().getGraphics();
@@ -105,22 +113,26 @@ public class AurtdrsGui {
 			}
 		}
 	}
-
-	private void drawToBuffer(Graphics graphics) {
-		graphics.setColor(Color.WHITE);
-		graphics.fillRect(0, 0, this.width, this.height);
+	
+	private void handleNetworkData() {
 		// *
-		if (this.network != null) {
-			NetworkData data = this.network.getData();
+		if (this.client != null) {
+			NetworkData data = this.client.getData();
 			while (data != null) {
 				NetworkData propagate = this.game.processState(data);
-				data = this.network.getData();
-				if(propagate != null) {
-					this.network.sendData(propagate);
+				data = this.client.getData();
+				if (propagate != null) {
+					this.client.sendData(propagate);
 				}
 			}
 		}
 		// */
+	}
+
+	private void drawToBuffer(Graphics graphics) {
+		graphics.setColor(Color.WHITE);
+		graphics.fillRect(0, 0, this.width, this.height);
+		
 		this.game.tick();
 		this.game.render(graphics, this.width, this.height);
 		this.drawESCQuit(graphics);

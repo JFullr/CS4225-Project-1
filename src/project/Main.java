@@ -1,5 +1,6 @@
 package project;
 
+import project.aurtdrs.AurtdrsGame;
 import project.aurtdrs.server.AurtdrsGameServer;
 
 /**
@@ -34,7 +35,7 @@ public class Main {
 		}
 		//*/
 		
-		//*
+		/*
 		
 		AurtdrsGameServer server = new AurtdrsGameServer(GAME_PORT);
 		server.start();

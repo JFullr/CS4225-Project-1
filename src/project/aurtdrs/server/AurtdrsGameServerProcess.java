@@ -23,18 +23,20 @@ public class AurtdrsGameServerProcess {
 	private static final double GOAL = 7.7E7;
 
 	/**
-	 * The Enum ServerState.
+	 * Enumeration for the major states of the server.
 	 */
 	private enum ServerState {
 
-		WAITING_FOR_CLIENTS, PROCESSING_GAME, RESULTS_SCREEN
+		WAITING_FOR_CLIENTS, 
+		PROCESSING_GAME, 
+		RESULTS_SCREEN
 
 	}
 
 	private ServerState state;
 	private GameServerManager server;
 
-	private Iterable<Client> clients;
+	private ArrayList<Client> clients;
 	private HashMap<Client, String> userNames;
 
 	/*
@@ -45,10 +47,12 @@ public class AurtdrsGameServerProcess {
 	/**
 	 * Instantiates a new aurtdrs game server process.
 	 *
-	 * @param server  the server
-	 * @param clients the clients
+	 * @param server
+	 *            the server
+	 * @param clients
+	 *            the clients
 	 */
-	public AurtdrsGameServerProcess(GameServerManager server, Iterable<Client> clients) {
+	public AurtdrsGameServerProcess(GameServerManager server, ArrayList<Client> clients) {
 
 		this.clients = clients;
 		this.server = server;
@@ -69,11 +73,57 @@ public class AurtdrsGameServerProcess {
 	public void processGame() {
 
 		switch (this.state) {
+
+			case WAITING_FOR_CLIENTS:
+	
+				this.syncAndLobby();
+	
+				break;
+			case PROCESSING_GAME:
+	
+				this.inGame();
+	
+				break;
+			case RESULTS_SCREEN:
+	
+				//
+	
+				break;
 			default:
 				break;
 
 		}
 
+	}
+
+	private void syncAndLobby() {
+
+		for (Client client : this.clients) {
+
+			NetworkData theData = this.server.getData(client);
+
+			if (theData != null) {
+
+				this.syncAndLobbyActOnData(client, theData);
+
+			}
+
+		}
+
+	}
+	
+	private void syncAndLobbyActOnData(Client client, NetworkData theData) {
+		if (theData.getState() == NetworkState.SYNCHRONIZING) {
+			
+			this.nameDiscrimination();
+			
+		}
+		///TODO add in constant knowing of how large the player pool is for connection alerts to other clients
+		/*
+		else if (theData.getState() == NetworkState.LOBBY) {
+			this.sendDataToAll(new NetworkData(NetworkState.SYNCHRONIZING, this.clients.size()));
+		}
+		*/
 	}
 
 	private void kickPlayers() {
@@ -82,47 +132,46 @@ public class AurtdrsGameServerProcess {
 		for (Client client : this.clients) {
 			count++;
 			if (count > MAX_CLIENTS) {
-				
-				this.sendData(new NetworkData(NetworkState.DISCONNECTED,
-						"Game Room Full / Game In Progress -- Please Try Again"));
+
+				this.sendDataToAll(new NetworkData(NetworkState.DISCONNECTED, "Game Room Full / Game In Progress -- Please Try Again"));
 				client.close();
-				
+
 			}
 		}
 	}
 
-//	private void syncAndLobby() {
-//
-//		// send out lobby when available
-//		// when lobby is full, goto game process -- NetworkState.IN_GAME
-//
-//		this.nameDiscrimination();
-//		this.lobbyProcess();
-//
-//	}
-
 	private void nameDiscrimination() {
-		int count = 0;
 
 		for (Client client : this.clients) {
-			count++;
 
 			NetworkData theData = this.server.getData(client);
 			Object[] theObjects = theData.getData();
-			String nameToCheck = String.valueOf(theObjects[1]);
-
-			if (nameToCheck != null && !this.userNames.values().contains(nameToCheck) && count <= MAX_CLIENTS) {
-				this.userNames.put(client, nameToCheck);
-			} else {
+			String nameToCheck = String.valueOf(theObjects[0]);
+			if (nameToCheck == null) {
 				this.nameRejected();
+				return;
 			}
+
+			for (Client nameKey : this.userNames.keySet()) {
+				if (this.userNames.get(nameKey).equals(nameToCheck)) {
+					this.nameRejected();
+				}
+			}
+
+			this.nameSuccess(client);
+
 		}
 	}
 
 	private void nameRejected() {
 		String outputMessage = "Name not unique, please try a different name";
 
-		this.sendData(new NetworkData(NetworkState.SYNCHRONIZING, outputMessage));
+		this.sendDataToAll(new NetworkData(NetworkState.SYNCHRONIZING, outputMessage));
+	}
+
+	private void nameSuccess(Client client) {
+
+		this.sendData(client, new NetworkData(NetworkState.LOBBY));
 	}
 
 	private void inGame() {
@@ -137,15 +186,10 @@ public class AurtdrsGameServerProcess {
 		// TODO maybe add lobby count polling to client, code immediately after is the
 		// lobby count.
 
-		int count = 0;
-		for (Client cli : this.clients) {
-			count++;
-			cli.getClass(); // to make checkstyle shut up
-		}
 
-		this.sendData(new NetworkData(NetworkState.LOBBY, count));
+		this.sendDataToAll(new NetworkData(NetworkState.LOBBY, this.clients.size()));
 
-		if (count == MAX_CLIENTS) {
+		if (this.clients.size() == MAX_CLIENTS) {
 			this.state = ServerState.PROCESSING_GAME;
 		}
 
@@ -193,7 +237,8 @@ public class AurtdrsGameServerProcess {
 	/**
 	 * Race.
 	 *
-	 * @param aggregate the aggregate
+	 * @param aggregate
+	 *            the aggregate
 	 */
 	private void race(NetworkData aggregate) {
 
@@ -210,7 +255,8 @@ public class AurtdrsGameServerProcess {
 	/**
 	 * End condition.
 	 *
-	 * @param train the train
+	 * @param train
+	 *            the train
 	 * @return true, if successful
 	 */
 	private boolean endCondition(AurtdrsRoadTrain train) {
@@ -221,20 +267,17 @@ public class AurtdrsGameServerProcess {
 
 		return false;
 	}
+	
+	private void sendData(Client client, NetworkData data) {
 
-	/**
-	 * Send data.
-	 *
-	 * @param data the data
-	 */
-	private void sendData(NetworkData data) {
+		this.server.sendData(client, data);
+		
+	}
+	
+	private void sendDataToAll(NetworkData data) {
 
 		for (Client client : this.clients) {
-			try {
-				client.sendData(data);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			this.server.sendData(client, data);
 		}
 
 	}

@@ -65,6 +65,23 @@ public class GameServerManager {
 	public NetworkData getData(Client client) {
 		return this.server.getData(client);
 	}
+	
+	/**
+	 * Send data.
+	 *
+	 * @param client the client
+	 * @param data the data
+	 * @return true, if successful
+	 */
+	public boolean sendData(Client client, NetworkData data) {
+		try {
+			client.sendData(data);
+		} catch (IOException e) {
+			client.close();
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * Gets the game pools.

@@ -2,6 +2,8 @@ package project.aurtdrs.process;
 
 import java.awt.Graphics;
 
+import javax.swing.JOptionPane;
+
 import project.game.network.NetworkData;
 import project.game.network.NetworkState;
 
@@ -14,18 +16,29 @@ import project.game.network.NetworkState;
 public class Synchronize implements AurtdrsProcess {
 
 	private String userName;
+	private boolean enteringName;
 
 	/**
 	 * Instantiates a new synchronize.
 	 */
 	public Synchronize() {
 
+		this.enteringName = false;
+		
 	}
 
 	/**
 	 * Tick.
 	 */
 	public void tick() {
+		
+		
+		if(!this.enteringName) {
+		
+			this.enteringName = true;
+			String nameInput = JOptionPane.showInputDialog(null, "Enter Name");
+			
+		}
 
 	}
 
