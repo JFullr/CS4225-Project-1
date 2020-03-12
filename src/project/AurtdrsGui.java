@@ -109,8 +109,9 @@ public class AurtdrsGui {
 				if(this.network != null) {
 					NetworkData data = this.network.getData();
 					while(data != null) {
-						this.game.processState(data);
+						NetworkData propagate = this.game.processState(data);
 						data = this.network.getData();
+						this.network.sendData(propagate);
 					}
 				}
 				//*/

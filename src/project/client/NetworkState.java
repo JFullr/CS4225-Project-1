@@ -14,8 +14,7 @@ public enum NetworkState implements Serializable {
 	DISCONNECTED, // Generic way of saying to user isn't connected. The genericness may provide
 								// issues.
 
-	PLAYER_DISCONNECTED, 
-	PLAYER_CONNECTED,
+	PLAYER_QUIT,
 
 	LOBBY, // Holds the player in connection until another player connects, which them goes
 			// to IN_GAME. Joined by a lobbycount if we can be arsed.
