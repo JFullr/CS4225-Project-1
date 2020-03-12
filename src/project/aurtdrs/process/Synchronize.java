@@ -2,6 +2,7 @@ package project.aurtdrs.process;
 
 import java.awt.Graphics;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import project.game.network.NetworkData;
@@ -17,13 +18,17 @@ public class Synchronize implements AurtdrsProcess {
 
 	private String userName;
 	private boolean enteringName;
+	private JFrame gui;
 
 	/**
 	 * Instantiates a new synchronize.
+	 * 
+	 * @param modalGui the gui to show the dialogs on
 	 */
-	public Synchronize() {
+	public Synchronize(JFrame modalGui) {
 
 		this.enteringName = false;
+		this.gui = modalGui;
 		
 	}
 
@@ -33,10 +38,10 @@ public class Synchronize implements AurtdrsProcess {
 	public void tick() {
 		
 		
-		if(!this.enteringName) {
-		
+		if (!this.enteringName) {
+			System.out.println("OPENING");
 			this.enteringName = true;
-			String nameInput = JOptionPane.showInputDialog(null, "Enter Name");
+			String nameInput = JOptionPane.showInputDialog(this.gui, "Enter Name");
 			
 		}
 

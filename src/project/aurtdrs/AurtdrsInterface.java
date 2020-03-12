@@ -19,9 +19,11 @@ import project.game.network.client.GameClientManager;
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020
  */
-public class AurtdrsGui {
+public class AurtdrsInterface {
 
 	private static final String WINDOW_TITLE = "Ultimate Australian Road Train Drag Racing Simulator";
+	private static final int WINDOW_WIDTH = 800;
+	private static final int WINDOW_HEIGHT = 600;
 
 	private int width;
 	private int height;
@@ -29,26 +31,25 @@ public class AurtdrsGui {
 	private JFrame window;
 	private volatile boolean running;
 	private Image imageBuffer;
-
+	
 	private AurtdrsEngine game;
 	private GameClientManager client;
 
 	/**
-	 * Instantiates a new gui.
+	 * Instantiates a new interface.
 	 *
-	 * @param game    the game
-	 * @param network the network
 	 */
-	public AurtdrsGui(AurtdrsEngine game, GameClientManager network) {
+	public AurtdrsInterface() {
 
-		this.width = 800;
-		this.height = 600;
-
-		this.game = game;
-		this.client = network;
-
+		this.width = WINDOW_WIDTH;
+		this.height = WINDOW_HEIGHT;
+		
+		
+		this.client = new GameClientManager();
+		this.game = new AurtdrsEngine(this.window);
+		
 	}
-
+	
 	/**
 	 * Entrypoint of the GUI
 	 */
@@ -58,23 +59,28 @@ public class AurtdrsGui {
 		this.window.pack();
 		this.window.setResizable(false);
 		this.window.pack();
+		this.window.setLocationRelativeTo(null);
 		this.window.setVisible(true);
 		this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		this.addKeyListener();
-
+		
 		new Thread(() -> {
 			this.graphics();
 		}).start();
+		
+		this.client.start();
 	}
 
 	/**
 	 * Terminates the GUI
 	 */
 	public void end() {
+		this.client.end();
 		this.running = false;
 		this.window.dispose();
 	}
+
 
 	private void graphics() {
 
@@ -89,12 +95,6 @@ public class AurtdrsGui {
 	}
 	
 	private void processLoop() {
-		
-		/*
-		 * this.game.setState(NetworkState.DISCONNECTED); /
-		 */
-		// TODO game test
-		this.game.setState(NetworkState.IN_GAME);
 		
 		while (this.running) {
 			try {

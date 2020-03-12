@@ -3,6 +3,8 @@ package project.aurtdrs.process;
 import java.awt.Graphics;
 import java.util.HashMap;
 
+import javax.swing.JFrame;
+
 import audio.VorbisPlayer;
 import project.game.network.NetworkData;
 import project.game.network.NetworkState;
@@ -32,11 +34,12 @@ public class AurtdrsEngine implements AurtdrsProcess {
 
 	/**
 	 * Instantiates a new aurtdrs engine.
+	 * @param display the window this game is displayed on
 	 */
-	public AurtdrsEngine() {
+	public AurtdrsEngine(JFrame display) {
 		this.lobby = new Lobby();
 		this.game = new PlayingGame();
-		this.synch = new Synchronize();
+		this.synch = new Synchronize(display);
 		this.gameOver = new GameOver();
 		this.disconnected = new Disconnected();
 
@@ -64,19 +67,23 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		this.processMap.put(NetworkState.DISCONNECTED, this.disconnected);
 
 		this.networkData = null;
+		
+		this.setState(NetworkState.DISCONNECTED);
 
 	}
-
+	
 	/**
 	 * Sets the state.
 	 *
 	 * @param state the new state
 	 */
 	public void setState(NetworkState state) {
+		
 		if (state == this.currentState) {
 			return;
 		}
 
+		
 		if (state == null) {
 			this.currentProcess = this.lobby;
 		} else {
@@ -132,12 +139,10 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	 */
 	public NetworkData processState(NetworkData data) {
 		if (data != null) {
-			if (data.getState() == NetworkState.HEART_BEAT) {
-
-				return null;
-			}
+			
 			this.setState(data.getState());
 			this.currentProcess.processState(data);
+			
 		}
 
 		return null;

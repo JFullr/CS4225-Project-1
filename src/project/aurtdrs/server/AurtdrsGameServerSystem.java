@@ -13,7 +13,7 @@ import utils.network.Client;
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020
  */
-public class AurtdrsGameServer {
+public class AurtdrsGameServerSystem {
 
 	private GameServerManager server;
 	private HashMap<ArrayList<Client>, AurtdrsGameServerProcess> gameProcesses;
@@ -24,7 +24,7 @@ public class AurtdrsGameServer {
 	 * @param port the port
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public AurtdrsGameServer(int port) throws IOException {
+	public AurtdrsGameServerSystem(int port) throws IOException {
 		this.server = new GameServerManager(port);
 
 		this.gameProcesses = new HashMap<ArrayList<Client>, AurtdrsGameServerProcess>();

@@ -1,7 +1,7 @@
 package project;
 
-import project.aurtdrs.AurtdrsGame;
-import project.aurtdrs.server.AurtdrsGameServer;
+import project.aurtdrs.AurtdrsGameSystem;
+import project.aurtdrs.server.AurtdrsGameServerSystem;
 
 /**
  * The Class Main.
@@ -37,15 +37,25 @@ public class Main {
 		
 		/*
 		
-		AurtdrsGameServer server = new AurtdrsGameServer(GAME_PORT);
+		AurtdrsGameServerSystem server = new AurtdrsGameServerSystem(GAME_PORT);
 		server.start();
 		
 		/*/
 		
-		AurtdrsGame game = new AurtdrsGame();
+		AurtdrsGameSystem game = new AurtdrsGameSystem();
 		game.start();
 		
 		//*/
+	}
+	
+	public static void serverMain(String[] args) throws Exception {
+		AurtdrsGameServerSystem server = new AurtdrsGameServerSystem(GAME_PORT);
+		server.start();
+	}
+	
+	public static void clientMain(String[] args) throws Exception {
+		AurtdrsGameSystem game = new AurtdrsGameSystem();
+		game.start();
 	}
 
 }

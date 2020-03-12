@@ -36,7 +36,6 @@ public class GameClientManager {
 		this.client = new GameClient(DEFAULT_ADDRESS, DEFAULT_PORT);
 		this.attempt = false;
 		this.readData = new ArrayDeque<NetworkData>();
-		this.readData.add(NetworkData.DISCONNECTED);
 
 	}
 
@@ -51,7 +50,6 @@ public class GameClientManager {
 		this.client = new GameClient(address, port);
 		this.attempt = false;
 		this.readData = new ArrayDeque<NetworkData>();
-		//this.readData.add(NetworkData.DISCONNECTED);
 
 	}
 

@@ -170,7 +170,7 @@ public class AurtdrsGameServerProcess {
 	}
 
 	private void nameSuccess(Client client) {
-
+System.out.println("NAME TO LOBBY");
 		this.sendData(client, new NetworkData(NetworkState.LOBBY));
 	}
 
