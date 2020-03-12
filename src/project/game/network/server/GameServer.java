@@ -1,4 +1,4 @@
-package project.server;
+package project.game.network.server;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Queue;
 
-import project.client.NetworkData;
-import project.client.NetworkState;
+import project.game.network.NetworkData;
+import project.game.network.NetworkState;
 import utils.network.Client;
 import utils.network.NetworkHandler;
 import utils.network.Server;
@@ -93,7 +93,7 @@ public class GameServer {
 						}
 					}
 				} catch (Exception e) {
-					// e.printStackTrace();
+					//e.printStackTrace();
 					System.out.println("Client Disconnected");
 					this.removeClient(client);
 

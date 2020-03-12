@@ -1,10 +1,11 @@
-package project.game.aurtdrs;
+package project.aurtdrs.process;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-import project.client.NetworkData;
+import project.aurtdrs.AurtdrsProcess;
+import project.game.network.NetworkData;
 
 /**
  * The Class Disconnected.

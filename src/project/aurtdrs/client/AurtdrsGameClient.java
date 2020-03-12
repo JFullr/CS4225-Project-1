@@ -1,4 +1,7 @@
-package project.client;
+package project.aurtdrs.client;
+
+import project.game.network.NetworkData;
+import project.game.network.client.GameClientManager;
 
 /**
  * The Class AurtdrsGameClient.

@@ -1,11 +1,12 @@
-package project.game.aurtdrs;
+package project.aurtdrs.process;
 
 import java.awt.Graphics;
 import java.util.HashMap;
 
 import audio.VorbisPlayer;
-import project.client.NetworkData;
-import project.client.NetworkState;
+import project.aurtdrs.AurtdrsProcess;
+import project.game.network.NetworkData;
+import project.game.network.NetworkState;
 
 /**
  * The Class AurtdrsEngine.

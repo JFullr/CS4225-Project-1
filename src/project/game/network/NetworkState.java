@@ -1,4 +1,4 @@
-package project.client;
+package project.game.network;
 
 import java.io.Serializable;
 

@@ -1,11 +1,11 @@
-package project.server;
+package project.game.network.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import project.client.NetworkData;
-import project.client.NetworkState;
+import project.game.network.NetworkData;
+import project.game.network.NetworkState;
 import utils.network.Client;
 
 /**

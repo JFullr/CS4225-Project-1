@@ -1,5 +1,7 @@
 package project;
 
+import project.aurtdrs.server.AurtdrsGameServer;
+
 /**
  * The Class Main.
  *
@@ -32,7 +34,7 @@ public class Main {
 		}
 		//*/
 		
-		/*
+		//*
 		
 		AurtdrsGameServer server = new AurtdrsGameServer(GAME_PORT);
 		server.start();

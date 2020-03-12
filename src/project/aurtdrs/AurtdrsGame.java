@@ -1,8 +1,8 @@
-package project;
+package project.aurtdrs;
 
 import audio.VorbisPlayer;
-import project.client.GameClientManager;
-import project.game.aurtdrs.AurtdrsEngine;
+import project.aurtdrs.process.AurtdrsEngine;
+import project.game.network.client.GameClientManager;
 
 /**
  * The Class AurtdrsGame represents the game "Ultimate Australian Road Train Drag Racing Simulator".

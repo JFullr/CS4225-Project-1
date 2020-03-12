@@ -1,4 +1,4 @@
-package project.game.aurtdrs;
+package project.aurtdrs.process;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -7,9 +7,10 @@ import java.awt.Point;
 
 import javax.swing.ImageIcon;
 
-import project.AurtdrsKey;
-import project.client.NetworkData;
-import project.client.NetworkState;
+import project.aurtdrs.AurtdrsKey;
+import project.aurtdrs.AurtdrsProcess;
+import project.game.network.NetworkData;
+import project.game.network.NetworkState;
 
 /**
  * The Class PlayingGame.

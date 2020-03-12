@@ -1,7 +1,9 @@
-package project.client;
+package project.game.network.client;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+
+import project.game.network.NetworkData;
 
 /**
  * Manages a GameClient's interactions through the network.

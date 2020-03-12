@@ -1,7 +1,8 @@
-package project.client;
+package project.game.network.client;
 
 import java.io.IOException;
 
+import project.game.network.NetworkData;
 import utils.network.Client;
 
 /**

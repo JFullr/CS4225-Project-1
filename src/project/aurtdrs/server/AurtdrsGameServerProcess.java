@@ -1,12 +1,13 @@
-package project.server;
+package project.aurtdrs.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import project.client.NetworkData;
-import project.client.NetworkState;
-import project.game.aurtdrs.AurtdrsRoadTrain;
+import project.aurtdrs.process.AurtdrsRoadTrain;
+import project.game.network.NetworkData;
+import project.game.network.NetworkState;
+import project.game.network.server.GameServerManager;
 import utils.network.Client;
 
 /**
@@ -81,9 +82,11 @@ public class AurtdrsGameServerProcess {
 		for (Client client : this.clients) {
 			count++;
 			if (count > MAX_CLIENTS) {
+				
 				this.sendData(new NetworkData(NetworkState.DISCONNECTED,
 						"Game Room Full / Game In Progress -- Please Try Again"));
 				client.close();
+				
 			}
 		}
 	}

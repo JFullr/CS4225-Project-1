@@ -1,9 +1,10 @@
-package project.server;
+package project.aurtdrs.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import project.game.network.server.GameServerManager;
 import utils.network.Client;
 
 /**

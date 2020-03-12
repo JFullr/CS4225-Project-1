@@ -1,24 +1,22 @@
-package project.game.aurtdrs;
+package project.aurtdrs.process;
 
 import java.awt.Graphics;
 
-import project.client.NetworkData;
-import project.client.NetworkState;
+import project.aurtdrs.AurtdrsProcess;
+import project.game.network.NetworkData;
 
 /**
- * The Class Synchronize.
+ * The Class GameOver represents what happens after the game as ended.
  * 
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020
  */
-public class Synchronize implements AurtdrsProcess {
-
-	private String userName;
+public class GameOver implements AurtdrsProcess {
 
 	/**
-	 * Instantiates a new synchronize.
+	 * Instantiates a new game over.
 	 */
-	public Synchronize() {
+	public GameOver() {
 
 	}
 
@@ -32,11 +30,11 @@ public class Synchronize implements AurtdrsProcess {
 	/**
 	 * Render.
 	 *
-	 * @param graphics    the graphics
+	 * @param grapics     the grapics
 	 * @param frameWidth  the frame width
 	 * @param frameHeight the frame height
 	 */
-	public void render(Graphics graphics, int frameWidth, int frameHeight) {
+	public void render(Graphics grapics, int frameWidth, int frameHeight) {
 
 	}
 
@@ -50,15 +48,9 @@ public class Synchronize implements AurtdrsProcess {
 		if (data == null) {
 			return null;
 		}
-
-		if (data.getState() == NetworkState.SYNCHRONIZING) {
-			if (this.userName != null) {
-				return new NetworkData(NetworkState.SYNCHRONIZING, this.userName);
-			}
-		}
-
+		
+		
 		return null;
-
 	}
 
 	/**

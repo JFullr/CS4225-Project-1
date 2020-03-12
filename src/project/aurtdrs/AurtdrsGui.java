@@ -1,4 +1,4 @@
-package project;
+package project.aurtdrs;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,11 +7,11 @@ import java.awt.Image;
 
 import javax.swing.JFrame;
 
-import project.client.GameClientManager;
-import project.client.NetworkData;
-import project.client.NetworkState;
-import project.game.aurtdrs.AurtdrsEngine;
-import project.game.aurtdrs.Lobby;
+import project.aurtdrs.process.AurtdrsEngine;
+import project.aurtdrs.process.Lobby;
+import project.game.network.NetworkData;
+import project.game.network.NetworkState;
+import project.game.network.client.GameClientManager;
 
 /**
  * The Class Gui.
@@ -115,7 +115,9 @@ public class AurtdrsGui {
 			while (data != null) {
 				NetworkData propagate = this.game.processState(data);
 				data = this.network.getData();
-				this.network.sendData(propagate);
+				if(propagate != null) {
+					this.network.sendData(propagate);
+				}
 			}
 		}
 		// */

@@ -1,8 +1,8 @@
-package project.game.aurtdrs;
+package project.aurtdrs;
 
 import java.awt.Graphics;
 
-import project.client.NetworkData;
+import project.game.network.NetworkData;
 	
 /**
  * The Interface AurtdrsProcess.

@@ -1,4 +1,4 @@
-package project.game.aurtdrs;
+package project.aurtdrs.process;
 
 import java.awt.Font;
 
