@@ -87,7 +87,17 @@ public class AurtdrsGameServerProcess {
 		
 	}
 	
+	private void syncAndLobby() {
+		
+		this.nameDiscrimination();
+		this.lobbyProcess();
+		
+	}
+	
 	private void nameDiscrimination() {
+		
+		//send out lobby when available
+		//when lobby is full, goto game process -- NetworkState.IN_GAME
 		
 	}
 	
