@@ -2,7 +2,6 @@ package project.aurtdrs.process;
 
 import java.awt.Graphics;
 
-import project.aurtdrs.AurtdrsProcess;
 import project.game.network.NetworkData;
 
 /**

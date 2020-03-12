@@ -8,7 +8,6 @@ import java.awt.Point;
 import javax.swing.ImageIcon;
 
 import project.aurtdrs.AurtdrsKey;
-import project.aurtdrs.AurtdrsProcess;
 import project.game.network.NetworkData;
 import project.game.network.NetworkState;
 

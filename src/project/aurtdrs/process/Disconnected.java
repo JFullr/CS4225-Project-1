@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-import project.aurtdrs.AurtdrsProcess;
 import project.game.network.NetworkData;
 
 /**

@@ -1,4 +1,4 @@
-package project.aurtdrs;
+package project.aurtdrs.process;
 
 import java.awt.Graphics;
 
