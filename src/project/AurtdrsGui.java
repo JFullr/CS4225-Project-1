@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.JFrame;
-import javax.swing.JTextField;
-import javax.swing.JButton;
 
 import project.client.GameClientManager;
 import project.client.NetworkData;
@@ -31,19 +29,21 @@ public class AurtdrsGui {
 	private JFrame window;
 	private volatile boolean running;
 	private Image imageBuffer;
-	
+
 	private AurtdrsEngine game;
 	private GameClientManager network;
 
 	/**
 	 * Instantiates a new gui.
-	 * @param network 
+	 *
+	 * @param game    the game
+	 * @param network the network
 	 */
 	public AurtdrsGui(AurtdrsEngine game, GameClientManager network) {
 
 		this.width = 800;
 		this.height = 600;
-		
+
 		this.game = game;
 		this.network = network;
 
@@ -60,13 +60,8 @@ public class AurtdrsGui {
 		this.window.pack();
 		this.window.setVisible(true);
 		this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		this.addKeyListener();
-		
-		if (network.isConnected()) {
-			this.drawButtons();
-			this.drawUserNameTextBox();
-		}
 
 		new Thread(() -> {
 			this.graphics();
@@ -88,46 +83,20 @@ public class AurtdrsGui {
 		if (this.imageBuffer == null) {
 			return;
 		}
-		
 		/*
-		this.game.setState(NetworkState.DISCONNECTED);
-		/*/
-		
-		//TODO game test
+		 * this.game.setState(NetworkState.DISCONNECTED); /
+		 */
+		// TODO game test
 		this.game.setState(NetworkState.IN_GAME);
-		
-		//*/
 
 		while (this.running) {
 			try {
-
 				Graphics graphics = this.imageBuffer.getGraphics();
-				graphics.setColor(Color.WHITE);
-				graphics.fillRect(0, 0, this.width, this.height);
-
-				//*
-				if(this.network != null) {
-					NetworkData data = this.network.getData();
-					while(data != null) {
-						NetworkData propagate = this.game.processState(data);
-						data = this.network.getData();
-						this.network.sendData(propagate);
-					}
-				}
-				//*/
-				this.game.tick();
-				this.game.render(graphics, this.width, this.height);
 				
-				graphics.setColor(Color.GREEN);
-				graphics.setFont(Lobby.DISPLAY);
-				graphics.drawString("ESC = Quit", 5, 30);
-
+				this.drawToBuffer(graphics);
+				
 				graphics = this.window.getContentPane().getGraphics();
 				graphics.drawImage(this.imageBuffer, 0, 0, null);
-//				this.drawButtons();
-//				this.drawUserNameTextBox();
-				
-				
 				graphics.dispose();
 
 				Thread.sleep(20);
@@ -135,17 +104,30 @@ public class AurtdrsGui {
 				e.printStackTrace();
 			}
 		}
-
-	}
-	
-	private void drawUserNameTextBox() {
-		this.window.add(new JTextField());
 	}
 
-	private void drawButtons() {
-		JButton quitButton = new JButton("Quit");
-		this.window.add(quitButton);
-		
+	private void drawToBuffer(Graphics graphics) {
+		graphics.setColor(Color.WHITE);
+		graphics.fillRect(0, 0, this.width, this.height);
+		// *
+		if (this.network != null) {
+			NetworkData data = this.network.getData();
+			while (data != null) {
+				NetworkData propagate = this.game.processState(data);
+				data = this.network.getData();
+				this.network.sendData(propagate);
+			}
+		}
+		// */
+		this.game.tick();
+		this.game.render(graphics, this.width, this.height);
+		this.drawESCQuit(graphics);
+	}
+
+	private void drawESCQuit(Graphics graphics) {
+		graphics.setColor(Color.GREEN);
+		graphics.setFont(Lobby.DISPLAY);
+		graphics.drawString("ESC = Quit", 5, 30);
 	}
 
 	private void addKeyListener() {

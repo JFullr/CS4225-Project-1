@@ -68,6 +68,7 @@ public class Disconnected implements AurtdrsProcess {
 	 * Process state.
 	 *
 	 * @param data the data
+	 * @return the network data
 	 */
 	public NetworkData processState(NetworkData data) {
 		if (data == null) {

@@ -1,9 +1,5 @@
 package project;
 
-import java.io.IOException;
-
-import project.server.AurtdrsGameServer;
-
 /**
  * The Class Main.
  *
@@ -18,7 +14,7 @@ public class Main {
 	 * The main method begins a new game.
 	 *
 	 * @param args not used
-	 * @throws IOException server error
+	 * @throws Exception server error
 	 */
 	public static void main(String[] args) throws Exception {
 

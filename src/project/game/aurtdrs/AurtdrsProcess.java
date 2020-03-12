@@ -21,6 +21,7 @@ public interface AurtdrsProcess {
 	 * Process state data.
 	 *
 	 * @param data the data
+	 * @return the network data
 	 */
 	NetworkData processState(NetworkData data);
 

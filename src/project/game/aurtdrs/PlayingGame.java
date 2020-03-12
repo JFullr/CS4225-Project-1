@@ -113,6 +113,7 @@ public class PlayingGame implements AurtdrsProcess {
 	 * Processes the current state of the game based off of the give network data.
 	 *
 	 * @param data the data containing the game state
+	 * @return the network data
 	 */
 	public NetworkData processState(NetworkData data) {
 		if (data == null) {
@@ -120,16 +121,14 @@ public class PlayingGame implements AurtdrsProcess {
 		}
 
 		/*
-		if (this.client == null) {
-			this.otherPlayers = ((AurtdrsRoadTrain[]) data.getData()[0]);
-			this.client = new AurtdrsRoadTrain();
-		}
-		*/
-		if(data.getState() == NetworkState.IN_GAME) {
+		 * if (this.client == null) { this.otherPlayers = ((AurtdrsRoadTrain[])
+		 * data.getData()[0]); this.client = new AurtdrsRoadTrain(); }
+		 */
+		if (data.getState() == NetworkState.IN_GAME) {
 			this.otherPlayers = ((AurtdrsRoadTrain[]) data.getData()[0]);
 			return new NetworkData(NetworkState.IN_GAME, this.client);
 		}
-		
+
 		return null;
 
 	}
@@ -214,7 +213,7 @@ public class PlayingGame implements AurtdrsProcess {
 			side ^= 1;
 			left += side ^ 1;
 			right += side;
-			
+
 			if (train == null) {
 				graphics.setColor(Color.BLACK);
 			} else {

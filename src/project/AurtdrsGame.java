@@ -49,7 +49,8 @@ public class AurtdrsGame {
 		try {
 			VorbisPlayer dummy = new VorbisPlayer("INIT_DUMMY");
 			dummy.play();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 	}
 	
 }

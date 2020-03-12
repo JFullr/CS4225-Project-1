@@ -22,11 +22,11 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	private Disconnected disconnected;
 	private AurtdrsProcess currentProcess;
 	private NetworkState currentState;
-	
+
 	private HashMap<AurtdrsProcess, String> musicMap;
 	private HashMap<AurtdrsProcess, Float> musicVolumeMap;
 	private HashMap<NetworkState, AurtdrsProcess> processMap;
-	
+
 	private NetworkData networkData;
 	private VorbisPlayer musicPlayer;
 
@@ -112,8 +112,8 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	/**
 	 * Render.
 	 *
-	 * @param graphics the graphics
-	 * @param frameWidth the frame width
+	 * @param graphics    the graphics
+	 * @param frameWidth  the frame width
 	 * @param frameHeight the frame height
 	 */
 	public void render(Graphics graphics, int frameWidth, int frameHeight) {
@@ -128,17 +128,18 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	 * Processes the current game state.
 	 *
 	 * @param data the data
+	 * @return the network data
 	 */
 	public NetworkData processState(NetworkData data) {
 		if (data != null) {
-			if(data.getState() == NetworkState.HEART_BEAT) {
-				
+			if (data.getState() == NetworkState.HEART_BEAT) {
+
 				return null;
 			}
 			this.setState(data.getState());
 			this.currentProcess.processState(data);
 		}
-		
+
 		return null;
 	}
 
@@ -151,7 +152,6 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		return this.networkData;
 	}
 
-	
 	/**
 	 * Reset state.
 	 */
