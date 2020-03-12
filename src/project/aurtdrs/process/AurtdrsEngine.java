@@ -16,6 +16,8 @@ import project.game.network.NetworkState;
  * @version Spring 2020
  */
 public class AurtdrsEngine implements AurtdrsProcess {
+	
+	private static final int PACKET_TIME_MILLIS = 50;
 
 	private Lobby lobby;
 	private PlayingGame game;
@@ -138,13 +140,10 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	 * @return the network data
 	 */
 	public NetworkData processState(NetworkData data) {
+		
 		if (data != null) {
-			
-			System.out.println(data.getState());
-			
 			this.setState(data.getState());
-			this.currentProcess.processState(data);
-			
+			return this.currentProcess.processState(data);
 		}
 
 		return null;

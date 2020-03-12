@@ -1,5 +1,6 @@
 package project.aurtdrs.process;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import javax.swing.JFrame;
@@ -23,45 +24,54 @@ public class Synchronize implements AurtdrsProcess {
 	/**
 	 * Instantiates a new synchronize.
 	 * 
-	 * @param modalGui the gui to show the dialogs on
+	 * @param modalGui
+	 *            the gui to show the dialogs on
 	 */
 	public Synchronize(JFrame modalGui) {
 
 		this.enteringName = false;
 		this.gui = modalGui;
-		
+
 	}
 
 	/**
 	 * Tick.
 	 */
 	public void tick() {
-		
-		
-		if (!this.enteringName) {
-			System.out.println("OPENING");
-			this.enteringName = true;
-			String nameInput = JOptionPane.showInputDialog(this.gui, "Enter Name");
-			
-		}
 
 	}
 
 	/**
 	 * Render.
 	 *
-	 * @param graphics    the graphics
-	 * @param frameWidth  the frame width
-	 * @param frameHeight the frame height
+	 * @param graphics
+	 *            the graphics
+	 * @param frameWidth
+	 *            the frame width
+	 * @param frameHeight
+	 *            the frame height
 	 */
 	public void render(Graphics graphics, int frameWidth, int frameHeight) {
 
+		graphics.setColor(Color.BLACK);
+		graphics.fillRect(0, 0, frameWidth, frameHeight);
+
+	}
+	
+	/**
+	 * Gets the user name.
+	 *
+	 * @return the user name
+	 */
+	public String getUserName() {
+		return this.userName;
 	}
 
 	/**
 	 * Process state.
 	 *
-	 * @param data the data
+	 * @param data
+	 *            the data
 	 * @return the network data
 	 */
 	public NetworkData processState(NetworkData data) {
@@ -70,9 +80,20 @@ public class Synchronize implements AurtdrsProcess {
 		}
 
 		if (data.getState() == NetworkState.SYNCHRONIZING) {
-			if (this.userName != null) {
-				return new NetworkData(NetworkState.SYNCHRONIZING, this.userName);
+			String title = "Enter User Name";
+			if (data.getData() != null && data.getData().length > 0) {
+				title = (String) data.getData()[0];
 			}
+			//synchronized (this) {
+				//if (this.userName == null) {
+					//do {
+						String nameInput = JOptionPane.showInputDialog(this.gui, "Enter Name", title);
+						this.userName = nameInput;
+					//} while (this.userName == null || this.userName.isEmpty());
+				//}
+				
+				return new NetworkData(NetworkState.SYNCHRONIZING, this.userName);
+			//}
 		}
 
 		return null;

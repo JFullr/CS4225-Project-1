@@ -17,6 +17,7 @@ public class Lobby implements AurtdrsProcess {
 
 	public static final Font DISPLAY = new Font("TimesRoman", Font.PLAIN, 32);
 
+	private String userName;
 	private int lobbyCount;
 
 	/**
@@ -49,7 +50,7 @@ public class Lobby implements AurtdrsProcess {
 
 		graphics.setColor(Color.GREEN);
 		graphics.setFont(DISPLAY);
-		graphics.drawString("Count: " + this.lobbyCount, 5, 30);
+		graphics.drawString("Awaiting Game To Start..." + this.lobbyCount, frameWidth/3, frameHeight/2);
 
 	}
 

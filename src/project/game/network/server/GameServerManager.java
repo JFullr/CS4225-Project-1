@@ -99,7 +99,7 @@ public class GameServerManager {
 	private void connectionProcess(Client client) {
 		try {
 			this.assignToGame(client);
-			client.sendData(new NetworkData(NetworkState.LOBBY, this.getLobbySize(client)));
+			client.sendData(new NetworkData(NetworkState.SYNCHRONIZING));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

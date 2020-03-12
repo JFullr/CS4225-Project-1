@@ -38,6 +38,7 @@ public class AurtdrsGameServerProcess {
 
 	private ArrayList<Client> clients;
 	private HashMap<Client, String> userNames;
+	private HashMap<Client, NetworkState> userStates;
 
 	/*
 	 * private boolean readyToPlay; private boolean playing; private boolean
@@ -58,6 +59,7 @@ public class AurtdrsGameServerProcess {
 		this.server = server;
 
 		this.userNames = new HashMap<Client, String>();
+		this.userStates = new HashMap<Client, NetworkState>();
 
 		/*
 		 * this.readyToPlay = false; this.playing = false; this.matchOver = true;
@@ -113,9 +115,12 @@ public class AurtdrsGameServerProcess {
 	}
 	
 	private void syncAndLobbyActOnData(Client client, NetworkData theData) {
+		
+		this.userStates.put(client, theData.getState());
+		
 		if (theData.getState() == NetworkState.SYNCHRONIZING) {
 			
-			this.nameDiscrimination();
+			this.nameDiscrimination(client, theData);
 			
 		}
 		///TODO add in constant knowing of how large the player pool is for connection alerts to other clients
@@ -140,38 +145,38 @@ public class AurtdrsGameServerProcess {
 		}
 	}
 
-	private void nameDiscrimination() {
+	private void nameDiscrimination(Client client, NetworkData theData) {
 
-		for (Client client : this.clients) {
+		Object[] theObjects = theData.getData();
+		String nameToCheck = String.valueOf(theObjects[0]);
+		if (nameToCheck == null) {
+			this.nameRejected(client);
+			return;
+		}
 
-			NetworkData theData = this.server.getData(client);
-			Object[] theObjects = theData.getData();
-			String nameToCheck = String.valueOf(theObjects[0]);
-			if (nameToCheck == null) {
-				this.nameRejected();
+		for (Client nameKey : this.userNames.keySet()) {
+			if (this.userNames.get(nameKey).equals(nameToCheck)) {
+				this.nameRejected(client);
 				return;
 			}
-
-			for (Client nameKey : this.userNames.keySet()) {
-				if (this.userNames.get(nameKey).equals(nameToCheck)) {
-					this.nameRejected();
-				}
-			}
-
-			this.nameSuccess(client);
-
 		}
+		
+		this.nameSuccess(client);
+
 	}
 
-	private void nameRejected() {
+	private void nameRejected(Client client) {
+		
+		System.out.println("FAIL");
 		String outputMessage = "Name not unique, please try a different name";
-		System.out.println("NAME TO SYNCH");
-		this.sendDataToAll(new NetworkData(NetworkState.SYNCHRONIZING, outputMessage));
+		this.sendData(client, new NetworkData(NetworkState.SYNCHRONIZING, outputMessage));
+		
 	}
 
 	private void nameSuccess(Client client) {
 
-		this.sendData(client, new NetworkData(NetworkState.LOBBY));
+		System.out.println("TO LOBBY");
+		this.sendData(client, new NetworkData(NetworkState.LOBBY, this.clients.size()));
 	}
 
 	private void inGame() {
