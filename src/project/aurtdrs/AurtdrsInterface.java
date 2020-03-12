@@ -31,7 +31,7 @@ public class AurtdrsInterface {
 	private JFrame window;
 	private volatile boolean running;
 	private Image imageBuffer;
-	
+
 	private AurtdrsEngine game;
 	private GameClientManager client;
 
@@ -43,13 +43,12 @@ public class AurtdrsInterface {
 
 		this.width = WINDOW_WIDTH;
 		this.height = WINDOW_HEIGHT;
-		
-		
+
 		this.client = new GameClientManager();
 		this.game = new AurtdrsEngine(this.window);
-		
+
 	}
-	
+
 	/**
 	 * Entrypoint of the GUI
 	 */
@@ -64,11 +63,11 @@ public class AurtdrsInterface {
 		this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		this.addKeyListener();
-		
+
 		new Thread(() -> {
 			this.graphics();
 		}).start();
-		
+
 		this.client.start();
 	}
 
@@ -81,7 +80,6 @@ public class AurtdrsInterface {
 		this.window.dispose();
 	}
 
-
 	private void graphics() {
 
 		this.running = true;
@@ -89,20 +87,20 @@ public class AurtdrsInterface {
 		if (this.imageBuffer == null) {
 			return;
 		}
-		
+
 		this.processLoop();
-		
+
 	}
-	
+
 	private void processLoop() {
-		
+
 		while (this.running) {
 			try {
 				Graphics graphics = this.imageBuffer.getGraphics();
-				
+
 				this.handleNetworkData();
 				this.drawToBuffer(graphics);
-				
+
 				graphics = this.window.getContentPane().getGraphics();
 				graphics.drawImage(this.imageBuffer, 0, 0, null);
 				graphics.dispose();
@@ -113,9 +111,9 @@ public class AurtdrsInterface {
 			}
 		}
 	}
-	
+
 	private void handleNetworkData() {
-		// *
+
 		if (this.client != null) {
 			NetworkData data = this.client.getData();
 			while (data != null) {
@@ -125,14 +123,17 @@ public class AurtdrsInterface {
 					this.client.sendData(propagate);
 				}
 			}
+			if (!this.client.isConnected()) {
+				this.game.setState(NetworkState.DISCONNECTED);
+			}
 		}
-		// */
+
 	}
 
 	private void drawToBuffer(Graphics graphics) {
 		graphics.setColor(Color.WHITE);
 		graphics.fillRect(0, 0, this.width, this.height);
-		
+
 		this.game.tick();
 		this.game.render(graphics, this.width, this.height);
 		this.drawESCQuit(graphics);

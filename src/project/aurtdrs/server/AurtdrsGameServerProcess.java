@@ -165,12 +165,12 @@ public class AurtdrsGameServerProcess {
 
 	private void nameRejected() {
 		String outputMessage = "Name not unique, please try a different name";
-
+		System.out.println("NAME TO SYNCH");
 		this.sendDataToAll(new NetworkData(NetworkState.SYNCHRONIZING, outputMessage));
 	}
 
 	private void nameSuccess(Client client) {
-System.out.println("NAME TO LOBBY");
+
 		this.sendData(client, new NetworkData(NetworkState.LOBBY));
 	}
 
@@ -186,8 +186,9 @@ System.out.println("NAME TO LOBBY");
 		// TODO maybe add lobby count polling to client, code immediately after is the
 		// lobby count.
 
+		//TODO send to client only if client is in name pool
 
-		this.sendDataToAll(new NetworkData(NetworkState.LOBBY, this.clients.size()));
+		//this.sendDataToAll(new NetworkData(NetworkState.LOBBY, this.clients.size()));
 
 		if (this.clients.size() == MAX_CLIENTS) {
 			this.state = ServerState.PROCESSING_GAME;

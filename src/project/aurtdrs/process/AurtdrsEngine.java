@@ -140,6 +140,8 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	public NetworkData processState(NetworkData data) {
 		if (data != null) {
 			
+			System.out.println(data.getState());
+			
 			this.setState(data.getState());
 			this.currentProcess.processState(data);
 			

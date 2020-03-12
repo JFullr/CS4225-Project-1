@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import project.game.network.NetworkData;
+import project.game.network.NetworkState;
 
 /**
  * Manages a GameClient's interactions through the network.
@@ -42,8 +43,10 @@ public class GameClientManager {
 	/**
 	 * Instantiates a new game client manager.
 	 *
-	 * @param address the address
-	 * @param port the port
+	 * @param address
+	 *            the address
+	 * @param port
+	 *            the port
 	 */
 	public GameClientManager(String address, int port) {
 
@@ -79,7 +82,7 @@ public class GameClientManager {
 		if (!this.client.connectBlocking()) {
 			return false;
 		}
-		
+
 		this.running = true;
 		this.connected = true;
 
@@ -118,11 +121,12 @@ public class GameClientManager {
 		}
 		return this.readData.remove();
 	}
-	
+
 	/**
 	 * Sends network data to the game server.
 	 *
-	 * @param data the data
+	 * @param data
+	 *            the data
 	 * @return true, if successful
 	 */
 	public boolean sendData(NetworkData data) {
@@ -163,9 +167,9 @@ public class GameClientManager {
 	private void makeNetworkThreads() {
 		new Thread(() -> {
 			while (this.running) {
-				
+
 				this.client.sendHeartbeat();
-				
+
 				try {
 					Thread.sleep(HEARBEAT_TIMEOUT_MILLIS);
 				} catch (InterruptedException e) {
@@ -196,11 +200,23 @@ public class GameClientManager {
 		}).start();
 	}
 
-	private synchronized void networkProcess() {
-		NetworkData data = this.client.readRequest();
+	private void networkProcess() {
+		NetworkData data;
+		try {
+			data = this.client.readRequest();
+		} catch (Exception e) {
+			this.connected = false;
+			this.running = false;
+			return;
+		}
 		if (data != null) {
-			this.readData.add(data);
+			if (data.getState() != NetworkState.HEART_BEAT) {
+				synchronized (this.readData) {
+					this.readData.add(data);
+				}
+			}
 		} else {
+			this.running = false;
 			this.connected = false;
 		}
 	}

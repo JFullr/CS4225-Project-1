@@ -25,7 +25,7 @@ public class GameClient {
 	 */
 	public GameClient(String address, int port) {
 
-		this.client = new Client(address, port, TIMEOUT_SECONDS);
+		this.client = new Client(address, port);
 
 	}
 
@@ -77,16 +77,13 @@ public class GameClient {
 	/**
 	 * Reads blocking NetworkData
 	 * 
-	 * @return NetworkData is retrievable, null otherwise.
+	 * @return NetworkData
+	 * @throws Exception error on request or cast
 	 */
-	public NetworkData readRequest() {
-		try {
-			return (NetworkData) this.client.readBlocking();
-		} catch (IOException | ClassNotFoundException e) {
-			return null;
-		}
+	public NetworkData readRequest() throws Exception {
+		return (NetworkData) this.client.readBlocking();
 	}
-
+	
 	/**
 	 * Attempts to close the GameClient.
 	 * 
