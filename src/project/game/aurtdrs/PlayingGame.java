@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 
 import project.AurtdrsKey;
 import project.client.NetworkData;
+import project.client.NetworkState;
 
 /**
  * The Class PlayingGame.
@@ -118,9 +119,15 @@ public class PlayingGame implements AurtdrsProcess {
 			return null;
 		}
 
+		/*
 		if (this.client == null) {
 			this.otherPlayers = ((AurtdrsRoadTrain[]) data.getData()[0]);
 			this.client = new AurtdrsRoadTrain();
+		}
+		*/
+		if(data.getState() == NetworkState.IN_GAME) {
+			this.otherPlayers = ((AurtdrsRoadTrain[]) data.getData()[0]);
+			return new NetworkData(NetworkState.IN_GAME, this.client);
 		}
 		
 		return null;
