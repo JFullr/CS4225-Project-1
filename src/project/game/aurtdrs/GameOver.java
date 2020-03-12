@@ -11,26 +11,38 @@ import project.client.NetworkData;
  * @version Spring 2020
  */
 public class GameOver implements AurtdrsProcess {
-	
+
+	/**
+	 * Instantiates a new game over.
+	 */
 	public GameOver() {
-		
+
 	}
-	
+
+	/**
+	 * Tick.
+	 */
 	public void tick() {
-		
+
 	}
-	
+
 	/**
 	 * Render.
 	 *
-	 * @param grapics the grapics
-	 * @param frameWidth the frame width
+	 * @param grapics     the grapics
+	 * @param frameWidth  the frame width
 	 * @param frameHeight the frame height
 	 */
 	public void render(Graphics grapics, int frameWidth, int frameHeight) {
-		
+
 	}
 
+	/**
+	 * Process state.
+	 *
+	 * @param data the data
+	 * @return the network data
+	 */
 	public NetworkData processState(NetworkData data) {
 		if (data == null) {
 			return null;
@@ -39,9 +51,12 @@ public class GameOver implements AurtdrsProcess {
 		
 		return null;
 	}
-	
+
+	/**
+	 * Reset state.
+	 */
 	public void resetState() {
-		
+
 	}
-	
+
 }

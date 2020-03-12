@@ -14,18 +14,18 @@ import project.client.NetworkState;
  * @version Spring 2020
  */
 public class Lobby implements AurtdrsProcess {
-	
+
 	public static final Font DISPLAY = new Font("TimesRoman", Font.PLAIN, 32);
-	
+
 	private int lobbyCount;
 
 	/**
 	 * Instantiates a new lobby.
 	 */
 	public Lobby() {
-		
+
 		this.lobbyCount = 0;
-		
+
 	}
 
 	/**
@@ -38,8 +38,8 @@ public class Lobby implements AurtdrsProcess {
 	/**
 	 * Render.
 	 *
-	 * @param graphics the graphics
-	 * @param frameWidth the frame width
+	 * @param graphics    the graphics
+	 * @param frameWidth  the frame width
 	 * @param frameHeight the frame height
 	 */
 	public void render(Graphics graphics, int frameWidth, int frameHeight) {
@@ -71,6 +71,12 @@ public class Lobby implements AurtdrsProcess {
 		this.lobbyCount = lobbyCount;
 	}
 	
+	/**
+	 * Process state.
+	 *
+	 * @param data the data
+	 * @return the network data
+	 */
 	public NetworkData processState(NetworkData data) {
 		if (data == null) {
 			return null;
@@ -85,9 +91,12 @@ public class Lobby implements AurtdrsProcess {
 		return null;
 		
 	}
-	
+
+	/**
+	 * Resets the lobby game state.
+	 */
 	public void resetState() {
-		
+
 	}
 
 }

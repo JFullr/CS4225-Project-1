@@ -119,6 +119,12 @@ public class GameClientManager {
 		return this.readData.remove();
 	}
 	
+	/**
+	 * Sends network data to the game server.
+	 *
+	 * @param data the data
+	 * @return true, if successful
+	 */
 	public boolean sendData(NetworkData data) {
 		return this.client.sendData(data);
 	}
@@ -156,7 +162,6 @@ public class GameClientManager {
 
 	private void makeNetworkThreads() {
 		new Thread(() -> {
-
 			while (this.running) {
 				
 				this.client.sendHeartbeat();
@@ -165,7 +170,6 @@ public class GameClientManager {
 					Thread.sleep(HEARBEAT_TIMEOUT_MILLIS);
 				} catch (InterruptedException e) {
 				}
-
 			}
 			while (!this.client.close()) {
 				this.client.close();

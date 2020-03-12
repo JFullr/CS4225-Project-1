@@ -28,10 +28,9 @@ import com.jcraft.jorbis.Info;
  * @version Spring 2020
  */
 public class VorbisPlayer {
-	
+
 	public static final int REPEAT_FOREVER = -1;
-	
-	
+
 	private static final float DEFAULT_VOLUME = 0.3f;
 
 	private static final Exception UNSUPPORTED_LINE = new Exception("Line Not Supported");
@@ -41,6 +40,7 @@ public class VorbisPlayer {
 
 	private static final int BITS_PER_SAMPLE = 16;
 	private static final int BUFSIZE = 4096 * 2;
+
 	private enum HeaderState {
 
 		RESTART, FAIL, SUCCESS
@@ -66,7 +66,7 @@ public class VorbisPlayer {
 	private InputStream bitStream;
 	private Object playerData;
 	private volatile Thread playerThread;
-	
+
 	/**
 	 * Instantiates a new vorbis player.
 	 *
@@ -117,8 +117,8 @@ public class VorbisPlayer {
 	public void setVolume(float volume) {
 
 		this.volume = volume;
-		
-		if(this.outputLine == null) {
+
+		if (this.outputLine == null) {
 			return;
 		}
 
@@ -142,15 +142,15 @@ public class VorbisPlayer {
 	public void play() throws Exception {
 		this.play(0);
 	}
-	
+
 	private void play(int repeatCount) throws Exception {
 		synchronized (this) {
 
 			if (this.playerThread != null) {
 				return;
 			}
-			
-			if(this.playerData == null) {
+
+			if (this.playerData == null) {
 				return;
 			}
 
@@ -158,14 +158,20 @@ public class VorbisPlayer {
 				try {
 					this.playThread(repeatCount);
 					this.bitStream.close();
-				} catch (Exception e) { }//e.printStackTrace(); }
+				} catch (Exception e) {
+				} // e.printStackTrace(); }
 			});
 			this.playerThread.start();
-			
+
 		}
-		
+
 	}
-	
+
+	/**
+	 * Ends the audio thread.
+	 *
+	 * @return true, if successful
+	 */
 	@SuppressWarnings("deprecation")
 	public boolean end() {
 		synchronized (this) {
@@ -174,9 +180,9 @@ public class VorbisPlayer {
 				if (this.playerThread == null) {
 					return true;
 				}
-				
+
 				this.playerThread.stop();
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;
@@ -185,9 +191,8 @@ public class VorbisPlayer {
 			return true;
 		}
 	}
-	
-	private void playThread(int repeat) throws Exception {
 
+	private void playThread(int repeat) throws Exception {
 		this.initBitStream();
 
 		boolean chained = false;
@@ -199,11 +204,11 @@ public class VorbisPlayer {
 
 			index = this.sync.buffer(BUFSIZE);
 			HeaderState state = null;
-			
-			if(this.initStream(index, chained) == HeaderState.RESTART) {
+
+			if (this.initStream(index, chained) == HeaderState.RESTART) {
 				break;
 			}
-			
+
 			state = this.checkStreamErrors();
 			if (state == HeaderState.RESTART) {
 				break;
@@ -218,7 +223,7 @@ public class VorbisPlayer {
 
 			this.processHeaders(index);
 		}
-		
+
 		this.cleanupPlaying(repeat);
 
 	}
@@ -239,7 +244,7 @@ public class VorbisPlayer {
 			this.playerThread = null;
 			this.play(repeat);
 		}
-		
+
 	}
 
 	private void processHeaders(int index) throws Exception {
@@ -251,8 +256,8 @@ public class VorbisPlayer {
 		this.initOutputLine(this.info.channels, this.info.rate, 0);
 		this.setVolume(this.volume);
 		this.playData(index);
-		
-		if(this.playerThread == null) {
+
+		if (this.playerThread == null) {
 			return;
 		}
 
@@ -331,28 +336,23 @@ public class VorbisPlayer {
 		this.rate = rate;
 		this.channels = channels;
 	}
-	
+
 	private void playData(int index) {
 		float[][][] pcmfFloats = new float[1][][];
 		int[] infoChannels = new int[this.info.channels];
 		int eos = 0;
-
 		while (eos == 0) {
 			while (eos == 0) {
-
 				int result = this.sync.pageout(this.page);
 				if (result == 0) {
 					break;
 				}
 				eos = this.decodeSlice(result, eos, pcmfFloats, infoChannels);
-				
-				if(this.playerThread == null) {
+
+				if (this.playerThread == null) {
 					return;
 				}
 			}
-			
-			
-
 			if (eos == 0) {
 				index = this.sync.buffer(BUFSIZE);
 				this.buffer = this.sync.data;
@@ -370,7 +370,6 @@ public class VorbisPlayer {
 					eos = 1;
 				}
 			}
-
 		}
 	}
 
@@ -514,7 +513,7 @@ public class VorbisPlayer {
 	}
 
 	private HeaderState checkStreamErrors() throws Exception {
-		
+
 		if (this.stream.pagein(this.page) < 0) {
 			System.err.println("Error reading first page of Ogg bitstream data.");
 			throw HEADER_READ_FAILURE;
@@ -526,7 +525,7 @@ public class VorbisPlayer {
 		}
 
 		if (this.info.synthesis_headerin(this.comment, this.packet) < 0) {
-			//System.err.println("This Ogg bitstream does not contain Vorbis audio data.");
+			// System.err.println("This Ogg bitstream does not contain Vorbis audio data.");
 			throw HEADER_READ_FAILURE;
 		}
 
