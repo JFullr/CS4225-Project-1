@@ -7,7 +7,6 @@ import java.awt.Point;
 
 import javax.swing.ImageIcon;
 
-import project.Main;
 import project.client.NetworkData;
 
 /**
@@ -17,6 +16,8 @@ import project.client.NetworkData;
  * @version Spring 2020
  */
 public class PlayingGame implements AurtdrsProcess {
+	
+	private static final int MAX_SHIFT = 250;
 	
 	private static final String URL_RESOURCE_BASE = "res/";
 	private static final Image ENGINE = new ImageIcon((URL_RESOURCE_BASE+"engine.png")).getImage();
@@ -32,11 +33,16 @@ public class PlayingGame implements AurtdrsProcess {
 	
 	private int animation;
 	
+	private int shift;
+	private boolean shiftDirection;
+	
 	public PlayingGame() {
 		
 		this.otherPlayers = null;
 		this.client = null;
 		this.animation = 0;
+		this.shift = 0;
+		this.shiftDirection = true;
 		
 	}
 	
@@ -46,6 +52,24 @@ public class PlayingGame implements AurtdrsProcess {
 		
 		if(this.animation < 0) {
 			this.animation = 0;
+		}
+		
+		if(this.shiftDirection) {
+			
+			this.shift+=4;
+			
+			if(this.shift >= MAX_SHIFT) {
+				this.shiftDirection = false;
+			}
+			
+		}else {
+			
+			this.shift-=4;
+			
+			if(this.shift <= 0) {
+				this.shiftDirection = true;
+			}
+			
 		}
 		
 	}
@@ -59,12 +83,12 @@ public class PlayingGame implements AurtdrsProcess {
 	 */
 	public void render(Graphics graphics, int frameWidth, int frameHeight) {
 		
-		
-		
 		this.renderDefault(graphics, frameWidth, frameHeight);
 		this.renderClient(graphics, frameWidth, frameHeight);
 		
 		this.renderOtherRoads(graphics, frameWidth, frameHeight);
+		
+		this.renderShift(graphics, frameWidth, frameHeight);
 		
 	}
 
@@ -87,9 +111,22 @@ public class PlayingGame implements AurtdrsProcess {
 		}
 		this.client = new AurtdrsRoadTrain();
 		this.animation = 0;
+		this.shift = 0;
+		this.shiftDirection = true;
 	}
 	
-	
+	private void renderShift(Graphics graphics, int frameWidth, int frameHeight) {
+		graphics.setColor(Color.DARK_GRAY);
+		
+		graphics.fillRect(frameWidth-120, 10, 110, frameHeight-20);
+		
+		graphics.setColor(Color.GREEN);
+		graphics.fillRect(frameWidth-120, frameHeight-10 - shift*(frameHeight-40)/MAX_SHIFT, 110, shift*(frameHeight-40)/MAX_SHIFT);
+		
+		graphics.setColor(Color.RED);
+		graphics.fillRect(frameWidth-120, 70, 70, 20);
+		
+	}
 	
 	private void renderDefault(Graphics graphics, int frameWidth, int frameHeight) {
 		
@@ -147,10 +184,11 @@ public class PlayingGame implements AurtdrsProcess {
 			
 			if(train == null) {
 				
-				graphics.setColor(Color.BLACK);
+				graphics.setColor(Color.RED);
 				
 			} else {
 				graphics.setColor(Color.LIGHT_GRAY);
+				
 			}
 			
 			int roadX = frameWidth/2 - TRAILER_LEFT.getWidth(null)/2;
@@ -160,10 +198,15 @@ public class PlayingGame implements AurtdrsProcess {
 			
 			graphics.fillRect(roadX, 0, roadWidth, frameHeight);
 			
-			int trainX = roadX+TRAILER_LEFT.getWidth(null)/4;
-			int trainYHead = frameHeight/4;
+			if(train != null) {
+				int trainX = roadX+TRAILER_LEFT.getWidth(null)/4;
+				int trainYHead = frameHeight/4;
+				
+				int offset = (int) (this.client.getDistance() - train.getDistance());
+				trainYHead+= offset;
 			
-			this.renderTrain(graphics, frameWidth, frameHeight,train, trainX, trainYHead);
+				this.renderTrain(graphics, frameWidth, frameHeight,train, trainX, trainYHead);
+			}
 			
 		}
 	}
