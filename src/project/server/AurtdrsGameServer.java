@@ -10,12 +10,12 @@ public class AurtdrsGameServer {
 	
 	private GameServerManager server;
 	
-	private HashMap<ArrayList<Client>, AurtdrsServerProcess> gameProcesses;
+	private HashMap<ArrayList<Client>, AurtdrsGameServerProcess> gameProcesses;
 
 	public AurtdrsGameServer(int port) throws IOException {
 		this.server = new GameServerManager(port);
 		
-		this.gameProcesses = new HashMap<ArrayList<Client>, AurtdrsServerProcess>();
+		this.gameProcesses = new HashMap<ArrayList<Client>, AurtdrsGameServerProcess>();
 		
 	}
 	
@@ -55,7 +55,7 @@ public class AurtdrsGameServer {
 		for(ArrayList<Client> pool : this.server.getGamePools()) {
 			
 			if(!this.gameProcesses.keySet().contains(pool)) {
-				this.gameProcesses.put(pool, new AurtdrsServerProcess(this.server, pool));
+				this.gameProcesses.put(pool, new AurtdrsGameServerProcess(this.server, pool));
 			}
 			
 		}
@@ -66,7 +66,6 @@ public class AurtdrsGameServer {
 		
 		for(ArrayList<Client> pool : this.server.getGamePools()) {
 			
-			//this.server.
 			this.gameProcesses.get(pool).processGame();
 			
 			

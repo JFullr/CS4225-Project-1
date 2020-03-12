@@ -8,7 +8,7 @@ import project.client.NetworkState;
 import project.game.aurtdrs.AurtdrsRoadTrain;
 import utils.network.Client;
 
-public class AurtdrsServerProcess {
+public class AurtdrsGameServerProcess {
 	
 	private static final int TIMEOUT_MILLIS = 50;
 	
@@ -17,7 +17,7 @@ public class AurtdrsServerProcess {
 	private GameServerManager server;
 	private Iterable<Client> clients;
 	
-	public AurtdrsServerProcess(GameServerManager server, Iterable<Client> clients) {
+	public AurtdrsGameServerProcess(GameServerManager server, Iterable<Client> clients) {
 		
 		this.clients = clients;
 		this.server = server;
