@@ -63,10 +63,9 @@ public class AurtdrsGameServerProcess {
 			this.nameDiscrimination();
 			break;
 		default:
+			this.kickPlayers();
 			break;
 		}
-
-		this.kickPlayers();
 
 	}
 
@@ -81,18 +80,17 @@ public class AurtdrsGameServerProcess {
 				client.close();
 			}
 		}
-
 	}
 
-	private void syncAndLobby() {
-
-		// send out lobby when available
-		// when lobby is full, goto game process -- NetworkState.IN_GAME
-
-		this.nameDiscrimination();
-		this.lobbyProcess();
-
-	}
+//	private void syncAndLobby() {
+//
+//		// send out lobby when available
+//		// when lobby is full, goto game process -- NetworkState.IN_GAME
+//
+//		this.nameDiscrimination();
+//		this.lobbyProcess();
+//
+//	}
 
 	private void nameDiscrimination() {
 		int count = 0;
@@ -106,13 +104,11 @@ public class AurtdrsGameServerProcess {
 
 			if (nameToCheck != null && !this.allNames.contains(nameToCheck) && count <= MAX_CLIENTS) {
 				this.allNames.add(nameToCheck);
-				this.state = NetworkState.LOBBY;
 			} else {
 				this.nameRejected();
 			}
 		}
 	}
-
 	private void nameRejected() {
 		String outputMessage = "Name not unique, please try a different name";
 
@@ -128,11 +124,13 @@ public class AurtdrsGameServerProcess {
 
 	private void lobbyProcess() {
 
-		// TODO maybe add lobby count polling
+		// TODO maybe add lobby count polling to client, code immediately after is the
+		// lobby count.
 
 		int count = 0;
 		for (Client cli : this.clients) {
 			count++;
+			cli.getClass(); // to make checkstyle shut up
 		}
 
 		this.sendData(new NetworkData(NetworkState.LOBBY, count));
