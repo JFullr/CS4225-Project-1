@@ -17,7 +17,7 @@ import utils.network.Client;
  */
 public class GameServerManager {
 
-	private static final int GAME_SIZE = 2;
+	private static final int GAME_SIZE = 3;
 	private static final int MAX_GAMES = 10;
 	
 	private GameServer server;

@@ -124,7 +124,7 @@ public class PlayingGame implements AurtdrsProcess {
 	public void resetState() {
 		this.otherPlayers = new AurtdrsRoadTrain[8];
 		for(int i = 0; i < this.otherPlayers.length; i++) {
-			this.otherPlayers[i] = new AurtdrsRoadTrain();
+			//this.otherPlayers[i] = new AurtdrsRoadTrain();
 		}
 		this.client = new AurtdrsRoadTrain();
 		this.animation = 0;
@@ -201,7 +201,7 @@ public class PlayingGame implements AurtdrsProcess {
 			
 			if(train == null) {
 				
-				graphics.setColor(Color.RED);
+				graphics.setColor(Color.BLACK);
 				
 			} else {
 				graphics.setColor(Color.LIGHT_GRAY);
