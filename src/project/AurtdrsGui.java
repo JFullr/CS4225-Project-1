@@ -105,7 +105,7 @@ public class AurtdrsGui {
 				graphics.setColor(Color.WHITE);
 				graphics.fillRect(0, 0, this.width, this.height);
 
-				/*
+				//*
 				if(this.network != null) {
 					NetworkData data = this.network.getData();
 					while(data != null) {
