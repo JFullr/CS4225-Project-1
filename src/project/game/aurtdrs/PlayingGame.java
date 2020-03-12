@@ -113,15 +113,17 @@ public class PlayingGame implements AurtdrsProcess {
 	 *
 	 * @param data the data containing the game state
 	 */
-	public void processState(NetworkData data) {
+	public NetworkData processState(NetworkData data) {
 		if (data == null) {
-			return;
+			return null;
 		}
 
 		if (this.client == null) {
 			this.otherPlayers = ((AurtdrsRoadTrain[]) data.getData()[0]);
 			this.client = new AurtdrsRoadTrain();
 		}
+		
+		return null;
 
 	}
 

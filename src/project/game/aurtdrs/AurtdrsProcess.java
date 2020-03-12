@@ -22,7 +22,7 @@ public interface AurtdrsProcess {
 	 *
 	 * @param data the data
 	 */
-	void processState(NetworkData data);
+	NetworkData processState(NetworkData data);
 
 	/**
 	 * The computation process.

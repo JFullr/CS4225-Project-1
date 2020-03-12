@@ -31,13 +31,13 @@ public class GameOver implements AurtdrsProcess {
 		
 	}
 
-	public void processState(NetworkData data) {
+	public NetworkData processState(NetworkData data) {
 		if (data == null) {
-			return;
+			return null;
 		}
 		
 		
-		
+		return null;
 	}
 	
 	public void resetState() {

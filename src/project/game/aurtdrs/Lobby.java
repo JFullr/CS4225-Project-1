@@ -71,16 +71,18 @@ public class Lobby implements AurtdrsProcess {
 		this.lobbyCount = lobbyCount;
 	}
 	
-	public void processState(NetworkData data) {
+	public NetworkData processState(NetworkData data) {
 		if (data == null) {
-			return;
+			return null;
 		}
 		
 		if(data.getState() != NetworkState.LOBBY) {
-			return;
+			return null;
 		}
 		
 		this.lobbyCount = (Integer)data.getData()[0];
+		
+		return null;
 		
 	}
 	

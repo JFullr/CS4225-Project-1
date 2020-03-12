@@ -116,15 +116,17 @@ public class AurtdrsGui {
 				//*/
 				this.game.tick();
 				this.game.render(graphics, this.width, this.height);
+				
+				graphics.setColor(Color.GREEN);
+				graphics.setFont(Lobby.DISPLAY);
+				graphics.drawString("ESC = Quit", 5, 30);
 
 				graphics = this.window.getContentPane().getGraphics();
 				graphics.drawImage(this.imageBuffer, 0, 0, null);
 //				this.drawButtons();
 //				this.drawUserNameTextBox();
 				
-				graphics.setColor(Color.GREEN);
-				graphics.setFont(Lobby.DISPLAY);
-				graphics.drawString("ESC = Quit", 5, 30);
+				
 				graphics.dispose();
 
 				Thread.sleep(20);

@@ -2,6 +2,7 @@ package project.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import project.client.NetworkData;
 import project.client.NetworkState;
@@ -11,60 +12,50 @@ import utils.network.Client;
 public class AurtdrsGameServerProcess {
 
 	private static final int MAX_CLIENTS = 2;
-
 	private static final int TIMEOUT_MILLIS = 50;
-
 	private static final double GOAL = 7.7E7;
-
+	
+	private enum ServerState {
+		
+		WAITING_FOR_CLIENTS,
+		PROCESSING_GAME,
+		RESULTS_SCREEN
+		
+	}
+	
+	private ServerState state;
 	private GameServerManager server;
 	private Iterable<Client> clients;
-	private ArrayList<String> allNames;
+	private HashMap<Client, String> userNames;
 
+	
+	
 	/*
 	 * private boolean readyToPlay; private boolean playing; private boolean
 	 * matchOver;
 	 */
 
-	private NetworkState state;
+	
 
 	public AurtdrsGameServerProcess(GameServerManager server, Iterable<Client> clients) {
 
 		this.clients = clients;
 		this.server = server;
-
+		
+		this.userNames = new HashMap<Client, String>();
+		
 		/*
 		 * this.readyToPlay = false; this.playing = false; this.matchOver = true;
 		 */
 
-		this.state = NetworkState.SYNCHRONIZING;
+		this.state = ServerState.WAITING_FOR_CLIENTS;
 
 	}
 
 	public void processGame() {
 
 		switch (this.state) {
-		case LOBBY:
-			this.lobbyProcess();
-			break;
-		case DISCONNECTED:
-			break;
-		case HEART_BEAT:
-			break;
-		case IN_GAME:
-			this.inGame();
-			break;
-		case MATCH_OVER:
-			break;
-		case PLAYER_CONNECTED:
-			break;
-		case PLAYER_DISCONNECTED:
-			break;
-		case SYNCHRONIZING:
-			this.nameDiscrimination();
-			break;
-		default:
-			this.kickPlayers();
-			break;
+			
 		}
 
 	}
@@ -102,8 +93,8 @@ public class AurtdrsGameServerProcess {
 			Object[] theObjects = theData.getData();
 			String nameToCheck = String.valueOf(theObjects[1]);
 
-			if (nameToCheck != null && !this.allNames.contains(nameToCheck) && count <= MAX_CLIENTS) {
-				this.allNames.add(nameToCheck);
+			if (nameToCheck != null && !this.userNames.values().contains(nameToCheck) && count <= MAX_CLIENTS) {
+				this.userNames.put(client,nameToCheck);
 			} else {
 				this.nameRejected();
 			}
@@ -136,7 +127,7 @@ public class AurtdrsGameServerProcess {
 		this.sendData(new NetworkData(NetworkState.LOBBY, count));
 
 		if (count == MAX_CLIENTS) {
-			this.state = NetworkState.IN_GAME;
+			this.state = ServerState.PROCESSING_GAME;
 		}
 
 	}
