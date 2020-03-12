@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Queue;
 
 import project.client.NetworkData;
-import project.client.NetworkGameState;
+import project.client.NetworkState;
 import utils.network.Client;
 import utils.network.NetworkHandler;
 import utils.network.Server;
@@ -31,8 +31,6 @@ public class GameServer {
 	private HashSet<Client> clients;
 	private HashMap<Client,long[]> heartbeatPool;
 	private HashMap<Client,Queue<NetworkData>> clientData;
-	
-	private final Object dataLock = new Object();
 	
 	private volatile boolean running;
 
@@ -71,7 +69,8 @@ public class GameServer {
 				this.clientData.put(client, new ArrayDeque<NetworkData>());
 			}
 			try {
-				client.sendData(new NetworkData(NetworkGameState.HEART_BEAT, this.clients.size()));
+				client.sendData(new NetworkData(NetworkState.HEART_BEAT, this.clients.size()));
+				System.out.println("Client Connected");
 				if(handler != null) {
 					handler.request(client);
 				}
@@ -84,16 +83,21 @@ public class GameServer {
 				try {
 					
 					NetworkData data = (NetworkData) client.readBlocking();
-					if(data.getState() == NetworkGameState.HEART_BEAT) {
+					if(data.getState() == NetworkState.HEART_BEAT) {
 						this.applyHeartbeat(client);
 					}else {
-						synchronized(this.dataLock) {
-							this.clientData.get(client).add(data);
+						if(data.getState() != NetworkState.HEART_BEAT) {
+							synchronized(this.clientData) {
+								this.clientData.get(client).add(data);
+							}
 						}
 					}
 					
 				}catch(Exception e) {
 					//e.printStackTrace();
+					System.out.println("Client Disconnected");
+					this.removeClient(client);
+					
 					return;
 				}
 				
@@ -135,7 +139,7 @@ public class GameServer {
 	}
 	
 	public NetworkData getData(Client client) {
-		synchronized(this.dataLock) {
+		synchronized(clientData) {
 			if(this.clientData.get(client).size() < 1) {
 				return null;
 			}
@@ -152,7 +156,7 @@ public class GameServer {
 
 			for (Client client : this.clients) {
 				try {
-					client.sendData(new NetworkData(NetworkGameState.HEART_BEAT, this.clients.size()));
+					client.sendData(new NetworkData(NetworkState.HEART_BEAT, this.clients.size()));
 				} catch (IOException e) {
 					toDelete.add(client);
 				}
@@ -178,22 +182,33 @@ public class GameServer {
 							this.heartbeatPool.get(client)[1] = System.currentTimeMillis();
 						} catch (IOException e) {
 							toDelete.add(client);
+							System.out.println("Client TimedOut");
 						}
 						
 					}
 				}
 			}
+			
+			this.removeClients(toDelete);
 
-			for (Client client : toDelete) {
+	}
+	
+	
+	private synchronized void removeClients(Iterable<Client> toDelete) {
+		for (Client client : toDelete) {
+			this.removeClient(client);
+		}
+	}
+	
+	private synchronized void removeClient(Client client) {
+		
+		if (!client.close()) {
+			System.err.println("Could not close client: "+client);
+		}
 
-				if (!client.close()) {
-					System.err.println("Could not close client: "+client);
-				}
-
-				this.clients.remove(client);
-				this.heartbeatPool.remove(client);
-			}
-
+		this.clients.remove(client);
+		this.heartbeatPool.remove(client);
+		
 	}
 
 }

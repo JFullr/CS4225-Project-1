@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Joseph Fuller, James Irwin, Timothy Brooks
  * @version Spring 2020.
  */
-public enum NetworkGameState implements Serializable {
+public enum NetworkState implements Serializable {
 
 	HEART_BEAT,
 	DISCONNECTED,

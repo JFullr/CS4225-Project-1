@@ -16,10 +16,10 @@ public class NetworkData implements Serializable  {
 	 */
 	private static final long serialVersionUID = -6455516774083243889L;
 	
-	public static final transient NetworkData HEART_BEAT = new NetworkData(NetworkGameState.HEART_BEAT);
-	public static final transient NetworkData DISCONNECTED = new NetworkData(NetworkGameState.DISCONNECTED);
+	public static final transient NetworkData HEART_BEAT = new NetworkData(NetworkState.HEART_BEAT);
+	public static final transient NetworkData DISCONNECTED = new NetworkData(NetworkState.DISCONNECTED);
 
-	private NetworkGameState state;
+	private NetworkState state;
 	private Object[] data;
 
 	/**
@@ -29,7 +29,7 @@ public class NetworkData implements Serializable  {
 	 * @param state the network's game state
 	 * @param data  the data to persist and distribute
 	 */
-	public NetworkData(NetworkGameState state, Object... data) {
+	public NetworkData(NetworkState state, Object... data) {
 		this.state = state;
 		this.data = data;
 		
@@ -40,7 +40,7 @@ public class NetworkData implements Serializable  {
 	 *
 	 * @return the current network state of the game
 	 */
-	public NetworkGameState getState() {
+	public NetworkState getState() {
 		return this.state;
 	}
 

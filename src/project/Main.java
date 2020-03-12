@@ -36,7 +36,7 @@ public class Main {
 		}
 		//*/
 		
-		/*
+		//*
 		
 		AurtdrsGameServer server = new AurtdrsGameServer(GAME_PORT);
 		server.start();

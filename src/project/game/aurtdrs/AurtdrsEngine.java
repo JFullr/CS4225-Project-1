@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import audio.VorbisPlayer;
 import project.client.NetworkData;
-import project.client.NetworkGameState;
+import project.client.NetworkState;
 
 /**
  * The Class AurtdrsEngine.
@@ -22,10 +22,10 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	private Disconnected disconnected;
 
 	private AurtdrsProcess currentProcess;
-	private NetworkGameState currentState;
+	private NetworkState currentState;
 	private HashMap<AurtdrsProcess, String> musicMap;
 	private HashMap<AurtdrsProcess, Float> musicVolumeMap;
-	private HashMap<NetworkGameState, AurtdrsProcess> processMap;
+	private HashMap<NetworkState, AurtdrsProcess> processMap;
 	
 	private NetworkData networkData;
 
@@ -57,12 +57,12 @@ public class AurtdrsEngine implements AurtdrsProcess {
 
 		this.currentProcess = null;
 
-		this.processMap = new HashMap<NetworkGameState, AurtdrsProcess>();
-		this.processMap.put(NetworkGameState.LOBBY, this.lobby);
-		this.processMap.put(NetworkGameState.IN_GAME, this.game);
-		this.processMap.put(NetworkGameState.SYNCHRONIZING, this.synch);
-		this.processMap.put(NetworkGameState.MATCH_OVER, this.gameOver);
-		this.processMap.put(NetworkGameState.DISCONNECTED, this.disconnected);
+		this.processMap = new HashMap<NetworkState, AurtdrsProcess>();
+		this.processMap.put(NetworkState.LOBBY, this.lobby);
+		this.processMap.put(NetworkState.IN_GAME, this.game);
+		this.processMap.put(NetworkState.SYNCHRONIZING, this.synch);
+		this.processMap.put(NetworkState.MATCH_OVER, this.gameOver);
+		this.processMap.put(NetworkState.DISCONNECTED, this.disconnected);
 		
 		this.networkData = null;
 
@@ -73,7 +73,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	 *
 	 * @param state the new state
 	 */
-	public void setState(NetworkGameState state) {
+	public void setState(NetworkState state) {
 		if (state == this.currentState) {
 			return;
 		}
@@ -118,7 +118,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 
 	public void processState(NetworkData data) {
 		if (data != null) {
-			if(data.getState() == NetworkGameState.HEART_BEAT) {
+			if(data.getState() == NetworkState.HEART_BEAT) {
 				
 				return;
 			}

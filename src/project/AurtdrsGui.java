@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 
 import project.client.GameClientManager;
 import project.client.NetworkData;
-import project.client.NetworkGameState;
+import project.client.NetworkState;
 import project.game.aurtdrs.AurtdrsEngine;
 
 /**
@@ -79,7 +79,7 @@ public class AurtdrsGui {
 			return;
 		}
 		
-		this.game.setState(NetworkGameState.DISCONNECTED);
+		this.game.setState(NetworkState.DISCONNECTED);
 
 		while (this.running) {
 			try {

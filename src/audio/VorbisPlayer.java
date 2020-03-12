@@ -149,6 +149,10 @@ public class VorbisPlayer {
 			if (this.playerThread != null) {
 				return;
 			}
+			
+			if(this.playerData == null) {
+				return;
+			}
 
 			this.playerThread = new Thread(() -> {
 				try {

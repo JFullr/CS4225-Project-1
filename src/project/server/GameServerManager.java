@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import project.client.NetworkData;
-import project.client.NetworkGameState;
+import project.client.NetworkState;
 import utils.network.Client;
 
 /**
@@ -18,6 +18,7 @@ import utils.network.Client;
 public class GameServerManager {
 
 	private static final int GAME_SIZE = 2;
+	private static final int MAX_GAMES = 10;
 	
 	private GameServer server;
 	
@@ -56,6 +57,10 @@ public class GameServerManager {
 		this.server.end();
 	}
 	
+	public NetworkData getData(Client client) {
+		return this.server.getData(client);
+	}
+	
 	public ArrayList<ArrayList<Client>> getGamePools(){
 		
 		ArrayList<ArrayList<Client>> all = new ArrayList<ArrayList<Client>>();
@@ -67,7 +72,7 @@ public class GameServerManager {
 	private void connectionProcess(Client client) {
 		try {
 			this.assignToGame(client);
-			client.sendData(new NetworkData(NetworkGameState.LOBBY,this.getLobbySize(client)));
+			client.sendData(new NetworkData(NetworkState.LOBBY,this.getLobbySize(client)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -98,6 +103,12 @@ public class GameServerManager {
 		}
 		
 		int pos = this.currentGames.size();
+		
+		if(pos >= MAX_GAMES) {
+			//TODO disconnect
+			return;
+		}
+		
 		this.clientGame.put(client, pos);
 		this.currentGames.put(pos, new ArrayList<Client>());
 		this.currentGames.get(pos).add(client);
