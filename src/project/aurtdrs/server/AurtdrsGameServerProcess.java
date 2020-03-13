@@ -187,8 +187,9 @@ public class AurtdrsGameServerProcess {
 			Thread.sleep(TIMEOUT_MILLIS);
 		} catch (InterruptedException e) {
 		}
+		
 		NetworkData data = this.collectData();
-		this.race(data);
+		this.sendDataToAll(data);
 
 	}
 
@@ -223,7 +224,7 @@ public class AurtdrsGameServerProcess {
 	private NetworkData collectData() {
 
 		ArrayList<AurtdrsRoadTrainTransmission> trains = new ArrayList<AurtdrsRoadTrainTransmission>();
-
+		HashMap<AurtdrsRoadTrainTransmission, Client> winnerMap = new HashMap<AurtdrsRoadTrainTransmission, Client>();
 		for (Client client : this.clients) {
 			try {
 				NetworkData gameData = this.server.getData(client);
@@ -232,7 +233,7 @@ public class AurtdrsGameServerProcess {
 				} else {
 					if (gameData.getState() == NetworkState.IN_GAME) {
 						AurtdrsRoadTrainTransmission trans = (AurtdrsRoadTrainTransmission) gameData.getData()[0];
-						AurtdrsRoadTrain train = trans.cast();
+						winnerMap.put(trans, client);
 						trains.add(trans);
 					} else {
 						trains.add(null);
@@ -250,30 +251,14 @@ public class AurtdrsGameServerProcess {
 
 		for (AurtdrsRoadTrainTransmission train : trainArr) {
 			if (train != null && this.endCondition(train.cast())) {
-				// TODO FIXME send winner data
-				return new NetworkData(NetworkState.MATCH_OVER, (Object) null);
+				
+				String winner = this.userNames.get(winnerMap.get(train));
+				this.state = ServerState.RESULTS_SCREEN;
+				return new NetworkData(NetworkState.MATCH_OVER, (Object) winner);
 			}
 		}
 
 		return new NetworkData(NetworkState.IN_GAME, (Object) trainArr);
-
-	}
-
-	/**
-	 * Race.
-	 *
-	 * @param aggregate
-	 *            the aggregate
-	 */
-	private void race(NetworkData aggregate) {
-
-		for (Client client : this.clients) {
-			try {
-				client.sendData(aggregate);
-			} catch (IOException e) {
-				// e.printStackTrace();
-			}
-		}
 
 	}
 
