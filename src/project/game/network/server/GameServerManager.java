@@ -18,7 +18,7 @@ import utils.network.Client;
 public class GameServerManager {
 
 	private static final int GAME_SIZE = 3;
-	private static final int MAX_GAMES = 10;
+	private static final int MAX_GAMES = 1;
 
 	private GameServer server;
 
@@ -28,8 +28,10 @@ public class GameServerManager {
 	/**
 	 * Instantiates a new aurtdrs game server.
 	 *
-	 * @param port the port
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param port
+	 *            the port
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public GameServerManager(int port) throws IOException {
 		this.server = new GameServer(port);
@@ -59,18 +61,21 @@ public class GameServerManager {
 	/**
 	 * Gets the data.
 	 *
-	 * @param client the client
+	 * @param client
+	 *            the client
 	 * @return the data
 	 */
 	public NetworkData getData(Client client) {
 		return this.server.getData(client);
 	}
-	
+
 	/**
 	 * Send data.
 	 *
-	 * @param client the client
-	 * @param data the data
+	 * @param client
+	 *            the client
+	 * @param data
+	 *            the data
 	 * @return true, if successful
 	 */
 	public boolean sendData(Client client, NetworkData data) {
@@ -95,11 +100,12 @@ public class GameServerManager {
 		return all;
 
 	}
-	
+
 	/**
 	 * Checks if is client connected.
 	 *
-	 * @param client the client
+	 * @param client
+	 *            the client
 	 * @return true, if is client connected
 	 */
 	public boolean isClientConnected(Client client) {
@@ -142,7 +148,9 @@ public class GameServerManager {
 		int pos = this.currentGames.size();
 
 		if (pos >= MAX_GAMES) {
-			// TODO disconnect
+
+			this.sendData(client, new NetworkData(NetworkState.DISCONNECTED, "Game Room Full, Reconnect Later"));
+			client.close();
 			return;
 		}
 
