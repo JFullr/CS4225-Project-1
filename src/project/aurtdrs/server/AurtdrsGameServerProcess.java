@@ -18,7 +18,7 @@ import utils.network.Client;
  */
 public class AurtdrsGameServerProcess {
 
-	private static final int MAX_CLIENTS = 2;
+	private static final int MAX_CLIENTS = 3;
 	private static final int TIMEOUT_MILLIS = 50;
 	private static final double GOAL = 7.7E7;
 
@@ -74,16 +74,16 @@ public class AurtdrsGameServerProcess {
 
 		switch (this.state) {
 
-		case WAITING_FOR_CLIENTS:
-			this.syncAndLobby();
-			break;
-		case PROCESSING_GAME:
-			this.inGame();
-			break;
-		case RESULTS_SCREEN:
-			break;
-		default:
-			break;
+			case WAITING_FOR_CLIENTS:
+				this.syncAndLobby();
+				break;
+			case PROCESSING_GAME:
+				this.inGame();
+				break;
+			case RESULTS_SCREEN:
+				break;
+			default:
+				break;
 
 		}
 
@@ -107,18 +107,6 @@ public class AurtdrsGameServerProcess {
 
 	}
 
-	private void gameConnect() {
-
-		for (Client client : this.clients) {
-
-			NetworkData theData = this.server.getData(client);
-
-		}
-
-		this.lobbyProcess();
-
-	}
-
 	private void syncAndLobbyActOnData(Client client, NetworkData theData) {
 
 		this.userStates.put(client, theData.getState());
@@ -127,27 +115,6 @@ public class AurtdrsGameServerProcess {
 
 			this.nameDiscrimination(client, theData);
 
-		}
-		/// TODO add in constant knowing of how large the player pool is for connection
-		/// alerts to other clients
-		/*
-		 * else if (theData.getState() == NetworkState.LOBBY) { this.sendDataToAll(new
-		 * NetworkData(NetworkState.SYNCHRONIZING, this.clients.size())); }
-		 */
-	}
-
-	private void kickPlayers() {
-
-		int count = 0;
-		for (Client client : this.clients) {
-			count++;
-			if (count > MAX_CLIENTS) {
-
-				this.sendDataToAll(new NetworkData(NetworkState.DISCONNECTED,
-						"Game Room Full / Game In Progress -- Please Try Again"));
-				client.close();
-
-			}
 		}
 	}
 
@@ -182,6 +149,7 @@ public class AurtdrsGameServerProcess {
 	}
 
 	private void nameSuccess(Client client) {
+		this.sendDataToAll(new NetworkData(NetworkState.PLAYER_QUIT, this.userNames.get(client) + " Has Joined"));
 		this.sendData(client, new NetworkData(NetworkState.LOBBY, this.getValidClients().size()));
 	}
 
@@ -199,14 +167,7 @@ public class AurtdrsGameServerProcess {
 	}
 
 	private void lobbyProcess() {
-
-		// TODO maybe add lobby count polling to client, code immediately after is the
-		// lobby count.
-
-		// TODO send to client only if client is in name pool
-
-		// this.sendDataToAll(new NetworkData(NetworkState.LOBBY, this.clients.size()));
-
+		
 		if (this.getValidClients().size() >= MAX_CLIENTS) {
 			this.state = ServerState.PROCESSING_GAME;
 			this.sendDataToAll(new NetworkData(NetworkState.IN_GAME, (Object) null));
@@ -239,6 +200,8 @@ public class AurtdrsGameServerProcess {
 					trains.add(null);
 					this.sendDataToAll(
 							new NetworkData(NetworkState.PLAYER_QUIT, this.userNames.get(client) + " Has Forfeited"));
+				} else if (gameData.getState() != NetworkState.IN_GAME) {
+					this.sendData(client, new NetworkData(NetworkState.DISCONNECTED, "Game In Progress Come back Later"));
 				} else {
 					this.handleInGameData(trains, winnerMap, client, gameData);
 				}
@@ -247,6 +210,11 @@ public class AurtdrsGameServerProcess {
 			}
 		}
 
+		return this.getGameBundle(trains, winnerMap);
+
+	}
+
+	private NetworkData getGameBundle(ArrayList<AurtdrsRoadTrainTransmission> trains, HashMap<AurtdrsRoadTrainTransmission, Client> winnerMap) {
 		AurtdrsRoadTrainTransmission[] trainArr = new AurtdrsRoadTrainTransmission[trains.size()];
 		trains.toArray(trainArr);
 
@@ -259,7 +227,6 @@ public class AurtdrsGameServerProcess {
 		}
 
 		return new NetworkData(NetworkState.IN_GAME, (Object) trainArr);
-
 	}
 
 	private void handleInGameData(ArrayList<AurtdrsRoadTrainTransmission> trains,

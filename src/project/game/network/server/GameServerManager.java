@@ -149,7 +149,7 @@ public class GameServerManager {
 
 		if (pos >= MAX_GAMES) {
 
-			this.sendData(client, new NetworkData(NetworkState.DISCONNECTED, "Game Room Full, Reconnect Later"));
+			this.sendData(client, new NetworkData(NetworkState.DISCONNECTED, "Game Room Full / Game In Progress -- Please Try Again"));
 			client.close();
 			return;
 		}
