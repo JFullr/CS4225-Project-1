@@ -18,7 +18,6 @@ import project.game.network.NetworkState;
 public class Synchronize implements AurtdrsProcess {
 
 	private String userName;
-	private boolean enteringName;
 	private JFrame gui;
 
 	/**
@@ -29,7 +28,6 @@ public class Synchronize implements AurtdrsProcess {
 	 */
 	public Synchronize(JFrame modalGui) {
 
-		this.enteringName = false;
 		this.gui = modalGui;
 
 	}
@@ -101,7 +99,6 @@ public class Synchronize implements AurtdrsProcess {
 	 * Reset state.
 	 */
 	public void resetState() {
-
 	}
 
 }

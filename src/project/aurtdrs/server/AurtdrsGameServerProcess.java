@@ -120,6 +120,8 @@ public class AurtdrsGameServerProcess {
 
 	private void nameDiscrimination(Client client, NetworkData theData) {
 
+		System.out.println(this.clients.size());
+
 		Object[] theObjects = theData.getData();
 		String nameToCheck = (String) theObjects[0];
 		if (nameToCheck == null) {
@@ -127,8 +129,9 @@ public class AurtdrsGameServerProcess {
 			return;
 		}
 
-		for (Client nameKey : this.userNames.keySet()) {
-			if (this.userNames.get(nameKey).equals(nameToCheck)) {
+		for (String name : this.userNames.values()) {
+			System.out.println(name + "::" + nameToCheck);
+			if (name.equals(nameToCheck)) {
 				this.nameRejected(client);
 				return;
 			}
@@ -149,8 +152,7 @@ public class AurtdrsGameServerProcess {
 	}
 
 	private void nameSuccess(Client client) {
-		// this.sendDataToAll(new NetworkData(NetworkState.PLAYER_QUIT,
-		// this.userNames.get(client) + " Has Joined"));
+		this.sendDataToAll(new NetworkData(NetworkState.PLAYER_QUIT, this.userNames.get(client) + " Has Joined"));
 		this.sendData(client, new NetworkData(NetworkState.LOBBY, this.getValidClients().size()));
 	}
 

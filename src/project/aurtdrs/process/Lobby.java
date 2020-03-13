@@ -17,7 +17,6 @@ public class Lobby implements AurtdrsProcess {
 
 	public static final Font DISPLAY = new Font("TimesRoman", Font.PLAIN, 32);
 
-	private String userName;
 	private int lobbyCount;
 
 	/**
