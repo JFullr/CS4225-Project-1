@@ -50,7 +50,7 @@ public class Lobby implements AurtdrsProcess {
 
 		graphics.setColor(Color.GREEN);
 		graphics.setFont(DISPLAY);
-		graphics.drawString("Awaiting Game To Start..." + this.lobbyCount, frameWidth/3, frameHeight/2);
+		graphics.drawString("Awaiting Game To Start..." + this.lobbyCount, frameWidth / 3, frameHeight / 2);
 
 	}
 

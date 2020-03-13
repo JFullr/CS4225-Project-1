@@ -16,7 +16,7 @@ import project.game.network.NetworkState;
  * @version Spring 2020
  */
 public class AurtdrsEngine implements AurtdrsProcess {
-	
+
 	private static final int PACKET_TIME_MILLIS = 50;
 
 	private Lobby lobby;
@@ -36,6 +36,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 
 	/**
 	 * Instantiates a new aurtdrs engine.
+	 * 
 	 * @param display the window this game is displayed on
 	 */
 	public AurtdrsEngine(JFrame display) {
@@ -69,30 +70,29 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		this.processMap.put(NetworkState.DISCONNECTED, this.disconnected);
 
 		this.networkData = null;
-		
+
 		this.setState(NetworkState.DISCONNECTED);
 
 	}
-	
+
 	/**
 	 * Sets the state.
 	 *
 	 * @param state the new state
 	 */
 	public void setState(NetworkState state) {
-		
+
 		if (state == this.currentState) {
 			return;
 		}
 		this.currentState = state;
 
-		
 		if (state == null) {
 			this.currentProcess = this.lobby;
 		} else {
 			this.currentProcess = this.processMap.get(state);
 		}
-System.out.println(state);
+		System.out.println(state);
 		this.currentProcess.resetState();
 
 		if (this.musicPlayer != null) {
@@ -141,7 +141,7 @@ System.out.println(state);
 	 * @return the network data
 	 */
 	public NetworkData processState(NetworkData data) {
-		
+
 		if (data != null) {
 			this.setState(data.getState());
 			return this.currentProcess.processState(data);
