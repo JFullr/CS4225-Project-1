@@ -20,6 +20,8 @@ import project.game.network.NetworkState;
  */
 public class PlayingGame implements AurtdrsProcess {
 
+	private static final double GOAL = 7.7E7;
+
 	private static final int MAX_SHIFT = 250;
 	private static final int PERFECT_SHIFT = 232;
 
@@ -112,6 +114,8 @@ public class PlayingGame implements AurtdrsProcess {
 
 		this.renderShift(graphics, frameWidth, frameHeight);
 
+		this.renderDistance(graphics, frameWidth, frameHeight);
+
 	}
 
 	/**
@@ -133,14 +137,19 @@ public class PlayingGame implements AurtdrsProcess {
 		if (data.getState() == NetworkState.IN_GAME) {
 			if (data.getData() != null) {
 				AurtdrsRoadTrainTransmission[] trans = ((AurtdrsRoadTrainTransmission[]) data.getData()[0]);
-				this.otherPlayers = new AurtdrsRoadTrain[trans.length];
-				for (int i = 0; i < trans.length; i++) {
-					if(trans[i] != null) {
-						this.otherPlayers[i] = trans[i].cast();//trans[i].cast();
+
+				if (trans != null) {
+
+					this.otherPlayers = new AurtdrsRoadTrain[trans.length];
+					for (int i = 0; i < trans.length; i++) {
+						if (trans[i] != null) {
+							this.otherPlayers[i] = trans[i].cast();// trans[i].cast();
+						}
 					}
+
 				}
 			}
-			return new NetworkData(NetworkState.IN_GAME, new AurtdrsRoadTrainTransmission(this.client) );
+			return new NetworkData(NetworkState.IN_GAME, new AurtdrsRoadTrainTransmission(this.client));
 		}
 
 		return null;
@@ -157,6 +166,13 @@ public class PlayingGame implements AurtdrsProcess {
 		this.animation = 0;
 		this.shift = 0;
 		this.shiftDirection = true;
+	}
+
+	private void renderDistance(Graphics graphics, int frameWidth, int frameHeight) {
+		graphics.setColor(Color.DARK_GRAY);
+
+		graphics.drawString((this.client.getDistance() / GOAL) + "%", 5, frameHeight - 30);
+
 	}
 
 	private void renderShift(Graphics graphics, int frameWidth, int frameHeight) {

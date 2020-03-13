@@ -162,6 +162,9 @@ public class AurtdrsGameServerProcess {
 				return;
 			}
 		}
+		
+		this.userStates.put(client, NetworkState.LOBBY);
+		this.userNames.put(client, nameToCheck);
 
 		this.nameSuccess(client);
 
@@ -175,7 +178,6 @@ public class AurtdrsGameServerProcess {
 	}
 
 	private void nameSuccess(Client client) {
-		this.userStates.put(client, NetworkState.LOBBY);
 		this.sendData(client, new NetworkData(NetworkState.LOBBY, this.getValidClients().size()));
 	}
 
@@ -232,10 +234,6 @@ public class AurtdrsGameServerProcess {
 						AurtdrsRoadTrainTransmission trans = (AurtdrsRoadTrainTransmission) gameData.getData()[0];
 						AurtdrsRoadTrain train = trans.cast();
 						trains.add(trans);
-						if (this.endCondition(train)) {
-							// TODO FIXME send winner data
-							return new NetworkData(NetworkState.MATCH_OVER, (Object) null);
-						}
 					} else {
 						trains.add(null);
 					}
@@ -248,6 +246,13 @@ public class AurtdrsGameServerProcess {
 		AurtdrsRoadTrainTransmission[] trainArr = new AurtdrsRoadTrainTransmission[trains.size()];
 		for (int i = 0; i < trains.size(); i++) {
 			trainArr[i] = trains.get(i);
+		}
+
+		for (AurtdrsRoadTrainTransmission train : trainArr) {
+			if (train != null && this.endCondition(train.cast())) {
+				// TODO FIXME send winner data
+				return new NetworkData(NetworkState.MATCH_OVER, (Object) null);
+			}
 		}
 
 		return new NetworkData(NetworkState.IN_GAME, (Object) trainArr);
