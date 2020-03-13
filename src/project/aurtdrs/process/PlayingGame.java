@@ -131,9 +131,16 @@ public class PlayingGame implements AurtdrsProcess {
 		 * data.getData()[0]); this.client = new AurtdrsRoadTrain(); }
 		 */
 		if (data.getState() == NetworkState.IN_GAME) {
-			this.otherPlayers = ((AurtdrsRoadTrain[]) data.getData()[0]);
-
-			return new NetworkData(NetworkState.IN_GAME, new Object[] { new AurtdrsRoadTrainTransmission(this.client) });
+			if (data.getData() != null) {
+				AurtdrsRoadTrainTransmission[] trans = ((AurtdrsRoadTrainTransmission[]) data.getData()[0]);
+				this.otherPlayers = new AurtdrsRoadTrain[trans.length];
+				for (int i = 0; i < trans.length; i++) {
+					if(trans[i] != null) {
+						this.otherPlayers[i] = trans[i].cast();//trans[i].cast();
+					}
+				}
+			}
+			return new NetworkData(NetworkState.IN_GAME, new AurtdrsRoadTrainTransmission(this.client) );
 		}
 
 		return null;

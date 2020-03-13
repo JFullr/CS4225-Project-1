@@ -220,7 +220,7 @@ public class AurtdrsGameServerProcess {
 
 	private NetworkData collectData() {
 
-		ArrayList<AurtdrsRoadTrain> trains = new ArrayList<AurtdrsRoadTrain>();
+		ArrayList<AurtdrsRoadTrainTransmission> trains = new ArrayList<AurtdrsRoadTrainTransmission>();
 
 		for (Client client : this.clients) {
 			try {
@@ -229,10 +229,9 @@ public class AurtdrsGameServerProcess {
 					trains.add(null);
 				} else {
 					if (gameData.getState() == NetworkState.IN_GAME) {
-						AurtdrsRoadTrain train = ((AurtdrsRoadTrainTransmission) gameData.getData()[0]).cast();
-						//System.out.println(((AurtdrsRoadTrainTransmission)gameData.getData()[1]).value);
-						System.out.println(train.getDistance());
-						trains.add(train);
+						AurtdrsRoadTrainTransmission trans = (AurtdrsRoadTrainTransmission) gameData.getData()[0];
+						AurtdrsRoadTrain train = trans.cast();
+						trains.add(trans);
 						if (this.endCondition(train)) {
 							// TODO FIXME send winner data
 							return new NetworkData(NetworkState.MATCH_OVER, (Object) null);
@@ -242,18 +241,16 @@ public class AurtdrsGameServerProcess {
 					}
 				}
 			} catch (Exception e) {
-				// e.printStackTrace();
 				trains.add(null);
 			}
 		}
 
-		AurtdrsRoadTrain[] trainArr = new AurtdrsRoadTrain[trains.size()];
-		// trains.toArray(trainArr);
+		AurtdrsRoadTrainTransmission[] trainArr = new AurtdrsRoadTrainTransmission[trains.size()];
 		for (int i = 0; i < trains.size(); i++) {
 			trainArr[i] = trains.get(i);
 		}
 
-		return new NetworkData(NetworkState.IN_GAME, new Object[] {trainArr});
+		return new NetworkData(NetworkState.IN_GAME, (Object) trainArr);
 
 	}
 
