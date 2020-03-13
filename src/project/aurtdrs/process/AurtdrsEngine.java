@@ -1,5 +1,7 @@
 package project.aurtdrs.process;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.HashMap;
 
@@ -34,10 +36,13 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	private NetworkData networkData;
 	private VorbisPlayer musicPlayer;
 
+	private String notification;
+
 	/**
 	 * Instantiates a new aurtdrs engine.
 	 * 
-	 * @param display the window this game is displayed on
+	 * @param display
+	 *            the window this game is displayed on
 	 */
 	public AurtdrsEngine(JFrame display) {
 		this.lobby = new Lobby();
@@ -60,8 +65,6 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		this.musicVolumeMap.put(this.gameOver, null);
 		this.musicVolumeMap.put(this.disconnected, .5f);
 
-		this.currentProcess = null;
-
 		this.processMap = new HashMap<NetworkState, AurtdrsProcess>();
 		this.processMap.put(NetworkState.LOBBY, this.lobby);
 		this.processMap.put(NetworkState.IN_GAME, this.game);
@@ -69,8 +72,9 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		this.processMap.put(NetworkState.MATCH_OVER, this.gameOver);
 		this.processMap.put(NetworkState.DISCONNECTED, this.disconnected);
 
+		this.currentProcess = null;
 		this.networkData = null;
-
+		this.notification = null;
 		this.setState(NetworkState.DISCONNECTED);
 
 	}
@@ -78,7 +82,8 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	/**
 	 * Sets the state.
 	 *
-	 * @param state the new state
+	 * @param state
+	 *            the new state
 	 */
 	public void setState(NetworkState state) {
 
@@ -122,29 +127,45 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	/**
 	 * Render.
 	 *
-	 * @param graphics    the graphics
-	 * @param frameWidth  the frame width
-	 * @param frameHeight the frame height
+	 * @param graphics
+	 *            the graphics
+	 * @param frameWidth
+	 *            the frame width
+	 * @param frameHeight
+	 *            the frame height
 	 */
 	public void render(Graphics graphics, int frameWidth, int frameHeight) {
 
 		if (this.currentProcess != null) {
 			this.currentProcess.render(graphics, frameWidth, frameHeight);
 		}
+		
+		this.renderNotification(graphics, frameWidth, frameHeight);
 
 	}
 
 	/**
 	 * Processes the current game state.
 	 *
-	 * @param data the data
+	 * @param data
+	 *            the data
 	 * @return the network data
 	 */
 	public NetworkData processState(NetworkData data) {
 
-		if (data != null) {
+		if (data == null) {
+			return null;
+		}
+
+		if (data.getState() == NetworkState.PLAYER_QUIT) {
+
+			this.notification = String.valueOf(data.getData()[0]);
+
+		} else {
+
 			this.setState(data.getState());
 			return this.currentProcess.processState(data);
+
 		}
 
 		return null;
@@ -163,6 +184,20 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	 * Reset state.
 	 */
 	public void resetState() {
+	}
+
+	private void renderNotification(Graphics graphics, int frameWidth, int frameHeight) {
+
+		graphics.setColor(Color.GREEN);
+		
+		graphics.setFont(new Font("Dialog", Font.PLAIN, 16));
+		graphics.drawString("NOTIFICATIONS", 5, frameHeight - 150);
+		graphics.setFont(new Font("Dialog", Font.PLAIN, 14));
+		if (this.notification != null) {
+			graphics.drawString(this.notification, 5, frameHeight - 135);
+		}
+		
+
 	}
 
 }
