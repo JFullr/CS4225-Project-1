@@ -3,7 +3,6 @@ package project.aurtdrs.process;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 
 import javax.swing.ImageIcon;
 
@@ -28,10 +27,8 @@ public class PlayingGame implements AurtdrsProcess {
 	private static final Image ENGINE = new ImageIcon((URL_RESOURCE_BASE + "engine.png")).getImage();
 	private static final Image TRAILER = new ImageIcon(URL_RESOURCE_BASE + "trailer.png").getImage();
 	private static final Image TRAILER_LEFT = new ImageIcon(URL_RESOURCE_BASE + "trailer_left.png").getImage();
-	private static final Image TRAILER_RIGHT = new ImageIcon(URL_RESOURCE_BASE + "trailer_right.png").getImage();
 
 	private static final Image BACKGROUND = new ImageIcon(URL_RESOURCE_BASE + "background.png").getImage();
-	private static final Image CACTUS = new ImageIcon(URL_RESOURCE_BASE + "cactus.png").getImage();
 
 	private AurtdrsRoadTrain[] otherPlayers;
 	private AurtdrsRoadTrain client;
@@ -75,9 +72,6 @@ public class PlayingGame implements AurtdrsProcess {
 				this.shiftDirection = true;
 			}
 		}
-		/*
-		 * if(this.shift == PERFECT_SHIFT) { this.shift = 0; }
-		 */
 
 		if (AurtdrsKey.isSpace()) {
 			AurtdrsKey.setSpace(false);
@@ -124,10 +118,6 @@ public class PlayingGame implements AurtdrsProcess {
 			return null;
 		}
 
-		/*
-		 * if (this.client == null) { this.otherPlayers = ((AurtdrsRoadTrain[])
-		 * data.getData()[0]); this.client = new AurtdrsRoadTrain(); }
-		 */
 		if (data.getState() == NetworkState.IN_GAME) {
 			AurtdrsRoadTrainTransmission[] trans = null;
 			if (data.getData() != null) {
@@ -159,7 +149,6 @@ public class PlayingGame implements AurtdrsProcess {
 	 * Resets the game state.
 	 */
 	public void resetState() {
-		System.out.println("AAA");
 		this.otherPlayers = new AurtdrsRoadTrain[0];
 		this.client = new AurtdrsRoadTrain();
 		this.animation = 0;
@@ -216,7 +205,7 @@ public class PlayingGame implements AurtdrsProcess {
 
 		int oscillate = this.animation & 0x1;
 		int part = -1;
-		for (Point car : train.getRelativePositions()) {
+		for (int i = 0; i < train.getRelativePositions().size(); i++) {
 			if (part == -1) {
 				graphics.drawImage(ENGINE, trainX, trainYHead + oscillate, null);
 			} else {

@@ -8,7 +8,6 @@ import java.util.HashMap;
 import javax.swing.JFrame;
 
 import audio.VorbisPlayer;
-import project.aurtdrs.AurtdrsKey;
 import project.game.network.NetworkData;
 import project.game.network.NetworkState;
 
@@ -19,8 +18,6 @@ import project.game.network.NetworkState;
  * @version Spring 2020
  */
 public class AurtdrsEngine implements AurtdrsProcess {
-
-	private static final int PACKET_TIME_MILLIS = 50;
 
 	private Lobby lobby;
 	private PlayingGame game;
@@ -98,7 +95,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		} else {
 			this.currentProcess = this.processMap.get(state);
 		}
-		System.out.println(state);
+		
 		this.currentProcess.resetState();
 
 		if (this.musicPlayer != null) {
