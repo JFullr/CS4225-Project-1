@@ -16,7 +16,7 @@ import utils.network.Client;
 public class AurtdrsGameServerSystem {
 
 	private GameServerManager server;
-	private HashMap<ArrayList<Client>, AurtdrsGameServerProcess> gameProcesses;
+	private HashMap<Integer, AurtdrsGameServerProcess> gameProcesses;
 
 	/**
 	 * Instantiates a new aurtdrs game server.
@@ -27,7 +27,7 @@ public class AurtdrsGameServerSystem {
 	public AurtdrsGameServerSystem(int port) throws IOException {
 		this.server = new GameServerManager(port);
 
-		this.gameProcesses = new HashMap<ArrayList<Client>, AurtdrsGameServerProcess>();
+		this.gameProcesses = new HashMap<Integer, AurtdrsGameServerProcess>();
 
 	}
 
@@ -73,12 +73,15 @@ public class AurtdrsGameServerSystem {
 	 * Sets the game pools.
 	 */
 	private void setGamePools() {
-
+		
+		int map = 0;
 		for (ArrayList<Client> pool : this.server.getGamePools()) {
 
-			if (!this.gameProcesses.keySet().contains(pool)) {
-				this.gameProcesses.put(pool, new AurtdrsGameServerProcess(this.server, pool));
+			if (!this.gameProcesses.keySet().contains(map)) {
+				this.gameProcesses.put(map, new AurtdrsGameServerProcess(this.server, pool));
 			}
+			
+			map++;
 
 		}
 
@@ -89,10 +92,12 @@ public class AurtdrsGameServerSystem {
 	 */
 	public void processGames() {
 
+		int map = 0;
 		for (ArrayList<Client> pool : this.server.getGamePools()) {
 
-			this.gameProcesses.get(pool).processGame();
+			this.gameProcesses.get(map).processGame();
 
+			map++;
 		}
 
 	}

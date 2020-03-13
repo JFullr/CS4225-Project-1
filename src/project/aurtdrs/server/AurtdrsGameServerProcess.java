@@ -34,14 +34,10 @@ public class AurtdrsGameServerProcess {
 	private ServerState state;
 	private GameServerManager server;
 
-	private ArrayList<Client> clients;
+	private volatile ArrayList<Client> clients;
+
 	private HashMap<Client, String> userNames;
 	private HashMap<Client, NetworkState> userStates;
-
-	/*
-	 * private boolean readyToPlay; private boolean playing; private boolean
-	 * matchOver;
-	 */
 
 	/**
 	 * Instantiates a new aurtdrs game server process.
@@ -58,10 +54,6 @@ public class AurtdrsGameServerProcess {
 
 		this.userNames = new HashMap<Client, String>();
 		this.userStates = new HashMap<Client, NetworkState>();
-
-		/*
-		 * this.readyToPlay = false; this.playing = false; this.matchOver = true;
-		 */
 
 		this.state = ServerState.WAITING_FOR_CLIENTS;
 
@@ -129,6 +121,7 @@ public class AurtdrsGameServerProcess {
 			return;
 		}
 
+		System.out.println(this.userNames.values().size() + "::" + nameToCheck);
 		for (String name : this.userNames.values()) {
 			System.out.println(name + "::" + nameToCheck);
 			if (name.equals(nameToCheck)) {
@@ -138,7 +131,7 @@ public class AurtdrsGameServerProcess {
 		}
 
 		this.userStates.put(client, NetworkState.LOBBY);
-		this.userNames.put(client, nameToCheck);
+		this.userNames.put(client, new String(nameToCheck));
 
 		this.nameSuccess(client);
 
@@ -227,12 +220,21 @@ public class AurtdrsGameServerProcess {
 		for (AurtdrsRoadTrainTransmission train : trainArr) {
 			if (train != null && this.endCondition(train.cast())) {
 				String winner = this.userNames.get(winnerMap.get(train));
-				this.state = ServerState.RESULTS_SCREEN;
+
+				this.removeAllClients();
+				this.state = ServerState.WAITING_FOR_CLIENTS;
+
 				return new NetworkData(NetworkState.MATCH_OVER, (Object) winner);
 			}
 		}
 
 		return new NetworkData(NetworkState.IN_GAME, (Object) trainArr);
+	}
+
+	private void removeAllClients() {
+		for (Client client : this.clients) {
+			client.close();
+		}
 	}
 
 	private void handleInGameData(ArrayList<AurtdrsRoadTrainTransmission> trains,

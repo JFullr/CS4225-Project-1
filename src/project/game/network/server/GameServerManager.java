@@ -121,10 +121,6 @@ public class GameServerManager {
 		}
 	}
 
-	private int getLobbySize(Client client) {
-		return this.currentGames.get(this.clientGame.get(client)).size();
-	}
-
 	private synchronized void assignToGame(Client client) {
 
 		for (int i = 0; i < Integer.MAX_VALUE && i < this.currentGames.size(); i++) {
