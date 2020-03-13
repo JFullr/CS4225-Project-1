@@ -76,7 +76,6 @@ public class PlayingGame implements AurtdrsProcess {
 				this.shiftDirection = true;
 			}
 		}
-
 		/*
 		 * if(this.shift == PERFECT_SHIFT) { this.shift = 0; }
 		 */
@@ -98,12 +97,9 @@ public class PlayingGame implements AurtdrsProcess {
 	/**
 	 * Render.
 	 *
-	 * @param graphics
-	 *            the graphics
-	 * @param frameWidth
-	 *            the frame width
-	 * @param frameHeight
-	 *            the frame height
+	 * @param graphics    the graphics
+	 * @param frameWidth  the frame width
+	 * @param frameHeight the frame height
 	 */
 	public void render(Graphics graphics, int frameWidth, int frameHeight) {
 
@@ -121,8 +117,7 @@ public class PlayingGame implements AurtdrsProcess {
 	/**
 	 * Processes the current state of the game based off of the give network data.
 	 *
-	 * @param data
-	 *            the data containing the game state
+	 * @param data the data containing the game state
 	 * @return the network data
 	 */
 	public NetworkData processState(NetworkData data) {
@@ -135,25 +130,30 @@ public class PlayingGame implements AurtdrsProcess {
 		 * data.getData()[0]); this.client = new AurtdrsRoadTrain(); }
 		 */
 		if (data.getState() == NetworkState.IN_GAME) {
+			AurtdrsRoadTrainTransmission[] trans = null;
 			if (data.getData() != null) {
-				AurtdrsRoadTrainTransmission[] trans = ((AurtdrsRoadTrainTransmission[]) data.getData()[0]);
+				trans = ((AurtdrsRoadTrainTransmission[]) data.getData()[0]);
+			}
 
-				if (trans != null) {
+			if (trans != null) {
 
-					this.otherPlayers = new AurtdrsRoadTrain[trans.length];
-					for (int i = 0; i < trans.length; i++) {
-						if (trans[i] != null) {
-							this.otherPlayers[i] = trans[i].cast();// trans[i].cast();
-						}
-					}
+				this.otherPlayers = new AurtdrsRoadTrain[trans.length];
+				this.handleCastToOtherPlayers(trans);
 
-				}
 			}
 			return new NetworkData(NetworkState.IN_GAME, new AurtdrsRoadTrainTransmission(this.client));
 		}
 
 		return null;
 
+	}
+
+	private void handleCastToOtherPlayers(AurtdrsRoadTrainTransmission[] trans) {
+		for (int i = 0; i < trans.length; i++) {
+			if (trans[i] != null) {
+				this.otherPlayers[i] = trans[i].cast();
+			}
+		}
 	}
 
 	/**
