@@ -104,11 +104,29 @@ public class AurtdrsGameServerProcess {
 		this.lobbyProcess();
 
 	}
+	
+	private void gameConnect() {
+
+		for (Client client : this.clients) {
+
+			NetworkData theData = this.server.getData(client);
+
+			if (theData.getState() == NetworkState.PLAYER_QUIT) {
+				
+			}else {
+				
+			}
+
+		}
+
+		this.lobbyProcess();
+
+	}
 
 	private void syncAndLobbyActOnData(Client client, NetworkData theData) {
 
 		this.userStates.put(client, theData.getState());
-
+		
 		if (theData.getState() == NetworkState.SYNCHRONIZING) {
 
 			this.nameDiscrimination(client, theData);

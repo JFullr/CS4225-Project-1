@@ -98,6 +98,7 @@ public class AurtdrsInterface {
 			try {
 				Graphics graphics = this.imageBuffer.getGraphics();
 
+				this.handleQuit();
 				this.handleNetworkData();
 				this.drawToBuffer(graphics);
 
@@ -143,6 +144,13 @@ public class AurtdrsInterface {
 		graphics.setColor(Color.GREEN);
 		graphics.setFont(Lobby.DISPLAY);
 		graphics.drawString("ESC = Quit", 5, 30);
+	}
+
+	private void handleQuit() {
+		if (AurtdrsKey.isQuit()) {
+			this.client.sendData(new NetworkData(NetworkState.PLAYER_QUIT));
+			System.exit(0);
+		}
 	}
 
 	private void addKeyListener() {
