@@ -66,16 +66,16 @@ public class AurtdrsGameServerProcess {
 
 		switch (this.state) {
 
-		case WAITING_FOR_CLIENTS:
-			this.syncAndLobby();
-			break;
-		case PROCESSING_GAME:
-			this.inGame();
-			break;
-		case RESULTS_SCREEN:
-			break;
-		default:
-			break;
+			case WAITING_FOR_CLIENTS:
+				this.syncAndLobby();
+				break;
+			case PROCESSING_GAME:
+				this.inGame();
+				break;
+			case RESULTS_SCREEN:
+				break;
+			default:
+				break;
 
 		}
 
@@ -146,7 +146,6 @@ public class AurtdrsGameServerProcess {
 	}
 
 	private void inGame() {
-
 		try {
 			Thread.sleep(TIMEOUT_MILLIS);
 		} catch (InterruptedException e) {
