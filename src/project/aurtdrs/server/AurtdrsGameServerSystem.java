@@ -93,7 +93,8 @@ public class AurtdrsGameServerSystem {
 	public void processGames() {
 
 		int map = 0;
-		for (ArrayList<Client> pool : this.server.getGamePools()) {
+		int size = this.server.getGamePools().size();
+		for (int i = 0; i < size; i++) {
 
 			this.gameProcesses.get(map).processGame();
 

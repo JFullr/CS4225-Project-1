@@ -18,6 +18,7 @@ import utils.network.Client;
  */
 public class AurtdrsGameServerProcess {
 
+	private static final int FINAL_SCREEN_TIME = 5000;
 	private static final int MAX_CLIENTS = 3;
 	private static final int TIMEOUT_MILLIS = 50;
 	private static final double GOAL = 7.7E7;
@@ -153,6 +154,15 @@ public class AurtdrsGameServerProcess {
 
 		NetworkData data = this.collectData();
 
+		if (this.forfeitureVictory()) {
+			return;
+		}
+
+		this.processAggregate(data);
+
+	}
+
+	private void processAggregate(NetworkData data) {
 		if (data.getState() == NetworkState.IN_GAME) {
 			AurtdrsRoadTrainTransmission[] pack = (AurtdrsRoadTrainTransmission[]) data.getData()[0];
 			int self = 0;
@@ -172,13 +182,26 @@ public class AurtdrsGameServerProcess {
 			this.sendDataToAll(data);
 			if (this.state == ServerState.WAITING_FOR_CLIENTS) {
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(FINAL_SCREEN_TIME);
 				} catch (InterruptedException e) {
 				}
 				this.removeAllClients();
 			}
 		}
+	}
 
+	private boolean forfeitureVictory() {
+		if (this.getValidClients().size() == 1) {
+			this.sendDataToAll(new NetworkData(NetworkState.MATCH_OVER, "Forfeiture Victory"));
+			try {
+				Thread.sleep(FINAL_SCREEN_TIME);
+			} catch (InterruptedException e) {
+			}
+			this.state = ServerState.WAITING_FOR_CLIENTS;
+			this.removeAllClients();
+			return true;
+		}
+		return false;
 	}
 
 	private void lobbyProcess() {
