@@ -1,6 +1,5 @@
 package project.aurtdrs.server;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -47,10 +46,8 @@ public class AurtdrsGameServerProcess {
 	/**
 	 * Instantiates a new aurtdrs game server process.
 	 *
-	 * @param server
-	 *            the server
-	 * @param clients
-	 *            the clients
+	 * @param server  the server
+	 * @param clients the clients
 	 */
 	public AurtdrsGameServerProcess(GameServerManager server, ArrayList<Client> clients) {
 
@@ -75,17 +72,13 @@ public class AurtdrsGameServerProcess {
 
 		switch (this.state) {
 
-		case WAITING_FOR_CLIENTS:
-
-			this.syncAndLobby();
-
-			break;
-		case PROCESSING_GAME:
-
-			this.inGame();
-
-			break;
-		case RESULTS_SCREEN:
+			case WAITING_FOR_CLIENTS:
+				this.syncAndLobby();
+				break;
+			case PROCESSING_GAME:
+				this.inGame();
+				break;
+			case RESULTS_SCREEN:
 
 			//
 
@@ -162,7 +155,7 @@ public class AurtdrsGameServerProcess {
 				return;
 			}
 		}
-		
+
 		this.userStates.put(client, NetworkState.LOBBY);
 		this.userNames.put(client, nameToCheck);
 
@@ -187,7 +180,7 @@ public class AurtdrsGameServerProcess {
 			Thread.sleep(TIMEOUT_MILLIS);
 		} catch (InterruptedException e) {
 		}
-		
+
 		NetworkData data = this.collectData();
 		this.sendDataToAll(data);
 
@@ -231,13 +224,7 @@ public class AurtdrsGameServerProcess {
 				if (gameData == null) {
 					trains.add(null);
 				} else {
-					if (gameData.getState() == NetworkState.IN_GAME) {
-						AurtdrsRoadTrainTransmission trans = (AurtdrsRoadTrainTransmission) gameData.getData()[0];
-						winnerMap.put(trans, client);
-						trains.add(trans);
-					} else {
-						trains.add(null);
-					}
+					this.handleInGameData(trains, winnerMap, client, gameData);
 				}
 			} catch (Exception e) {
 				trains.add(null);
@@ -251,7 +238,7 @@ public class AurtdrsGameServerProcess {
 
 		for (AurtdrsRoadTrainTransmission train : trainArr) {
 			if (train != null && this.endCondition(train.cast())) {
-				
+
 				String winner = this.userNames.get(winnerMap.get(train));
 				this.state = ServerState.RESULTS_SCREEN;
 				return new NetworkData(NetworkState.MATCH_OVER, (Object) winner);
@@ -262,11 +249,21 @@ public class AurtdrsGameServerProcess {
 
 	}
 
+	private void handleInGameData(ArrayList<AurtdrsRoadTrainTransmission> trains,
+			HashMap<AurtdrsRoadTrainTransmission, Client> winnerMap, Client client, NetworkData gameData) {
+		if (gameData.getState() == NetworkState.IN_GAME) {
+			AurtdrsRoadTrainTransmission trans = (AurtdrsRoadTrainTransmission) gameData.getData()[0];
+			winnerMap.put(trans, client);
+			trains.add(trans);
+		} else {
+			trains.add(null);
+		}
+	}
+
 	/**
 	 * End condition.
 	 *
-	 * @param train
-	 *            the train
+	 * @param train the train
 	 * @return true, if successful
 	 */
 	private boolean endCondition(AurtdrsRoadTrain train) {
