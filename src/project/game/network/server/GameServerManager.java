@@ -95,6 +95,16 @@ public class GameServerManager {
 		return all;
 
 	}
+	
+	/**
+	 * Checks if is client connected.
+	 *
+	 * @param client the client
+	 * @return true, if is client connected
+	 */
+	public boolean isClientConnected(Client client) {
+		return this.server.isClientConnected(client);
+	}
 
 	private void connectionProcess(Client client) {
 		try {

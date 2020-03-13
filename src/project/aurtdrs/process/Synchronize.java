@@ -84,16 +84,13 @@ public class Synchronize implements AurtdrsProcess {
 			if (data.getData() != null && data.getData().length > 0) {
 				title = (String) data.getData()[0];
 			}
-			//synchronized (this) {
-				//if (this.userName == null) {
-					//do {
-						String nameInput = JOptionPane.showInputDialog(this.gui, "Enter Name", title);
-						this.userName = nameInput;
-					//} while (this.userName == null || this.userName.isEmpty());
-				//}
+			do {
+				this.userName = null;
+				String nameInput = JOptionPane.showInputDialog(this.gui, "Enter Name", title);
+				this.userName = nameInput;
+			} while (this.userName == null || this.userName.isEmpty());
 				
-				return new NetworkData(NetworkState.SYNCHRONIZING, this.userName);
-			//}
+			return new NetworkData(NetworkState.SYNCHRONIZING, this.userName);
 		}
 
 		return null;

@@ -27,9 +27,7 @@ public class AurtdrsGameServerProcess {
 	 */
 	private enum ServerState {
 
-		WAITING_FOR_CLIENTS, 
-		PROCESSING_GAME, 
-		RESULTS_SCREEN
+		WAITING_FOR_CLIENTS, PROCESSING_GAME, RESULTS_SCREEN
 
 	}
 
@@ -76,23 +74,23 @@ public class AurtdrsGameServerProcess {
 
 		switch (this.state) {
 
-			case WAITING_FOR_CLIENTS:
-	
-				this.syncAndLobby();
-	
-				break;
-			case PROCESSING_GAME:
-	
-				this.inGame();
-	
-				break;
-			case RESULTS_SCREEN:
-	
-				//
-	
-				break;
-			default:
-				break;
+		case WAITING_FOR_CLIENTS:
+
+			this.syncAndLobby();
+
+			break;
+		case PROCESSING_GAME:
+
+			this.inGame();
+
+			break;
+		case RESULTS_SCREEN:
+
+			//
+
+			break;
+		default:
+			break;
 
 		}
 
@@ -112,23 +110,25 @@ public class AurtdrsGameServerProcess {
 
 		}
 
+		this.lobbyProcess();
+
 	}
-	
+
 	private void syncAndLobbyActOnData(Client client, NetworkData theData) {
-		
+
 		this.userStates.put(client, theData.getState());
-		
+
 		if (theData.getState() == NetworkState.SYNCHRONIZING) {
-			
+
 			this.nameDiscrimination(client, theData);
-			
+
 		}
-		///TODO add in constant knowing of how large the player pool is for connection alerts to other clients
+		/// TODO add in constant knowing of how large the player pool is for connection
+		/// alerts to other clients
 		/*
-		else if (theData.getState() == NetworkState.LOBBY) {
-			this.sendDataToAll(new NetworkData(NetworkState.SYNCHRONIZING, this.clients.size()));
-		}
-		*/
+		 * else if (theData.getState() == NetworkState.LOBBY) { this.sendDataToAll(new
+		 * NetworkData(NetworkState.SYNCHRONIZING, this.clients.size())); }
+		 */
 	}
 
 	private void kickPlayers() {
@@ -138,7 +138,8 @@ public class AurtdrsGameServerProcess {
 			count++;
 			if (count > MAX_CLIENTS) {
 
-				this.sendDataToAll(new NetworkData(NetworkState.DISCONNECTED, "Game Room Full / Game In Progress -- Please Try Again"));
+				this.sendDataToAll(new NetworkData(NetworkState.DISCONNECTED,
+						"Game Room Full / Game In Progress -- Please Try Again"));
 				client.close();
 
 			}
@@ -160,23 +161,21 @@ public class AurtdrsGameServerProcess {
 				return;
 			}
 		}
-		
+
 		this.nameSuccess(client);
 
 	}
 
 	private void nameRejected(Client client) {
-		
-		System.out.println("FAIL");
+
 		String outputMessage = "Name not unique, please try a different name";
 		this.sendData(client, new NetworkData(NetworkState.SYNCHRONIZING, outputMessage));
-		
+
 	}
 
 	private void nameSuccess(Client client) {
-
-		System.out.println("TO LOBBY");
-		this.sendData(client, new NetworkData(NetworkState.LOBBY, this.clients.size()));
+		this.userStates.put(client, NetworkState.LOBBY);
+		this.sendData(client, new NetworkData(NetworkState.LOBBY, this.getValidClients().size()));
 	}
 
 	private void inGame() {
@@ -191,21 +190,29 @@ public class AurtdrsGameServerProcess {
 		// TODO maybe add lobby count polling to client, code immediately after is the
 		// lobby count.
 
-		//TODO send to client only if client is in name pool
+		// TODO send to client only if client is in name pool
 
-		//this.sendDataToAll(new NetworkData(NetworkState.LOBBY, this.clients.size()));
+		// this.sendDataToAll(new NetworkData(NetworkState.LOBBY, this.clients.size()));
 
-		if (this.clients.size() == MAX_CLIENTS) {
+		if (this.getValidClients().size() >= MAX_CLIENTS) {
 			this.state = ServerState.PROCESSING_GAME;
+			this.sendDataToAll(new NetworkData(NetworkState.IN_GAME, (Object) null));
 		}
 
 	}
 
-	/**
-	 * Collect data.
-	 *
-	 * @return the network data
-	 */
+	private ArrayList<Client> getValidClients() {
+		ArrayList<Client> valid = new ArrayList<Client>();
+		for (Client client : this.clients) {
+			if (this.server.isClientConnected(client)) {
+				if (this.userStates.get(client) == NetworkState.LOBBY) {
+					valid.add(client);
+				}
+			}
+		}
+		return valid;
+	}
+
 	private NetworkData collectData() {
 
 		ArrayList<AurtdrsRoadTrain> trains = new ArrayList<AurtdrsRoadTrain>();
@@ -273,13 +280,13 @@ public class AurtdrsGameServerProcess {
 
 		return false;
 	}
-	
+
 	private void sendData(Client client, NetworkData data) {
 
 		this.server.sendData(client, data);
-		
+
 	}
-	
+
 	private void sendDataToAll(NetworkData data) {
 
 		for (Client client : this.clients) {
