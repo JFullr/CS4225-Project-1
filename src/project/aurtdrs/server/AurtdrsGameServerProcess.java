@@ -74,16 +74,16 @@ public class AurtdrsGameServerProcess {
 
 		switch (this.state) {
 
-			case WAITING_FOR_CLIENTS:
-				this.syncAndLobby();
-				break;
-			case PROCESSING_GAME:
-				this.inGame();
-				break;
-			case RESULTS_SCREEN:
-				break;
-			default:
-				break;
+		case WAITING_FOR_CLIENTS:
+			this.syncAndLobby();
+			break;
+		case PROCESSING_GAME:
+			this.inGame();
+			break;
+		case RESULTS_SCREEN:
+			break;
+		default:
+			break;
 
 		}
 
@@ -121,7 +121,7 @@ public class AurtdrsGameServerProcess {
 	private void nameDiscrimination(Client client, NetworkData theData) {
 
 		Object[] theObjects = theData.getData();
-		String nameToCheck = String.valueOf(theObjects[0]);
+		String nameToCheck = (String) theObjects[0];
 		if (nameToCheck == null) {
 			this.nameRejected(client);
 			return;
@@ -149,7 +149,8 @@ public class AurtdrsGameServerProcess {
 	}
 
 	private void nameSuccess(Client client) {
-		this.sendDataToAll(new NetworkData(NetworkState.PLAYER_QUIT, this.userNames.get(client) + " Has Joined"));
+		// this.sendDataToAll(new NetworkData(NetworkState.PLAYER_QUIT,
+		// this.userNames.get(client) + " Has Joined"));
 		this.sendData(client, new NetworkData(NetworkState.LOBBY, this.getValidClients().size()));
 	}
 
@@ -167,7 +168,7 @@ public class AurtdrsGameServerProcess {
 	}
 
 	private void lobbyProcess() {
-		
+
 		if (this.getValidClients().size() >= MAX_CLIENTS) {
 			this.state = ServerState.PROCESSING_GAME;
 			this.sendDataToAll(new NetworkData(NetworkState.IN_GAME, (Object) null));
@@ -201,7 +202,9 @@ public class AurtdrsGameServerProcess {
 					this.sendDataToAll(
 							new NetworkData(NetworkState.PLAYER_QUIT, this.userNames.get(client) + " Has Forfeited"));
 				} else if (gameData.getState() != NetworkState.IN_GAME) {
-					this.sendData(client, new NetworkData(NetworkState.DISCONNECTED, "Game In Progress Come back Later"));
+					this.sendData(client,
+							new NetworkData(NetworkState.DISCONNECTED, "Game In Progress Come back Later"));
+					client.close();
 				} else {
 					this.handleInGameData(trains, winnerMap, client, gameData);
 				}
@@ -214,7 +217,8 @@ public class AurtdrsGameServerProcess {
 
 	}
 
-	private NetworkData getGameBundle(ArrayList<AurtdrsRoadTrainTransmission> trains, HashMap<AurtdrsRoadTrainTransmission, Client> winnerMap) {
+	private NetworkData getGameBundle(ArrayList<AurtdrsRoadTrainTransmission> trains,
+			HashMap<AurtdrsRoadTrainTransmission, Client> winnerMap) {
 		AurtdrsRoadTrainTransmission[] trainArr = new AurtdrsRoadTrainTransmission[trains.size()];
 		trains.toArray(trainArr);
 
