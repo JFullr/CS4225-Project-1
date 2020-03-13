@@ -146,7 +146,6 @@ public class AurtdrsGameServerProcess {
 	}
 
 	private void inGame() {
-
 		try {
 			Thread.sleep(TIMEOUT_MILLIS);
 		} catch (InterruptedException e) {
@@ -154,6 +153,15 @@ public class AurtdrsGameServerProcess {
 
 		NetworkData data = this.collectData();
 
+		if (this.forfeitureVictory()) {
+			return;
+		}
+
+		this.processAggregate(data);
+
+	}
+
+	private void processAggregate(NetworkData data) {
 		if (data.getState() == NetworkState.IN_GAME) {
 			AurtdrsRoadTrainTransmission[] pack = (AurtdrsRoadTrainTransmission[]) data.getData()[0];
 			int self = 0;
@@ -179,7 +187,20 @@ public class AurtdrsGameServerProcess {
 				this.removeAllClients();
 			}
 		}
+	}
 
+	private boolean forfeitureVictory() {
+		if (this.getValidClients().size() == 1) {
+			this.sendDataToAll(new NetworkData(NetworkState.MATCH_OVER));
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+			}
+			this.state = ServerState.WAITING_FOR_CLIENTS;
+			this.removeAllClients();
+			return true;
+		}
+		return false;
 	}
 
 	private void lobbyProcess() {
