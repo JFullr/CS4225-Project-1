@@ -48,11 +48,23 @@ public class Main {
 		//*/
 	}
 	
+	/**
+	 * Server main.
+	 *
+	 * @param args the args
+	 * @throws Exception the exception
+	 */
 	public static void serverMain(String[] args) throws Exception {
 		AurtdrsGameServerSystem server = new AurtdrsGameServerSystem(GAME_PORT);
 		server.start();
 	}
 	
+	/**
+	 * Client main.
+	 *
+	 * @param args the args
+	 * @throws Exception the exception
+	 */
 	public static void clientMain(String[] args) throws Exception {
 		AurtdrsGameSystem game = new AurtdrsGameSystem();
 		game.start();
