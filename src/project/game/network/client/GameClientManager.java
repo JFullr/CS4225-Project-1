@@ -207,6 +207,7 @@ public class GameClientManager {
 		} catch (Exception e) {
 			this.connected = false;
 			this.running = false;
+			e.printStackTrace();
 			return;
 		}
 		if (data != null) {

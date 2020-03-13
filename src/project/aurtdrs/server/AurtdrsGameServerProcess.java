@@ -171,6 +171,13 @@ public class AurtdrsGameServerProcess {
 			}
 		} else {
 			this.sendDataToAll(data);
+			if (this.state == ServerState.WAITING_FOR_CLIENTS) {
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+				}
+				this.removeAllClients();
+			}
 		}
 
 	}
@@ -234,7 +241,6 @@ public class AurtdrsGameServerProcess {
 			if (train != null && this.endCondition(train.cast())) {
 				String winner = this.userNames.get(winnerMap.get(train));
 
-				this.removeAllClients();
 				this.state = ServerState.WAITING_FOR_CLIENTS;
 
 				return new NetworkData(NetworkState.MATCH_OVER, (Object) winner);
