@@ -112,8 +112,6 @@ public class AurtdrsGameServerProcess {
 
 	private void nameDiscrimination(Client client, NetworkData theData) {
 
-		System.out.println(this.clients.size());
-
 		Object[] theObjects = theData.getData();
 		String nameToCheck = (String) theObjects[0];
 		if (nameToCheck == null) {
@@ -121,9 +119,7 @@ public class AurtdrsGameServerProcess {
 			return;
 		}
 
-		System.out.println(this.userNames.values().size() + "::" + nameToCheck);
 		for (String name : this.userNames.values()) {
-			System.out.println(name + "::" + nameToCheck);
 			if (name.equals(nameToCheck)) {
 				this.nameRejected(client);
 				return;
@@ -158,7 +154,24 @@ public class AurtdrsGameServerProcess {
 
 		NetworkData data = this.collectData();
 
-		this.sendDataToAll(data);
+		if (data.getState() == NetworkState.IN_GAME) {
+			AurtdrsRoadTrainTransmission[] pack = (AurtdrsRoadTrainTransmission[]) data.getData()[0];
+			int self = 0;
+			for (Client client : this.clients) {
+
+				AurtdrsRoadTrainTransmission tmp = pack[self];
+
+				pack[self] = null;
+
+				this.sendData(client, new NetworkData(NetworkState.IN_GAME, (Object) pack));
+
+				pack[self] = tmp;
+
+				self++;
+			}
+		} else {
+			this.sendDataToAll(data);
+		}
 
 	}
 
