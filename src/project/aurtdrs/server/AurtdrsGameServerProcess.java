@@ -79,12 +79,9 @@ public class AurtdrsGameServerProcess {
 				this.inGame();
 				break;
 			case RESULTS_SCREEN:
-
-			//
-
-			break;
-		default:
-			break;
+				break;
+			default:
+				break;
 
 		}
 

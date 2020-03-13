@@ -14,10 +14,10 @@ public class AurtdrsRoadTrainTransmission implements Serializable {
 
 	private static final long serialVersionUID = -6008263441901760035L;
 
-	public double acceleration;
-	public double speed;
-	public double distance;
-	public ArrayList<Point> relativePositions;
+	private double acceleration;
+	private double speed;
+	private double distance;
+	private ArrayList<Point> relativePositions;
 
 	/**
 	 * Instantiates a new aurtdrs road train transmission.
@@ -31,6 +31,11 @@ public class AurtdrsRoadTrainTransmission implements Serializable {
 		this.relativePositions = train.getRelativePositions();
 	}
 
+	/**
+	 * Cast.
+	 *
+	 * @return the aurtdrs road train
+	 */
 	public AurtdrsRoadTrain cast() {
 		AurtdrsRoadTrain train = new AurtdrsRoadTrain();
 		train.setAcceleration(this.acceleration);
@@ -38,6 +43,87 @@ public class AurtdrsRoadTrainTransmission implements Serializable {
 		train.setSpeed(this.speed);
 		train.setRelativePositions(this.relativePositions);
 		return train;
+	}
+
+	/**
+	 * Gets the acceleration.
+	 *
+	 * @return the acceleration
+	 */
+	public double getAcceleration() {
+		return this.acceleration;
+	}
+
+	/**
+	 * Sets the acceleration.
+	 *
+	 * @param acceleration the acceleration to set
+	 */
+	public void setAcceleration(double acceleration) {
+		this.acceleration = acceleration;
+	}
+
+	/**
+	 * Gets the speed.
+	 *
+	 * @return the speed
+	 */
+	public double getSpeed() {
+		return this.speed;
+	}
+
+	/**
+	 * Sets the speed.
+	 *
+	 * @param speed the speed to set
+	 */
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+
+	/**
+	 * Gets the distance.
+	 *
+	 * @return the distance
+	 */
+	public double getDistance() {
+		return this.distance;
+	}
+
+	/**
+	 * Sets the distance.
+	 *
+	 * @param distance the distance to set
+	 */
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
+	/**
+	 * Gets the relative positions.
+	 *
+	 * @return the relativePositions
+	 */
+	public ArrayList<Point> getRelativePositions() {
+		return this.relativePositions;
+	}
+
+	/**
+	 * Sets the relative positions.
+	 *
+	 * @param relativePositions the relativePositions to set
+	 */
+	public void setRelativePositions(ArrayList<Point> relativePositions) {
+		this.relativePositions = relativePositions;
+	}
+
+	/**
+	 * Gets the serialversionuid.
+	 *
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

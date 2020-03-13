@@ -2,6 +2,12 @@ package project.aurtdrs.process;
 
 import java.awt.Font;
 
+/**
+ * The Class AurtdrsResources.
+ *
+ * @author Joseph Fuller, James Irwin, Timothy Brooks
+ * @version Spring 2020
+ */
 public class AurtdrsResources {
 	
 	//public static final Font HUD_FONT = new Font("TimesRoman", Font.PLAIN, 14);
