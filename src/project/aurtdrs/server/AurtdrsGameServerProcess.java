@@ -120,8 +120,8 @@ public class AurtdrsGameServerProcess {
 			return;
 		}
 
-		for (String name : this.userNames.values()) {
-			if (name.equals(nameToCheck)) {
+		for (Client key : this.userNames.keySet()) {
+			if (this.server.isClientConnected(key) && this.userNames.get(key).equals(nameToCheck)) {
 				this.nameRejected(client);
 				return;
 			}
