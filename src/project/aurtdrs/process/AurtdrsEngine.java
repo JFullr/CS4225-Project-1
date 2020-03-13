@@ -140,7 +140,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		if (this.currentProcess != null) {
 			this.currentProcess.render(graphics, frameWidth, frameHeight);
 		}
-		
+
 		this.renderNotification(graphics, frameWidth, frameHeight);
 
 	}
@@ -160,7 +160,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 
 		if (data.getState() == NetworkState.PLAYER_QUIT) {
 
-			this.notification = String.valueOf(data.getData()[0]);
+			this.notification = (String) data.getData()[0];
 
 		} else {
 
@@ -190,14 +190,13 @@ public class AurtdrsEngine implements AurtdrsProcess {
 	private void renderNotification(Graphics graphics, int frameWidth, int frameHeight) {
 
 		graphics.setColor(Color.GREEN);
-		
+
 		graphics.setFont(new Font("Dialog", Font.PLAIN, 16));
 		graphics.drawString("NOTIFICATIONS", 5, frameHeight - 150);
 		graphics.setFont(new Font("Dialog", Font.PLAIN, 14));
 		if (this.notification != null) {
 			graphics.drawString(this.notification, 5, frameHeight - 135);
 		}
-		
 
 	}
 
