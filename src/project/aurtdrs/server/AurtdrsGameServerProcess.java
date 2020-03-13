@@ -18,6 +18,7 @@ import utils.network.Client;
  */
 public class AurtdrsGameServerProcess {
 
+	private static final int FINAL_SCREEN_TIME = 5000;
 	private static final int MAX_CLIENTS = 3;
 	private static final int TIMEOUT_MILLIS = 50;
 	private static final double GOAL = 7.7E7;
@@ -181,7 +182,7 @@ public class AurtdrsGameServerProcess {
 			this.sendDataToAll(data);
 			if (this.state == ServerState.WAITING_FOR_CLIENTS) {
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(FINAL_SCREEN_TIME);
 				} catch (InterruptedException e) {
 				}
 				this.removeAllClients();
@@ -191,9 +192,9 @@ public class AurtdrsGameServerProcess {
 
 	private boolean forfeitureVictory() {
 		if (this.getValidClients().size() == 1) {
-			this.sendDataToAll(new NetworkData(NetworkState.MATCH_OVER));
+			this.sendDataToAll(new NetworkData(NetworkState.MATCH_OVER, "Forfeiture Victory"));
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(FINAL_SCREEN_TIME);
 			} catch (InterruptedException e) {
 			}
 			this.state = ServerState.WAITING_FOR_CLIENTS;
