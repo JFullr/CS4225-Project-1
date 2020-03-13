@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import project.aurtdrs.process.AurtdrsRoadTrain;
+import project.aurtdrs.process.AurtdrsRoadTrainTransmission;
 import project.game.network.NetworkData;
 import project.game.network.NetworkState;
 import project.game.network.server.GameServerManager;
@@ -180,6 +181,10 @@ public class AurtdrsGameServerProcess {
 
 	private void inGame() {
 
+		try {
+			Thread.sleep(TIMEOUT_MILLIS);
+		} catch (InterruptedException e) {
+		}
 		NetworkData data = this.collectData();
 		this.race(data);
 
@@ -224,8 +229,10 @@ public class AurtdrsGameServerProcess {
 					trains.add(null);
 				} else {
 					if (gameData.getState() == NetworkState.IN_GAME) {
-						AurtdrsRoadTrain train = (AurtdrsRoadTrain) gameData.getData()[0];
-						trains.add((AurtdrsRoadTrain) gameData.getData()[0]);
+						AurtdrsRoadTrain train = ((AurtdrsRoadTrainTransmission) gameData.getData()[0]).cast();
+						//System.out.println(((AurtdrsRoadTrainTransmission)gameData.getData()[1]).value);
+						System.out.println(train.getDistance());
+						trains.add(train);
 						if (this.endCondition(train)) {
 							// TODO FIXME send winner data
 							return new NetworkData(NetworkState.MATCH_OVER, (Object) null);
@@ -241,9 +248,12 @@ public class AurtdrsGameServerProcess {
 		}
 
 		AurtdrsRoadTrain[] trainArr = new AurtdrsRoadTrain[trains.size()];
-		trains.toArray(trainArr);
+		// trains.toArray(trainArr);
+		for (int i = 0; i < trains.size(); i++) {
+			trainArr[i] = trains.get(i);
+		}
 
-		return new NetworkData(NetworkState.IN_GAME, (Object) trainArr);
+		return new NetworkData(NetworkState.IN_GAME, new Object[] {trainArr});
 
 	}
 
@@ -259,7 +269,7 @@ public class AurtdrsGameServerProcess {
 			try {
 				client.sendData(aggregate);
 			} catch (IOException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 
@@ -81,7 +82,8 @@ public class PlayingGame implements AurtdrsProcess {
 		if (AurtdrsKey.isSpace()) {
 			AurtdrsKey.setSpace(false);
 
-			this.client.incrementAcceleration((1.0 - (Math.abs(this.shift - PERFECT_SHIFT) / MAX_SHIFT)) * 10);
+			double increment = (Math.floor(1.0 - (Math.abs(this.shift - PERFECT_SHIFT) / MAX_SHIFT)) * 10);
+			this.client.incrementAcceleration(increment);
 
 			this.shift = 0;
 
@@ -94,9 +96,12 @@ public class PlayingGame implements AurtdrsProcess {
 	/**
 	 * Render.
 	 *
-	 * @param graphics    the graphics
-	 * @param frameWidth  the frame width
-	 * @param frameHeight the frame height
+	 * @param graphics
+	 *            the graphics
+	 * @param frameWidth
+	 *            the frame width
+	 * @param frameHeight
+	 *            the frame height
 	 */
 	public void render(Graphics graphics, int frameWidth, int frameHeight) {
 
@@ -112,7 +117,8 @@ public class PlayingGame implements AurtdrsProcess {
 	/**
 	 * Processes the current state of the game based off of the give network data.
 	 *
-	 * @param data the data containing the game state
+	 * @param data
+	 *            the data containing the game state
 	 * @return the network data
 	 */
 	public NetworkData processState(NetworkData data) {
@@ -126,7 +132,8 @@ public class PlayingGame implements AurtdrsProcess {
 		 */
 		if (data.getState() == NetworkState.IN_GAME) {
 			this.otherPlayers = ((AurtdrsRoadTrain[]) data.getData()[0]);
-			return new NetworkData(NetworkState.IN_GAME, this.client);
+
+			return new NetworkData(NetworkState.IN_GAME, new Object[] { new AurtdrsRoadTrainTransmission(this.client) });
 		}
 
 		return null;
@@ -137,10 +144,8 @@ public class PlayingGame implements AurtdrsProcess {
 	 * Resets the game state.
 	 */
 	public void resetState() {
-		this.otherPlayers = new AurtdrsRoadTrain[8];
-		for (int i = 0; i < this.otherPlayers.length; i++) {
-			// this.otherPlayers[i] = new AurtdrsRoadTrain();
-		}
+		System.out.println("AAA");
+		this.otherPlayers = new AurtdrsRoadTrain[0];
 		this.client = new AurtdrsRoadTrain();
 		this.animation = 0;
 		this.shift = 0;
@@ -205,6 +210,9 @@ public class PlayingGame implements AurtdrsProcess {
 	}
 
 	private void renderOtherRoads(Graphics graphics, int frameWidth, int frameHeight) {
+		if (this.otherPlayers == null) {
+			return;
+		}
 		int left = 0;
 		int right = 0;
 		int size = TRAILER_LEFT.getWidth(null) * 3 / 2;
@@ -223,13 +231,11 @@ public class PlayingGame implements AurtdrsProcess {
 			int roadX = frameWidth / 2 - TRAILER_LEFT.getWidth(null) / 2;
 			roadX += side == 1 ? right * size : -left * size;
 			int roadWidth = TRAILER_LEFT.getWidth(null);
-
 			graphics.fillRect(roadX, 0, roadWidth, frameHeight);
 
 			if (train != null) {
 				int trainX = roadX + TRAILER_LEFT.getWidth(null) / 4;
 				int trainYHead = frameHeight / 4;
-
 				int offset = (int) (this.client.getDistance() - train.getDistance());
 				trainYHead += offset;
 

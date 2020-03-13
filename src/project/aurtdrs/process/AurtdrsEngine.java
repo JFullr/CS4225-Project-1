@@ -84,6 +84,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		if (state == this.currentState) {
 			return;
 		}
+		this.currentState = state;
 
 		
 		if (state == null) {
@@ -91,7 +92,7 @@ public class AurtdrsEngine implements AurtdrsProcess {
 		} else {
 			this.currentProcess = this.processMap.get(state);
 		}
-
+System.out.println(state);
 		this.currentProcess.resetState();
 
 		if (this.musicPlayer != null) {
